@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ការវាយតម្លៃជាចំណុចចាប់ផ្តើម — Visual Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{
+  font-family:'Google Sans Khmer';
+  font-style:normal;
+  font-display:swap;
+  font-weight:400 700;
+  src:url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/khmer-wght-normal.woff2') format('woff2-variations');
+}
+@font-face{
+  font-family:'Google Sans Khmer';
+  font-style:normal;
+  font-display:swap;
+  font-weight:400 700;
+  src:url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+:root{
+  --cream:#FFF8EC;
+  --sky:#EAF4FF;
+  --orange:#F2994A;
+  --orange-dark:#D9761F;
+  --teal:#2D9CDB;
+  --teal-dark:#1D7FB8;
+  --green:#6FCF97;
+  --green-dark:#219653;
+  --red:#EB5757;
+  --navy:#2D3142;
+  --navy-soft:#5B5F73;
+  --yellow:#F7C948;
+  --purple:#9B87F5;
+  --white:#FFFFFF;
+  --card-radius:26px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:'Google Sans Khmer','Baloo 2',sans-serif;
+  background:linear-gradient(160deg,var(--cream) 0%, var(--sky) 100%);
+  color:var(--navy);
+  overflow:hidden;
+  width:100vw;height:100vh;
+  position:relative;
+}
+.deck{position:relative; width:100vw; height:100vh;}
+.scene{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  padding:46px 84px 36px;
+  opacity:0; pointer-events:none;
+  transform:translateY(14px);
+  transition:opacity .45s ease, transform .45s ease;
+}
+.scene.active{opacity:1; pointer-events:auto; transform:translateY(0);}
+.scene-eyebrow{ display:none; }
+.screen-num{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--navy); color:#fff; font-weight:800; font-family:'Baloo 2';
+  display:flex; align-items:center; justify-content:center; font-size:18px; flex:none;
+}
+.eyebrow-label{font-size:15px; font-weight:600; color:var(--navy-soft); letter-spacing:.3px;}
+.scene-title{font-size:34px; font-weight:800; color:var(--navy); margin:4px 0 16px; line-height:1.3;}
+.scene-title.center{text-align:center;}
+.scene-sub{font-size:18px; color:var(--navy-soft); font-weight:500; margin-bottom:8px;}
+.scene-body{flex:1; display:flex; align-items:center; gap:44px; min-height:0;}
+.scene-body.col{flex-direction:column; justify-content:center;}
+.frag{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+.frag.shown{ opacity:1; transform:translateY(0); }
+
+.card{background:var(--white); border-radius:var(--card-radius); box-shadow:0 14px 34px rgba(45,49,66,.10); padding:26px 30px;}
+.pill{display:inline-flex; align-items:center; gap:10px; background:var(--white); border-radius:999px; padding:9px 18px; box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:15px;}
+
+.mascot{position:absolute; right:40px; bottom:34px; width:72px; height:72px; animation:bob 2.6s ease-in-out infinite; z-index:5;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-9px) rotate(2deg);}}
+
+.chrome{ display:none; }
+.navbtn{width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(45,49,66,.25);}
+.dots{display:flex; gap:9px; align-items:center;}
+.dot{width:11px; height:11px; border-radius:50%; background:#D9DEE8; cursor:pointer; border:none; padding:0; transition:all .2s ease;}
+.dot.on{background:var(--orange); width:26px; border-radius:6px;}
+.topbar{ display:none; }
+.iconbtn{background:var(--white); border:none; border-radius:14px; padding:10px 16px; font-family:inherit; font-weight:700; font-size:14px; color:var(--navy); box-shadow:0 6px 16px rgba(45,49,66,.12); cursor:pointer; display:flex; gap:8px; align-items:center;}
+.counter{ display:none; }
+
+.notes-drawer{position:absolute; left:0; right:0; bottom:0; height:0; overflow:hidden; background:var(--navy); color:#fff; z-index:40; transition:height .3s ease; border-radius:24px 24px 0 0;}
+.notes-drawer.open{height:34%;}
+.notes-inner{padding:24px 56px; height:100%; overflow-y:auto;}
+.notes-inner h4{margin:0 0 8px; color:var(--yellow); font-size:14px; letter-spacing:.5px;}
+.notes-inner p{font-size:17px; line-height:1.7; margin:0; font-weight:400; white-space:pre-line;}
+
+.progress{position:absolute; top:0; left:0; height:6px; background:var(--orange); z-index:50; transition:width .3s ease;}
+
+.illus-wrap{flex:none; display:flex; align-items:center; justify-content:center;}
+.list-row{display:flex; align-items:center; gap:18px; font-size:19px; font-weight:600; padding:13px 0; border-bottom:2px dashed #E4E8F0;}
+.list-row:last-child{border-bottom:none;}
+.list-row .lr-text{flex:1;}
+.list-row .lr-sub{display:block; font-size:13.5px; font-weight:500; color:var(--navy-soft); margin-top:3px;}
+.num-badge{width:38px;height:38px;border-radius:11px; flex:none; display:flex; align-items:center; justify-content:center; font-family:'Baloo 2'; font-weight:800; color:#fff; font-size:16px;}
+.icon-circle{width:64px;height:64px;border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:28px;}
+.vs-col{flex:1; background:var(--white); border-radius:var(--card-radius); padding:26px; box-shadow:0 14px 34px rgba(45,49,66,.10);}
+.vs-col h3{margin:0 0 8px; font-size:19px;}
+.vs-col p{font-size:14.5px; line-height:1.6; color:var(--navy-soft); margin:0;}
+.badge-tag{display:inline-block; font-size:12px; font-weight:800; padding:4px 12px; border-radius:999px; color:#fff; margin-bottom:9px;}
+.principle-card{display:flex; gap:18px; align-items:flex-start; padding:14px 0; border-bottom:2px dashed #E4E8F0;}
+.principle-card:last-child{border-bottom:none;}
+
+.rubric-table{width:100%; border-collapse:separate; border-spacing:0 8px; font-size:12.5px;}
+.rubric-table th{font-size:12px; font-weight:800; color:#fff; padding:9px 10px; text-align:left;}
+.rubric-table th.c1{background:var(--teal-dark); border-radius:12px 0 0 12px;}
+.rubric-table th.c2{background:var(--orange-dark);}
+.rubric-table th.c3{background:var(--green-dark); border-radius:0 12px 12px 0;}
+.rubric-table th.pr{background:transparent;}
+.rubric-table td{background:#fff; padding:10px 11px; vertical-align:top; line-height:1.5; box-shadow:0 4px 10px rgba(45,49,66,.06);}
+.rubric-table td.pr{background:transparent; box-shadow:none; font-weight:800; font-size:12.5px; color:var(--navy); padding-right:6px;}
+.rubric-table td.c1{border-radius:12px 0 0 12px;}
+.rubric-table td.c3{border-radius:0 12px 12px 0; font-family:'Baloo 2'; font-weight:600; font-size:11.5px; font-style:italic;}
+
+.cta-banner{background:var(--navy); color:#fff; border-radius:var(--card-radius); padding:22px 30px; text-align:center; box-shadow:0 14px 30px rgba(45,49,66,.25);}
+.cta-banner .tag{color:var(--yellow); font-size:13px; font-weight:800; letter-spacing:.4px; margin-bottom:6px;}
+.cta-banner .main{font-size:20px; font-weight:800;}
+
+/* ---- Script 6 specific: Cambodian classroom motifs ---- */
+.phone-mock{background:#2D3142; border-radius:28px; padding:10px; width:220px; box-shadow:0 20px 40px rgba(45,49,66,.3);}
+.phone-screen{background:#fff; border-radius:18px; padding:16px 14px; font-size:11.5px; line-height:1.55; min-height:280px;}
+.notebook-stack{position:relative; width:180px; height:220px;}
+.book{position:absolute; width:170px; height:210px; border-radius:8px; box-shadow:0 8px 16px rgba(45,49,66,.15);}
+
+.folder{background:#fff; border-radius:12px 12px 4px 4px; padding:14px 16px; box-shadow:0 8px 18px rgba(45,49,66,.1); position:relative; min-width:150px;}
+.folder:before{content:""; position:absolute; top:-8px; left:12px; width:60px; height:10px; background:inherit; border-radius:6px 6px 0 0; box-shadow:inherit;}
+
+.step3-row{display:flex; gap:18px; justify-content:center; width:100%;}
+.step3-card{flex:1; max-width:230px; border-radius:20px; padding:22px 18px; color:#fff; text-align:center; box-shadow:0 12px 26px rgba(45,49,66,.16);}
+
+footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center; font-size:11px; color:#B7BCC9; z-index:1;}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">01 / 09</div>
+
+<div class="topbar">
+  <button class="iconbtn" id="notesBtn">📝 ស្គ្រីប (N)</button>
+  <button class="iconbtn" id="fsBtn">⛶ Fullscreen</button>
+</div>
+
+<div class="deck" id="deck">
+
+<!-- SCENE 1: Cold Open -->
+<section class="scene" data-notes="⏱️ 0:00–1:00 (60 វិនាទី) — Segment 1: Cold Open & The Real Opportunity for AI
+គ្រូបង្រៀនថ្នាក់បឋមសិក្សាគ្រប់រូបនៅកម្ពុជា សុទ្ធតែដឹងថាការសរសេរកម្រងសំណួរល្អមួយត្រូវចំណាយពេលប៉ុន្មាន — ជាសំណុំសំណួរដែលសមស្របទៅនឹងអ្វីដែលបានបង្រៀន ជាភាសាត្រឹមត្រូវ និងតាមកម្រិតសមស្របសម្រាប់សិស្ស។
+
+អ្នកប្រហែលធ្លាប់ឮគេនិយាយថា AI អាចកែសៀវភៅសិស្សបានក្នុងរយៈពេលប៉ុន្មានវិនាទី។ ប៉ុន្តែនៅក្នុងថ្នាក់រៀនរបស់យើង — ដែលកុមារសរសេរដោយដៃលើសៀវភៅ ដែលឧបករណ៍ឌីជីថលមានកម្រិត និងដែលម៉ូដែល AI ភាសាខ្មែរនៅមានទិន្នន័យតិចតួច — ការឱ្យ AI កែពិន្ទុដោយស្វ័យប្រវត្តិ គឺមិនទាន់អាចទៅរួចនៅឡើយ។
+
+អ្វីដែល AI អាចជួយបានយ៉ាងល្អនាពេលនេះ គឺការជួយបង្កើតឯកសារវាយតម្លៃ៖ កម្រងសំណួរ សំណួរសរសេរតាមអាន លំហាត់គណិតវិទ្យា និងសំណួរពិនិត្យឡើងវិញ — ជាការងាររៀបចំសំណួរដែលធម្មតាចំណាយពេលអស់ល្ងាចទាំងមូល។
+
+មុននឹងបើកកម្មវិធី AI សូមយល់ពីមូលហេតុដែលការវាយតម្លៃមានសារៈសំខាន់សិន រួចមើលពីរបៀបដែល AI អាចក្លាយជាជំនួយការសរសេរឯកសារវាយតម្លៃដ៏លឿនបំផុតរបស់អ្នក — ព្រមទាំងមើលអំពីមតិកែលម្អដោយសង្ខេបនៅចុងបញ្ចប់។">
+  <div class="scene-eyebrow"><div class="screen-num">១</div><div class="eyebrow-label">Segment 1 · 0:00–1:00</div></div>
+  <div class="scene-title">AI មិនកែពិន្ទុ — ប៉ុន្តែជួយបង្កើតកម្រងសំណួរ</div>
+  <div class="scene-body">
+    <div class="illus-wrap frag" style="flex:1; justify-content:flex-start;">
+      <svg width="260" height="280" viewBox="0 0 260 280">
+        <ellipse cx="130" cy="265" rx="90" ry="12" fill="#000" opacity=".06"/>
+        <rect x="30" y="150" width="130" height="100" rx="6" fill="#fff" stroke="#D9DEE8" stroke-width="3" transform="rotate(-6 95 200)"/>
+        <rect x="45" y="165" width="130" height="100" rx="6" fill="#fff" stroke="#D9DEE8" stroke-width="3"/>
+        <line x1="60" y1="185" x2="160" y2="185" stroke="#C7CCD8" stroke-width="2"/>
+        <line x1="60" y1="200" x2="160" y2="200" stroke="#C7CCD8" stroke-width="2"/>
+        <line x1="60" y1="215" x2="140" y2="215" stroke="#C7CCD8" stroke-width="2"/>
+        <line x1="60" y1="230" x2="150" y2="230" stroke="#C7CCD8" stroke-width="2"/>
+        <rect x="150" y="70" width="80" height="140" rx="16" fill="var(--navy)"/>
+        <rect x="158" y="88" width="64" height="104" rx="4" fill="#EAF4FF"/>
+        <circle cx="190" cy="200" r="5" fill="#fff"/>
+      </svg>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
+      <div class="frag card" style="text-decoration:line-through; opacity:.5; background:#F1F2F5; box-shadow:none; font-weight:700; font-size:16px;">❌ AI កែសៀវភៅសិស្សសរសេរដៃបានក្នុងប៉ុន្មានវិនាទី</div>
+      <div class="frag card" style="background:var(--orange); color:#fff; font-weight:800; font-size:17px;">✅ AI ជួយបង្កើតកម្រងសំណួរបន្ទាប់របស់អ្នក ក្នុងរយៈពេលប៉ុន្មាននាទី</div>
+      <div class="frag card" style="font-size:14px; line-height:1.7;">ក្នុងថ្នាក់រៀនកម្ពុជា — កុមារសរសេរដោយដៃ ឧបករណ៍ឌីជីថលមានកម្រិត — AI ជួយបំផុតលើការ <b>បង្កើតឯកសារវាយតម្លៃ</b> មិនមែនកែពិន្ទុទេ</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 2: Formative vs Summative -->
+<section class="scene" data-notes="⏱️ 1:00–2:00 (1 នាទី) — Segment 2: Assessment FOR Learning vs. Assessment OF Learning
+ការវាយតម្លៃក្នុងការអប់រំ ចែកចេញជាពីរទម្រង់ខុសគ្នាស្រឡះ។
+
+ទីមួយ គឺការវាយតម្លៃលើលទ្ធផលសិក្សា (Assessment OF Learning) ឬការវាយតម្លៃសរុប។ វាកើតឡើងនៅចុងខែ ឬចុងឆមាស។ វាវាយតម្លៃលើអ្វីដែលសិស្សបានរៀនរួច ដើម្បីផ្តល់ពិន្ទុ។
+
+ទីពីរ គឺការវាយតម្លៃដើម្បីស្ទង់លទ្ធផលសិក្សា (Assessment FOR Learning) ឬការវាយតម្លៃទម្រង់។ វាកើតឡើងក្នុងអំឡុងពេលបង្រៀន — ជាការត្រួតពិនិត្យរហ័ស ការសរសេរតាមអាន ឬលំហាត់គណនាក្នុងចិត្ត ដែលបង្ហាញអ្នកថាកុមារណាកំពុងជួបការលំបាកឥឡូវនេះ។
+
+ទាំងពីរនេះហើយ ជាកន្លែងដែល AI មានប្រយោជន៍ពិតប្រាកដ — មិនមែនសម្រាប់គណនាពិន្ទុចុងក្រោយទេ ប៉ុន្តែសម្រាប់បង្កើតកម្រងសំណួរ និងលំហាត់ត្រួតពិនិត្យផ្ទាល់ដែលអ្នកប្រើសម្រាប់វាស់ស្ទង់ការសិក្សា ទាំងកម្រិតទម្រង់ និងកម្រិតសរុប។">
+  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">Segment 2 · 1:00–2:00</div></div>
+  <div class="scene-title">ការវាយតម្លៃ ២ ទម្រង់</div>
+  <div class="scene-body">
+    <div class="vs-col frag">
+      <span class="badge-tag" style="background:var(--green-dark);">🌱 ក្នុងអំឡុងពេលបង្រៀន</span>
+      <h3>Assessment FOR Learning (ទម្រង់)</h3>
+      <p>ការត្រួតពិនិត្យរហ័ស ការសរសេរតាមអាន លំហាត់គណនាក្នុងចិត្ត — បង្ហាញថាកុមារណាកំពុងជួបការលំបាក <b>ឥឡូវនេះ</b></p>
+    </div>
+    <div class="vs-col frag">
+      <span class="badge-tag" style="background:var(--orange-dark);">🏆 ចុងខែ/ចុងឆមាស</span>
+      <h3>Assessment OF Learning (សរុប)</h3>
+      <p>វាយតម្លៃលើអ្វីដែលសិស្ស <b>បានរៀនរួច</b> ដើម្បីផ្តល់ពិន្ទុ</p>
+    </div>
+  </div>
+  <div class="frag card" style="margin-top:8px; text-align:center; font-size:14.5px; max-width:760px; margin-left:auto; margin-right:auto;">
+    💡 AI មានប្រយោជន៍ក្នុងទម្រង់ទាំងពីរ — <b>មិនមែនគណនាពិន្ទុទេ ប៉ុន្តែបង្កើតកម្រងសំណួរ និងលំហាត់ត្រួតពិនិត្យ</b>
+  </div>
+</section>
+
+<!-- SCENE 3: Formative Check Creation -->
+<section class="scene" data-notes="⏱️ 2:00–3:15 (1 នាទី 15 វិនាទី) — Segment 3: Using AI for Formative Check Creation
+សូមពិនិត្យមើលរបៀបដែលការងារនេះអនុវត្តជាក់ស្តែង ក្នុងពេលរៀបចំមេរៀន។ ស្រមៃថាអ្នកកំពុងរៀបចំមេរៀនថ្នាក់ទី៣ អំពីវិធានអក្ខរាវិរុទ្ធភាសាខ្មែរ ឬការបូកលេខច្រើនខ្ទង់។ ការគិតបង្កើតលំហាត់អនុវត្តចំនួន១០ ដែលស្របតាមគោលបំណងមេរៀន ត្រូវចំណាយពេលយូរណាស់។
+
+នេះជាកន្លែងដែល AI ធ្វើសកម្មភាពជាជំនួយការរៀបចំមេរៀន។ អ្នកអាចប្រាប់ AI ឱ្យបង្កើតប្រយោគសរសេរតាមអានខ្លីៗ និងច្បាស់លាស់ចំនួន១០ ដោយប្រើជើងអក្សរជាក់លាក់ ឬលំហាត់ប្រមាណវិធីពាក្យទាក់ទងនឹងជីវភាពរស់នៅប្រចាំថ្ងៃនៅកម្ពុជា ដូចជាការទិញផ្លែឈើនៅផ្សារ។
+
+ក្នុងរយៈពេលតិចជាងពីរនាទី អ្នកនឹងទទួលបានលំហាត់ត្រួតពិនិត្យទម្រង់ដែលមានគុណភាពខ្ពស់ ត្រៀមរួចជាស្រេចសម្រាប់សរសេរលើក្តារខៀន ឬឱ្យសិស្សធ្វើលើក្តារឈ្នួន។">
+  <div class="scene-eyebrow"><div class="screen-num">៣</div><div class="eyebrow-label">Segment 3 · 2:00–3:15</div></div>
+  <div class="scene-title" style="font-size:29px;">AI ជួយបង្កើតលំហាត់ត្រួតពិនិត្យទម្រង់</div>
+  <div class="scene-body">
+    <div class="vs-col frag">
+      <span class="badge-tag" style="background:var(--navy-soft);">⏳ វិធីចាស់</span>
+      <h3>សរសេរដោយដៃ ២ ម៉ោង</h3>
+      <p>រៀបចំសំណួរ១០ ស្របតាមគោលបំណងមេរៀន — ចំណាយពេលយូរណាស់ ក្រោយម៉ោងបង្រៀន</p>
+    </div>
+    <div class="vs-col frag" style="border:2px solid var(--teal);">
+      <span class="badge-tag" style="background:var(--teal);">📱 វិធីថ្មី</span>
+      <h3>ស្នើ AI តិចជាង ២ នាទី</h3>
+      <div class="card" style="background:#EAF4FF; padding:12px; font-size:12px; margin:8px 0;">"បង្កើតប្រយោគសរសេរតាមអាន ៥ សម្រាប់ថ្នាក់ទី៣ ដោយផ្តោតលើជើងអក្សរ [ជើងអក្សរ]"</div>
+      <p>ប្រយោគសរសេរតាមអាន ឬលំហាត់គណិត អំពីការទិញផ្លែឈើនៅផ្សារ — ត្រៀមរួចសរសេរលើក្តារខៀន</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 4: Full Quiz Creation -->
+<section class="scene" data-notes="⏱️ 3:15–4:45 (1 នាទី 30 វិនាទី) — Segment 4: Using AI to Build Full Quizzes & End-of-Unit Tests
+លំហាត់ត្រួតពិនិត្យទម្រង់ គ្រាន់តែជាផ្នែកមួយប៉ុណ្ណោះ។ នៅចុងជំពូកមួយ អ្នកក៏ត្រូវការកម្រងសំណួរ ឬការប្រឡងសមរម្យផងដែរ — ហើយនេះជាកន្លែងដែល AI អាចជួយសន្សំពេលវេលាបានច្រើនបំផុត។
+
+អ្នកអាចពិពណ៌នាគោលបំណងមេរៀនរបស់អ្នក ហើយស្នើឱ្យ AI បង្កើតកម្រងសំណួរពេញលេញ ឧទាហរណ៍៖ 'សូមបង្កើតកម្រងសំណួរចំនួន១០ សម្រាប់ការប្រឡងចុងខែថ្នាក់ទី៤ អំពីការយល់ន័យអំណានភាសាខ្មែរ ដោយមានសំណួរជម្រើសពហុគុណ៥ សំណួរបំពេញចន្លោះ៣ និងសំណួរឆ្លើយខ្លី២ ដែលសមស្របតាមកម្រិតអានរបស់ថ្នាក់ទី៤។'
+
+AI នឹងព្រាងសំណុំសំណួរពេញលេញជាភាសាខ្មែរ ក្នុងទម្រង់ដែលអ្នកអាចចម្លងផ្ទាល់លើក្រដាសស្តែនស៊ីល ឬសរសេរលើក្តារខៀនសម្រាប់សិស្សឆ្លើយក្នុងសៀវភៅរបស់ខ្លួន។ វាក៏អាចបង្កើតចម្លើយត្រឹមត្រូវភ្ជាប់មកជាមួយផងដែរ ដើម្បីឱ្យការកែពិន្ទុលឿនជាងមុន នៅពេលដែលក្រដាសចម្លើយត្រូវបានប្រមូល។
+
+អ្នកអាចស្នើឱ្យ AI បង្កើតកម្រងសំណួរដូចគ្នាច្រើនកំណែ — ដើម្បីកាត់បន្ថយការចម្លងគ្នារវាងសិស្សអង្គុយជិតគ្នា — ឬបង្កើតកំណែងាយ និងកំណែពិបាកសម្រាប់ថ្នាក់ដែលមានកម្រិតសមត្ថភាពខុសគ្នា។ នេះជាមធ្យោបាយធំបំផុតដែល AI អាចជួយបន្ថយបន្ទុកការងាររបស់អ្នក៖ មិនមែនកែក្រដាសដែលបានធ្វើរួចទេ ប៉ុន្តែជួយបង្កើតក្រដាសនោះតាំងពីដំបូង។">
+  <div class="scene-eyebrow"><div class="screen-num">៤</div><div class="eyebrow-label">Segment 4 · 3:15–4:45</div></div>
+  <div class="scene-title" style="font-size:28px;">AI បង្កើតកម្រងសំណួរពេញលេញ</div>
+  <div class="scene-body">
+    <div class="frag phone-mock">
+      <div class="phone-screen">
+        <div style="font-weight:800; margin-bottom:6px; color:var(--teal-dark);">កម្រងសំណួរ ថ្នាក់ទី៤</div>
+        <div style="font-size:10.5px; color:var(--navy-soft); margin-bottom:8px;">ការយល់ន័យអំណានភាសាខ្មែរ</div>
+        <div style="background:#EAF4FF; border-radius:6px; padding:5px 7px; margin-bottom:4px;">☑️ ជម្រើសពហុគុណ × ៥</div>
+        <div style="background:#FDF1E3; border-radius:6px; padding:5px 7px; margin-bottom:4px;">✏️ បំពេញចន្លោះ × ៣</div>
+        <div style="background:#F1EEFE; border-radius:6px; padding:5px 7px; margin-bottom:4px;">📝 ឆ្លើយខ្លី × ២</div>
+        <div style="background:var(--navy); color:#fff; border-radius:6px; padding:5px 7px; margin-top:8px;">🔑 ចម្លើយត្រឹមត្រូវ ភ្ជាប់មកជាមួយ</div>
+      </div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:12px;">
+      <div class="frag card" style="font-size:13px; font-family:'Baloo 2'; font-weight:600;">"បង្កើតកម្រងសំណួរ១០ ថ្នាក់ទី៤ អំពីការយល់ន័យអំណាន៖ ជម្រើសពហុគុណ៥ បំពេញចន្លោះ៣ ឆ្លើយខ្លី២ អមដោយចម្លើយត្រឹមត្រូវ"</div>
+      <div class="frag card" style="font-size:14px; line-height:1.7;">📋 ចម្លងលើក្រដាសស្តែនស៊ីល ឬសរសេរលើក្តារខៀន</div>
+      <div class="frag card" style="font-size:14px; line-height:1.7;">🔁 ស្នើកំណែច្រើន (កាត់បន្ថយការចម្លងគ្នា) ឬកំណែងាយ/ពិបាកសម្រាប់សិស្សខុសគ្នា</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 5: Item Bank -->
+<section class="scene" data-notes="⏱️ 4:45–6:00 (1 នាទី 15 វិនាទី) — Segment 5: Building a Reusable Assessment Item Bank
+មានទម្លាប់មួយបន្ថែមទៀត ដែលអាចពង្រីកអត្ថប្រយោជន៍នេះពេញមួយឆមាស៖ នោះគឺការបង្កើតបណ្ណាល័យសំណួរ។
+
+រាល់ពេលដែលអ្នកស្នើ AI ឱ្យបង្កើតសំណួរត្រួតពិនិត្យ ឬកម្រងសំណួរ សូមរក្សាទុកលទ្ធផលនោះក្នុងសៀវភៅរៀបចំមេរៀន ដោយចាត់ថ្នាក់តាមមុខវិជ្ជា និងប្រធានបទ — ឧទាហរណ៍ ថតឯកសារមួយសម្រាប់ជើងអក្សរភាសាខ្មែរ និងមួយទៀតសម្រាប់ការដកលេខច្រើនខ្ទង់។
+
+ក្នុងរយៈពេលពីរបីសប្តាហ៍ អ្នកនឹងមានបណ្ណាល័យសំណួរដែលកាន់តែពេញលេញ ដែលអ្នកអាចលាយបញ្ចូលគ្នា រៀបចំឡើងវិញ ឬប្រើឡើងវិញសម្រាប់ថ្នាក់ស្រដៀងគ្នានៅឆ្នាំក្រោយ — ដោយមិនចាំបាច់ចាប់ផ្តើមពីទំព័រទទេរាល់ដង។
+
+នេះហើយជាអ្វីដែលធ្វើឱ្យការវាយតម្លៃដោយមាន AI ជំនួយ មានប្រយោជន៍អចិន្ត្រៃយ៍៖ ការសួរ AI បន្តិចនៅថ្ងៃនេះ នឹងកសាងធនធានមួយដែលអ្នកអាចប្រើប្រាស់បានរាប់ខែ។">
+  <div class="scene-eyebrow"><div class="screen-num">៥</div><div class="eyebrow-label">Segment 5 · 4:45–6:00</div></div>
+  <div class="scene-title">បង្កើតបណ្ណាល័យសំណួរ អាចប្រើឡើងវិញបាន</div>
+  <div class="scene-body">
+    <div class="frag folder" style="background:#EAF4FF;">📁 ភាសាខ្មែរ<br><span style="font-size:11px; color:var(--navy-soft);">សប្តាហ៍ទី៤ · ជើងអក្សរ</span></div>
+    <div class="frag folder" style="background:#FDF1E3;">📁 គណិតវិទ្យា<br><span style="font-size:11px; color:var(--navy-soft);">ការដកលេខច្រើនខ្ទង់</span></div>
+    <div class="frag folder" style="background:#E9F9EF;">📁 វិទ្យាសាស្ត្រ<br><span style="font-size:11px; color:var(--navy-soft);">ជីវិតរុក្ខជាតិ</span></div>
+  </div>
+  <div class="frag card" style="margin-top:16px; text-align:center; font-size:14.5px; max-width:760px; margin-left:auto; margin-right:auto;">
+    📔 រក្សាទុកលទ្ធផល AI ក្នុងសៀវភៅរៀបចំមេរៀន តាមមុខវិជ្ជា/ប្រធានបទ → ប្រើឡើងវិញឆ្នាំក្រោយ <b>ដោយមិនចាំបាច់ចាប់ផ្តើមពីទំព័រទទេ</b>
+  </div>
+</section>
+
+<!-- SCENE 6: Feedback -->
+<section class="scene" data-notes="⏱️ 6:00–7:00 (1 នាទី) — Segment 6: A Brief Word on Feedback
+នៅពេលដែលកម្រងសំណួរ ឬលំហាត់ត្រួតពិនិត្យត្រូវបានកែរួច មតិកែលម្អខ្លីមួយ អាចជួយឱ្យកុមារធ្វើសកម្មភាពទៅតាមលទ្ធផលនោះ។ អ្នកស្រាវជ្រាវផ្នែកអប់រំ លោក John Hattie និង Helen Timperley បានរកឃើញថា មតិកែលម្អដែលមានប្រយោជន៍ ត្រូវឆ្លើយតបនឹងសំណួរបីយ៉ាង៖ Feed Up — តើគោលដៅជាអ្វី? Feed Back — តើកំហុសកើតឡើងនៅត្រង់ណាពិតប្រាកដ? និង Feed Forward — តើជំហានបន្ទាប់ជាអ្វី?
+
+ដោយសារ AI មិនអាចអានសៀវភៅសរសេរដៃរបស់សិស្សបានទេ តួនាទីរបស់វានៅត្រង់នេះមានកម្រិតតូចប៉ុណ្ណោះ៖ អ្នកអាចស្នើឱ្យវាព្រាងឃ្លាមតិកែលម្អខ្លីៗសម្រាប់កំហុសទូទៅជាមុន រក្សាទុកក្នុងសៀវភៅរៀបចំមេរៀន រួចជ្រើសរើសឃ្លាដែលសមស្របបំផុតដើម្បីសរសេរដោយដៃក្នុងសៀវភៅសិស្ស។ វាជាផ្លូវកាត់ដ៏មានប្រយោជន៍ — ប៉ុន្តែជាផ្នែកតូចមួយប៉ុណ្ណោះនៃការប្រើប្រាស់ AI របស់អ្នក បើប្រៀបធៀបទៅនឹងការបង្កើតឯកសារវាយតម្លៃ។">
+  <div class="scene-eyebrow"><div class="screen-num">៦</div><div class="eyebrow-label">Segment 6 · 6:00–7:00</div></div>
+  <div class="scene-title" style="font-size:30px;">មតិកែលម្អខ្លីមួយ (Hattie & Timperley)</div>
+  <div class="scene-body col" style="gap:18px;">
+    <div class="step3-row">
+      <div class="step3-card frag" style="background:linear-gradient(160deg,#6BC1F0,var(--teal-dark));">
+        <div style="font-size:26px;">🎯</div>
+        <div style="font-weight:800; font-size:15px; margin-top:6px;">Feed Up</div>
+        <div style="font-size:12px; margin-top:6px; opacity:.95;">តើគោលដៅជាអ្វី?</div>
+      </div>
+      <div class="step3-card frag" style="background:linear-gradient(160deg,#F5AC71,var(--orange-dark));">
+        <div style="font-size:26px;">🔎</div>
+        <div style="font-weight:800; font-size:15px; margin-top:6px;">Feed Back</div>
+        <div style="font-size:12px; margin-top:6px; opacity:.95;">កំហុសកើតឡើងត្រង់ណា?</div>
+      </div>
+      <div class="step3-card frag" style="background:linear-gradient(160deg,#8FD1AE,var(--green-dark));">
+        <div style="font-size:26px;">➡️</div>
+        <div style="font-weight:800; font-size:15px; margin-top:6px;">Feed Forward</div>
+        <div style="font-size:12px; margin-top:6px; opacity:.95;">ជំហានបន្ទាប់ជាអ្វី?</div>
+      </div>
+    </div>
+    <div class="frag card" style="font-size:14px; text-align:center; max-width:760px;">
+      ✍️ AI ព្រាងឃ្លាមតិកែលម្អខ្លីៗសម្រាប់កំហុសទូទៅជាមុន — គ្រូជ្រើសរើស ហើយ <b>សរសេរដោយដៃ</b> ក្នុងសៀវភៅសិស្ស (ផ្នែកតូចប្រៀបធៀបនឹងការបង្កើតកម្រងសំណួរ)
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 7: Conclusion -->
+<section class="scene" data-notes="⏱️ 7:00–7:45 (45 វិនាទី) — Segment 7: Conclusion & Actionable Next Steps
+សរុបមក៖ សម្រាប់គ្រូបង្រៀនថ្នាក់បឋមសិក្សានៅកម្ពុជា គុណតម្លៃធំបំផុតរបស់ AI មិនមែននៅត្រង់ការកែពិន្ទុស្វ័យប្រវត្តិនោះទេ ហើយក៏មិនមែនសំខាន់ត្រង់មតិកែលម្អដែរ — ប៉ុន្តែសំខាន់ត្រង់ការរចនាឯកសារវាយតម្លៃ។ លំហាត់ត្រួតពិនិត្យទម្រង់ កម្រងសំណួរពេញលេញ ការប្រឡងចុងជំពូក និងបណ្ណាល័យសំណួរដែលកាន់តែពេញលេញ ដែលអ្នកអាចប្រើប្រាស់ពេញមួយឆ្នាំសិក្សា។
+
+ការសរសេរមតិកែលម្អ គ្រាន់តែជាចំណុចបន្ថែមតូចមួយ ដែលមានប្រយោជន៍ បន្ទាប់ពីការកែពិន្ទុរួច។
+
+សូមឈានទៅកាន់សកម្មភាពទី៤ និងបង្កើតកម្រងសំណួរដំបូងរបស់អ្នកដោយមាន AI ជំនួយ!">
+  <div class="scene-eyebrow"><div class="screen-num">៧</div><div class="eyebrow-label">Segment 7 · 7:00–7:45</div></div>
+  <div class="scene-title">ការរចនាឯកសារវាយតម្លៃ — គុណតម្លៃធំបំផុត</div>
+  <div class="scene-body col" style="gap:18px; max-width:760px; margin:0 auto;">
+    <div class="frag card" style="font-size:16px; line-height:1.75; text-align:center;">
+      គុណតម្លៃធំបំផុតរបស់ AI <b>មិនមែនការកែពិន្ទុស្វ័យប្រវត្តិ</b> ហើយក៏មិនមែនមតិកែលម្អដែរ — ប៉ុន្តែជា <b>ការរចនាឯកសារវាយតម្លៃ</b>៖ លំហាត់ត្រួតពិនិត្យ កម្រងសំណួរ ការប្រឡង និងបណ្ណាល័យសំណួរ
+    </div>
+    <div class="frag cta-banner">
+      <div class="tag">ជំហានបន្ទាប់</div>
+      <div class="main">🚀 សកម្មភាពទី៤៖ បង្កើតកម្រងសំណួរដំបូងរបស់អ្នកដោយមាន AI ជំនួយ</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 8 (BONUS): Pedagogical Principles Reference -->
+<section class="scene" data-notes="សេចក្តីសង្ខេប៖ គោលការណ៍គរុកោសល្យនៃការវាយតម្លៃ (សម្ភារៈយោង)
+Assessment FOR Learning (ទម្រង់) — កំណត់គម្លាតសិក្សានៅពេលបង្រៀន ខណៈពេលនៅមានពេលកែតម្រូវ។ AI ជួយបង្កើតសំណួរត្រួតពិនិត្យរហ័ស សំណួរសរសេរតាមអាន និងលំហាត់ពាក្យ។
+Assessment OF Learning (សរុប) — វាស់ស្ទង់អ្វីដែលសិស្សបានរៀន ធៀបនឹងគោលបំណងកម្មវិធីសិក្សា។ AI ព្រាងកម្រងសំណួរពេញលេញ និងការប្រឡងចុងជំពូក អមដោយចម្លើយត្រឹមត្រូវ។
+Actionable Feedback (Hattie & Timperley) — ណែនាំសិស្សដោយសង្ខេបតាម Feed Up/Feed Back/Feed Forward។ AI អាចព្រាងឃ្លាមតិកែលម្អជាមុន ជាការងារបន្ថែមតូច។
+Teacher Agency & Care — រក្សាទំនាក់ទំនងមនុស្ស ការលើកទឹកចិត្ត និងការយល់ដឹងអំពីកុមារនីមួយៗ។ AI ធ្វើការសរសេរដដែលៗ គ្រូនៅតែជាអ្នកសម្រេចចិត្តចុងក្រោយ។">
+  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
+  <div class="scene-title" style="font-size:28px;">គោលការណ៍គរុកោសល្យនៃការវាយតម្លៃ</div>
+  <div class="scene-body col" style="align-items:stretch; max-width:920px; margin:0 auto;">
+    <div class="card frag">
+      <div class="principle-card">
+        <div class="icon-circle" style="background:#E9F9EF;">🌱</div>
+        <div class="lr-text"><b style="font-size:16px;">Assessment FOR Learning (ទម្រង់)</b>
+          <div class="lr-sub">កំណត់គម្លាតសិក្សានៅពេលកំពុងបង្រៀន ខណៈពេលនៅមានពេលកែតម្រូវ</div>
+          <div class="lr-sub" style="color:var(--green-dark); font-weight:700; margin-top:3px;">→ AI ជួយបង្កើតសំណួរត្រួតពិនិត្យរហ័ស សរសេរតាមអាន និងលំហាត់ពាក្យ</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:#FDF1E3;">🏆</div>
+        <div class="lr-text"><b style="font-size:16px;">Assessment OF Learning (សរុប)</b>
+          <div class="lr-sub">វាស់ស្ទង់អ្វីដែលសិស្សបានរៀន ធៀបនឹងគោលបំណងកម្មវិធីសិក្សា</div>
+          <div class="lr-sub" style="color:var(--orange-dark); font-weight:700; margin-top:3px;">→ AI ព្រាងកម្រងសំណួរពេញលេញ អមដោយចម្លើយត្រឹមត្រូវ</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:#EAF4FF;">🎯</div>
+        <div class="lr-text"><b style="font-size:16px;">Actionable Feedback (Hattie & Timperley)</b>
+          <div class="lr-sub">ណែនាំសិស្សដោយសង្ខេបតាម Feed Up / Feed Back / Feed Forward</div>
+          <div class="lr-sub" style="color:var(--teal-dark); font-weight:700; margin-top:3px;">→ AI ព្រាងឃ្លាមតិកែលម្អជាមុន ជាការងារបន្ថែមតូច</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:#F1EEFE;">❤️</div>
+        <div class="lr-text"><b style="font-size:16px;">Teacher Agency & Care</b>
+          <div class="lr-sub">រក្សាទំនាក់ទំនងមនុស្ស ការលើកទឹកចិត្ត និងការយល់ដឹងអំពីកុមារនីមួយៗ</div>
+          <div class="lr-sub" style="color:var(--purple); font-weight:700; margin-top:3px;">→ AI សរសេរដដែលៗ គ្រូនៅតែជាអ្នកសម្រេចចិត្តចុងក្រោយ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 9 (BONUS): Assessment Construction Rubric -->
+<section class="scene" data-notes="រ៉ូប្រិកអនុវត្ត៖ ការសាងសង់ការវាយតម្លៃ និងមតិកែលម្អ (សម្រាប់សកម្មភាពទី៤)
+១. ការបង្កើតលំហាត់ត្រួតពិនិត្យទម្រង់ — គោលដៅ៖ បង្កើតលំហាត់ត្រួតពិនិត្យរហ័ស ស្របតាមបរិបទមូលដ្ឋាន។ ការអនុវត្តក្រៅបណ្តាញ៖ លំហាត់លើក្តារខៀន ក្តារឈ្នួន ការសរសេរតាមអានផ្ទាល់មាត់។ ឧទាហរណ៍ស្នើ AI៖ បង្កើតប្រយោគសរសេរតាមអានខ្មែរខ្លីៗ ៥ សម្រាប់ថ្នាក់ទី៣ ផ្តោតលើជើងអក្សរ។
+២. ការបង្កើតកម្រងសំណួរ/ការប្រឡង (សរុប) — គោលដៅ៖ សាងសង់កម្រងសំណួរពេញលេញតាមកម្រិត។ ការអនុវត្តក្រៅបណ្តាញ៖ ក្រដាសស្តែនស៊ីល ឬចម្លងលើក្តារខៀនសម្រាប់ធ្វើការផ្ទាល់ខ្លួន។ ឧទាហរណ៍ស្នើ AI៖ បង្កើតកម្រងសំណួរអំណានថ្នាក់ទី៤ ចំនួន១០ សំណួរ។
+៣. ការបង្កើតបណ្ណាល័យសំណួរ — គោលដៅ៖ រៀបចំសំណួរអាចប្រើឡើងវិញតាមមុខវិជ្ជា/ប្រធានបទ។ ការអនុវត្តក្រៅបណ្តាញ៖ ថតឯកសារក្នុងសៀវភៅរៀបចំមេរៀន តាមប្រធានបទ/កម្រិតលំបាក។ ឧទាហរណ៍ស្នើ AI៖ ផ្តល់វិចារណកថា៣ លំហាត់ដកលេខតាមកម្រិតលំបាកដូចគ្នា។
+៤. Feed Forward (មតិកែលម្អ) — គោលដៅ៖ ផ្តល់ឃ្លាកែតម្រូវជាក់លាក់មួយសម្រាប់កុមារ។ ការអនុវត្តក្រៅបណ្តាញ៖ កំណត់ចំណាំសរសេរដោយដៃក្នុងសៀវភៅសិស្ស។ ឧទាហរណ៍ស្នើ AI៖ ព្រាងសេចក្តីណែនាំ Feed Forward មួយប្រយោគ សម្រាប់កំហុសជើងអក្សរបាត់។">
+  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
+  <div class="scene-title" style="font-size:26px;">រ៉ូប្រិកសាងសង់ការវាយតម្លៃ និងមតិកែលម្អ</div>
+  <div class="scene-body">
+    <table class="rubric-table frag">
+      <thead>
+        <tr>
+          <th class="pr"></th>
+          <th class="c1">🎯 គោលដៅគរុកោសល្យ</th>
+          <th class="c2">🏫 ការអនុវត្តក្រៅបណ្តាញ</th>
+          <th class="c3">💬 ឧទាហរណ៍ស្នើ AI</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="frag">
+          <td class="pr">១. លំហាត់ត្រួតពិនិត្យ<br>ទម្រង់</td>
+          <td class="c1">បង្កើតលំហាត់ត្រួតពិនិត្យរហ័ស ស្របតាមបរិបទមូលដ្ឋាន</td>
+          <td>ក្តារខៀន ក្តារឈ្នួន ការសរសេរតាមអានផ្ទាល់មាត់</td>
+          <td class="c3">"បង្កើតប្រយោគសរសេរតាមអានខ្មែរខ្លីៗ ៥ សម្រាប់ថ្នាក់ទី៣ ផ្តោតលើ [ជើងអក្សរ]"</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr">២. កម្រងសំណួរ/<br>ការប្រឡង (សរុប)</td>
+          <td class="c1">សាងសង់កម្រងសំណួរពេញលេញ តាមកម្រិត</td>
+          <td>ក្រដាសស្តែនស៊ីល ឬចម្លងលើក្តារខៀនសម្រាប់ធ្វើផ្ទាល់ខ្លួន</td>
+          <td class="c3">"បង្កើតកម្រងសំណួរអំណានថ្នាក់ទី៤ ១០សំណួរ៖ ជម្រើសពហុគុណ៥ បំពេញចន្លោះ៣ ឆ្លើយខ្លី២ អមចម្លើយ"</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr">៣. បណ្ណាល័យ<br>សំណួរ</td>
+          <td class="c1">រៀបចំសំណួរអាចប្រើឡើងវិញ តាមមុខវិជ្ជា/ប្រធានបទ</td>
+          <td>ថតឯកសារក្នុងសៀវភៅរៀបចំមេរៀន តាមប្រធានបទ/កម្រិតលំបាក</td>
+          <td class="c3">"ផ្តល់វិចារណកថា៣ លំហាត់ដកលេខតាមកម្រិតលំបាកដូចគ្នា"</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr">៤. Feed Forward<br>(មតិកែលម្អ)</td>
+          <td class="c1">ផ្តល់ឃ្លាកែតម្រូវជាក់លាក់មួយសម្រាប់កុមារ</td>
+          <td>កំណត់ចំណាំសរសេរដោយដៃក្នុងសៀវភៅសិស្ស</td>
+          <td class="c3">"ព្រាងសេចក្តីណែនាំ Feed Forward មួយប្រយោគ សម្រាប់កំហុសជើងអក្សរបាត់"</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<div class="mascot" id="mascotWrap">
+  <svg width="76" height="76" viewBox="0 0 76 76">
+    <rect x="6" y="6" width="64" height="64" rx="22" fill="var(--teal)"/>
+    <rect x="34" y="0" width="8" height="12" rx="4" fill="var(--teal)"/>
+    <circle cx="38" cy="4" r="6" fill="var(--yellow)"/>
+    <circle cx="26" cy="38" r="8" fill="#fff"/>
+    <circle cx="50" cy="38" r="8" fill="#fff"/>
+    <circle cx="26" cy="38" r="3.6" fill="#2D3142"/>
+    <circle cx="50" cy="38" r="3.6" fill="#2D3142"/>
+    <rect x="28" y="52" width="20" height="6" rx="3" fill="#fff"/>
+  </svg>
+</div>
+
+<div class="notes-drawer" id="notesDrawer">
+  <div class="notes-inner">
+    <h4>ស្គ្រីប / ការនិទានសម្រាប់អេក្រង់នេះ</h4>
+    <p id="notesText"></p>
+  </div>
+</div>
+
+<div class="chrome">
+  <button class="navbtn" id="prevBtn">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="navbtn" id="nextBtn">›</button>
+</div>
+
+<script>
+const scenes = Array.from(document.querySelectorAll('.scene'));
+const dotsWrap = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const progress = document.getElementById('progress');
+const notesText = document.getElementById('notesText');
+const notesDrawer = document.getElementById('notesDrawer');
+let current = 0;
+
+scenes.forEach((s,i)=>{
+  const d = document.createElement('button');
+  d.className = 'dot' + (i===0?' on':'');
+  d.addEventListener('click', ()=> goTo(i, true));
+  dotsWrap.appendChild(d);
+});
+const dots = Array.from(dotsWrap.children);
+
+function fragsIn(scene){ return Array.from(scene.querySelectorAll('.frag')); }
+function resetFrags(scene){ fragsIn(scene).forEach(f=>f.classList.remove('shown')); }
+function showAllFrags(scene){ fragsIn(scene).forEach(f=>f.classList.add('shown')); }
+function revealNextFrag(scene){
+  const frags = fragsIn(scene);
+  const next = frags.find(f=>!f.classList.contains('shown'));
+  if(next){ next.classList.add('shown'); return true; }
+  return false;
+}
+
+function render(){
+  scenes.forEach((s,i)=> s.classList.toggle('active', i===current));
+  dots.forEach((d,i)=> d.classList.toggle('on', i===current));
+  counter.textContent = String(current+1).padStart(2,'0') + ' / ' + scenes.length;
+  progress.style.width = ((current+1)/scenes.length*100) + '%';
+  notesText.textContent = scenes[current].dataset.notes || '';
+}
+
+function goTo(i, showAll){
+  i = Math.max(0, Math.min(scenes.length-1, i));
+  current = i;
+  const scene = scenes[current];
+  if(showAll){ showAllFrags(scene); } else { resetFrags(scene); }
+  render();
+}
+
+function next(){
+  const scene = scenes[current];
+  if(revealNextFrag(scene)) return;
+  if(current < scenes.length-1){ goTo(current+1, false); }
+}
+function prev(){
+  if(current > 0){ goTo(current-1, true); }
+}
+
+document.getElementById('nextBtn').addEventListener('click', next);
+document.getElementById('prevBtn').addEventListener('click', prev);
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); next(); }
+  else if(e.key === 'ArrowLeft'){ e.preventDefault(); prev(); }
+  else if(e.key.toLowerCase() === 'n'){ notesDrawer.classList.toggle('open'); }
+  else if(e.key.toLowerCase() === 'f'){ toggleFullscreen(); }
+});
+document.getElementById('notesBtn').addEventListener('click', ()=> notesDrawer.classList.toggle('open'));
+
+function toggleFullscreen(){
+  if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); }
+  else { document.exitFullscreen(); }
+}
+document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
+
+resetFrags(scenes[0]);
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>កុមារ និង AI៖ អ្វីដែលពួកគេយល់ខុស — Visual Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{
+  font-family:'Google Sans Khmer';
+  font-style:normal;
+  font-display:swap;
+  font-weight:400 700;
+  src:url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/khmer-wght-normal.woff2') format('woff2-variations');
+}
+@font-face{
+  font-family:'Google Sans Khmer';
+  font-style:normal;
+  font-display:swap;
+  font-weight:400 700;
+  src:url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+:root{
+  --cream:#FFF8EC;
+  --sky:#EAF4FF;
+  --orange:#F2994A;
+  --orange-dark:#D9761F;
+  --teal:#2D9CDB;
+  --teal-dark:#1D7FB8;
+  --green:#6FCF97;
+  --green-dark:#219653;
+  --red:#EB5757;
+  --navy:#2D3142;
+  --navy-soft:#5B5F73;
+  --yellow:#F7C948;
+  --purple:#9B87F5;
+  --white:#FFFFFF;
+  --card-radius:26px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:'Google Sans Khmer','Baloo 2',sans-serif;
+  background:linear-gradient(160deg,var(--cream) 0%, var(--sky) 100%);
+  color:var(--navy);
+  overflow:hidden;
+  width:100vw;height:100vh;
+  position:relative;
+}
+.deck{position:relative; width:100vw; height:100vh;}
+.scene{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  padding:46px 84px 36px;
+  opacity:0; pointer-events:none;
+  transform:translateY(14px);
+  transition:opacity .45s ease, transform .45s ease;
+}
+.scene.active{opacity:1; pointer-events:auto; transform:translateY(0);}
+.scene-eyebrow{ display:none; }
+.screen-num{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--navy); color:#fff; font-weight:800; font-family:'Baloo 2';
+  display:flex; align-items:center; justify-content:center; font-size:18px; flex:none;
+}
+.eyebrow-label{font-size:15px; font-weight:600; color:var(--navy-soft); letter-spacing:.3px;}
+.scene-title{font-size:34px; font-weight:800; color:var(--navy); margin:4px 0 16px; line-height:1.3;}
+.scene-title.center{text-align:center;}
+.scene-sub{font-size:18px; color:var(--navy-soft); font-weight:500; margin-bottom:8px;}
+.scene-body{flex:1; display:flex; align-items:center; gap:44px; min-height:0;}
+.scene-body.col{flex-direction:column; justify-content:center;}
+.frag{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+.frag.shown{ opacity:1; transform:translateY(0); }
+
+.card{background:var(--white); border-radius:var(--card-radius); box-shadow:0 14px 34px rgba(45,49,66,.10); padding:26px 30px;}
+.pill{display:inline-flex; align-items:center; gap:10px; background:var(--white); border-radius:999px; padding:9px 18px; box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:15px;}
+
+.mascot{position:absolute; right:40px; bottom:34px; width:72px; height:72px; animation:bob 2.6s ease-in-out infinite; z-index:5;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-9px) rotate(2deg);}}
+
+.chrome{ display:none; }
+.navbtn{width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(45,49,66,.25);}
+.dots{display:flex; gap:9px; align-items:center;}
+.dot{width:11px; height:11px; border-radius:50%; background:#D9DEE8; cursor:pointer; border:none; padding:0; transition:all .2s ease;}
+.dot.on{background:var(--orange); width:26px; border-radius:6px;}
+.topbar{ display:none; }
+.iconbtn{background:var(--white); border:none; border-radius:14px; padding:10px 16px; font-family:inherit; font-weight:700; font-size:14px; color:var(--navy); box-shadow:0 6px 16px rgba(45,49,66,.12); cursor:pointer; display:flex; gap:8px; align-items:center;}
+.counter{ display:none; }
+
+.notes-drawer{position:absolute; left:0; right:0; bottom:0; height:0; overflow:hidden; background:var(--navy); color:#fff; z-index:40; transition:height .3s ease; border-radius:24px 24px 0 0;}
+.notes-drawer.open{height:34%;}
+.notes-inner{padding:24px 56px; height:100%; overflow-y:auto;}
+.notes-inner h4{margin:0 0 8px; color:var(--yellow); font-size:14px; letter-spacing:.5px;}
+.notes-inner p{font-size:17px; line-height:1.7; margin:0; font-weight:400; white-space:pre-line;}
+
+.progress{position:absolute; top:0; left:0; height:6px; background:var(--orange); z-index:50; transition:width .3s ease;}
+
+.illus-wrap{flex:none; display:flex; align-items:center; justify-content:center;}
+.speech-bubble{position:relative; background:var(--white); border-radius:22px; padding:18px 24px; box-shadow:0 10px 26px rgba(45,49,66,.12); font-size:19px; font-weight:700; max-width:460px; line-height:1.5;}
+.list-row{display:flex; align-items:center; gap:18px; font-size:19px; font-weight:600; padding:13px 0; border-bottom:2px dashed #E4E8F0;}
+.list-row:last-child{border-bottom:none;}
+.list-row .lr-text{flex:1;}
+.list-row .lr-sub{display:block; font-size:13.5px; font-weight:500; color:var(--navy-soft); margin-top:3px;}
+.num-badge{width:38px;height:38px;border-radius:11px; flex:none; display:flex; align-items:center; justify-content:center; font-family:'Baloo 2'; font-weight:800; color:#fff; font-size:16px;}
+.icon-circle{width:64px;height:64px;border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:28px;}
+.vs-col{flex:1; background:var(--white); border-radius:var(--card-radius); padding:26px; box-shadow:0 14px 34px rgba(45,49,66,.10);}
+.vs-col h3{margin:0 0 8px; font-size:19px;}
+.vs-col p{font-size:14.5px; line-height:1.6; color:var(--navy-soft); margin:0;}
+.badge-tag{display:inline-block; font-size:12px; font-weight:800; padding:4px 12px; border-radius:999px; color:#fff; margin-bottom:9px;}
+.principle-card{display:flex; gap:18px; align-items:flex-start; padding:14px 0; border-bottom:2px dashed #E4E8F0;}
+.principle-card:last-child{border-bottom:none;}
+
+.rubric-table{width:100%; border-collapse:separate; border-spacing:0 10px; font-size:13px;}
+.rubric-table th{font-size:12.5px; font-weight:800; color:#fff; padding:10px 12px; text-align:left;}
+.rubric-table th.c1{background:var(--teal-dark); border-radius:12px 0 0 12px;}
+.rubric-table th.c2{background:var(--orange-dark); border-radius:0 12px 12px 0;}
+.rubric-table th.pr{background:transparent;}
+.rubric-table td{background:#fff; padding:11px 12px; vertical-align:top; line-height:1.55; box-shadow:0 4px 10px rgba(45,49,66,.06);}
+.rubric-table td.pr{background:transparent; box-shadow:none; font-weight:800; font-size:13px; color:var(--navy); padding-right:6px;}
+.rubric-table td.c1{border-radius:12px 0 0 12px;}
+.rubric-table td.c2{border-radius:0 12px 12px 0;}
+
+.cta-banner{background:var(--navy); color:#fff; border-radius:var(--card-radius); padding:22px 30px; text-align:center; box-shadow:0 14px 30px rgba(45,49,66,.25);}
+.cta-banner .tag{color:var(--yellow); font-size:13px; font-weight:800; letter-spacing:.4px; margin-bottom:6px;}
+.cta-banner .main{font-size:20px; font-weight:800;}
+
+/* ---- Script 8 specific ---- */
+.orbit-wrap{position:relative; width:280px; height:280px; flex:none;}
+.orbit-center{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:90px; height:90px; border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; text-align:center; font-size:12px; font-weight:800; box-shadow:0 10px 24px rgba(45,49,66,.3); z-index:2;}
+.orbit-item{position:absolute; width:64px; height:64px; border-radius:50%; background:#fff; box-shadow:0 8px 18px rgba(45,49,66,.12); display:flex; align-items:center; justify-content:center; font-size:26px;}
+
+.dim-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; width:100%; max-width:880px;}
+.dim-card{background:#fff; border-radius:20px; padding:18px 20px; box-shadow:0 10px 22px rgba(45,49,66,.1); border-left:6px solid var(--teal);}
+
+.miscon-row{display:flex; gap:18px; justify-content:center; width:100%;}
+.miscon-card{flex:1; max-width:250px; background:#fff; border-radius:20px; padding:22px 18px; text-align:center; box-shadow:0 10px 22px rgba(45,49,66,.1);}
+
+.activity-row{display:flex; gap:16px; justify-content:center; width:100%;}
+.activity-card{flex:1; max-width:230px; background:#fff; border-radius:18px; padding:18px 16px; text-align:center; box-shadow:0 10px 22px rgba(45,49,66,.1);}
+
+.journey{display:flex; align-items:center; justify-content:center; gap:8px; width:100%; flex-wrap:wrap;}
+.journey-step{display:flex; flex-direction:column; align-items:center; gap:6px; width:100px;}
+.journey-dot{width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; color:#fff; box-shadow:0 8px 18px rgba(45,49,66,.15);}
+.journey-label{font-size:10.5px; font-weight:700; text-align:center; color:var(--navy-soft); line-height:1.3;}
+.journey-arrow{color:#C7CCD8; font-size:18px;}
+
+footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center; font-size:11px; color:#B7BCC9; z-index:1;}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">01 / 09</div>
+
+<div class="topbar">
+  <button class="iconbtn" id="notesBtn">📝 ស្គ្រីប (N)</button>
+  <button class="iconbtn" id="fsBtn">⛶ Fullscreen</button>
+</div>
+
+<div class="deck" id="deck">
+
+<!-- SCENE 1: Cold Open -->
+<section class="scene" data-notes="Segment 1: Cold Open
+'តើអ្នកមានជីវិតទេ? តើអ្នកមានវិញ្ញាណ និងអារម្មណ៍ដែរឬទេ?'
+
+កុមារតែងតែសួរសំណួរប្រភេទទាំងនេះទៅកាន់ឧបករណ៍ឆ្លាតវៃ និងកម្មវិធីជំនួយសំឡេង AI ជាញឹកញាប់ — ហើយរបៀបដែលយើង ក្នុងនាមជាគ្រូបង្រៀន ឆ្លើយតបទៅកាន់ពួកគេ នឹងកំណត់នូវរបៀបដែលកុមារជំនាន់ក្រោយយល់ដឹងអំពីបច្ចេកវិទ្យា។
+
+សូមស្វាគមន៍មកកាន់វីដេអូម៉ូឌុលចុងក្រោយនៃវគ្គសិក្សានេះ។ ថ្ងៃនេះ យើងនឹងផ្តោតលើការជួយសិស្សបឋមសិក្សារបស់អ្នក ឱ្យកសាងអក្ខរកម្ម AI ដែលត្រឹមត្រូវ សមស្របតាមវ័យ និងប្រកបដោយសុខុមាលភាព។">
+  <div class="scene-eyebrow"><div class="screen-num">១</div><div class="eyebrow-label">Segment 1</div></div>
+  <div class="scene-title">"តើអ្នកមានជីវិតទេ?"</div>
+  <div class="scene-body">
+    <div class="illus-wrap frag" style="flex:1; justify-content:flex-start;">
+      <svg width="240" height="270" viewBox="0 0 240 270">
+        <ellipse cx="120" cy="255" rx="80" ry="12" fill="#000" opacity=".06"/>
+        <rect x="90" y="140" width="60" height="100" rx="24" fill="var(--yellow)"/>
+        <circle cx="120" cy="100" r="52" fill="#F2C29B"/>
+        <path d="M74 95a46 46 0 0 1 92 0v-5q-46-27-92 0z" fill="#2D2A26"/>
+        <circle cx="105" cy="102" r="5" fill="#2D3142"/>
+        <circle cx="135" cy="102" r="5" fill="#2D3142"/>
+        <path d="M107 116q13 10 26 0" stroke="#2D3142" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <rect x="165" y="165" width="46" height="70" rx="10" fill="var(--navy)"/>
+        <rect x="171" y="176" width="34" height="46" rx="4" fill="var(--teal)"/>
+      </svg>
+    </div>
+    <div class="frag" style="flex:1;">
+      <div class="speech-bubble">តើអ្នកមានជីវិតទេ?<br>តើអ្នកមានវិញ្ញាណ និងអារម្មណ៍ដែរឬទេ?</div>
+      <div class="frag card" style="margin-top:14px; font-size:14.5px; line-height:1.7;">
+        ការឆ្លើយតបរបស់យើងចំពោះសំណួរទាំងនេះ នឹងកំណត់ថាកុមារជំនាន់ក្រោយ <b>យល់ដឹងអំពីបច្ចេកវិទ្យា</b> យ៉ាងណា — ម៉ូឌុលចុងក្រោយនៃវគ្គសិក្សា!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 2: AI Everywhere -->
+<section class="scene" data-notes="Segment 2: AI Woven into Daily Life
+សិស្សរបស់អ្នកកំពុងធំដឹងក្តីក្នុងពិភពលោកមួយដែល AI ត្រូវបានបញ្ជ្រាបចូលយ៉ាងស្ងៀមស្ងាត់ក្នុងជីវភាពប្រចាំថ្ងៃ — ចាប់តាំងពីការស្វែងរកដោយសំឡេងលើទូរស័ព្ទដៃរបស់អាណាព្យាបាល ឧបករណ៍បកប្រែភាសា រហូតដល់ក្បួនដោះស្រាយណែនាំវីដេអូ។
+
+ពួកគេបានជួបប្រទះឧបករណ៍ទាំងនេះ យូរមុនពេលពួកគេមានសមត្ថភាពគិតគូរដើម្បីយល់ពីដំណើរការរបស់វា។ ដូចដែលអ្នកបានកសាងអក្ខរកម្ម AI វិជ្ជាជីវៈផ្ទាល់ខ្លួនពេញមួយវគ្គសិក្សានេះ សិស្សរបស់អ្នកក៏ត្រូវការគ្រឹះសមស្របតាមវ័យដូចគ្នាដែរ។
+
+ដើម្បីតម្រង់ទិសយើង អង្គការ UNESCO បានបង្កើតក្របខ័ណ្ឌអន្តរជាតិមួយ ជាក់លាក់សម្រាប់សមត្ថភាព AI របស់សិស្ស។">
+  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">Segment 2</div></div>
+  <div class="scene-title" style="font-size:30px;">AI ស្ថិតជុំវិញកុមារ មុនពេលពួកគេយល់ដឹង</div>
+  <div class="scene-body">
+    <div class="orbit-wrap frag">
+      <div class="orbit-center">សិស្ស<br>បឋមសិក្សា</div>
+      <div class="orbit-item" style="top:0; left:108px;">🔍</div>
+      <div class="orbit-item" style="top:70px; left:210px;">🌐</div>
+      <div class="orbit-item" style="top:190px; left:210px;">📹</div>
+      <div class="orbit-item" style="top:216px; left:108px;">📱</div>
+      <div class="orbit-item" style="top:190px; left:6px;">🗣️</div>
+      <div class="orbit-item" style="top:70px; left:6px;">🎵</div>
+    </div>
+    <div class="frag card" style="flex:1; font-size:15px; line-height:1.75;">
+      សិស្សជួបប្រទះ AI (ការស្វែងរកសំឡេង ការបកប្រែ ការណែនាំវីដេអូ) <b>យូរមុនពេលពួកគេយល់ដឹង</b>ពីដំណើរការរបស់វា
+      <div style="margin-top:12px; padding-top:12px; border-top:2px dashed #E4E8F0;">
+        📘 UNESCO បង្កើតក្របខ័ណ្ឌអន្តរជាតិ ជាក់លាក់សម្រាប់ <b>សមត្ថភាព AI របស់សិស្ស</b>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 3: UNESCO 4 Dimensions -->
+<section class="scene" data-notes="Segment 3: ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស
+ក្របខ័ណ្ឌសមត្ថភាព AI របស់ UNESCO សម្រាប់សិស្ស បានរៀបចំការរៀនសូត្រជាបួនវិមាត្រគ្រឹះ៖
+
+• ទីមួយ៖ គំនិតផ្តោតលើមនុស្សជាមជ្ឈមណ្ឌល (Human-Centred Mindset)
+• ទីពីរ៖ ចរិយាធម៌នៃ AI (Ethics of AI)
+• ទីបី៖ បច្ចេកទេស និងការអនុវត្ត AI (AI Techniques & Applications)
+• ទីបួន៖ ការរចនាប្រព័ន្ធ AI (AI System Design)
+
+នៅតាមវិមាត្រទាំងបួននេះ មានសមត្ថភាពជាក់លាក់សរុបចំនួន ១២។ ក្នុងការអប់រំបឋមសិក្សា ការផ្តោតអារម្មណ៍របស់យើងគឺស្ថិតនៅកម្រិត 'យល់ដឹង (Understand)' — គឺការកសាងការយល់ដឹងជាមូលដ្ឋាន មុនពេលសិស្សឈានទៅដល់ការអនុវត្ត ឬការវាយតម្លៃ AI នៅថ្នាក់ជាន់ខ្ពស់។">
+  <div class="scene-eyebrow"><div class="screen-num">៣</div><div class="eyebrow-label">Segment 3</div></div>
+  <div class="scene-title" style="font-size:28px;">ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស — ៤ វិមាត្រ</div>
+  <div class="scene-body col">
+    <div class="dim-grid">
+      <div class="dim-card frag" style="border-color:var(--teal);">🧑‍🤝‍🧑 <b style="font-size:14.5px;">គំនិតផ្តោតលើមនុស្ស</b><div style="font-size:12px; color:var(--navy-soft); margin-top:4px;">Human-Centred Mindset</div></div>
+      <div class="dim-card frag" style="border-color:var(--red);">⚖️ <b style="font-size:14.5px;">ចរិយាធម៌នៃ AI</b><div style="font-size:12px; color:var(--navy-soft); margin-top:4px;">Ethics of AI</div></div>
+      <div class="dim-card frag" style="border-color:var(--orange);">⚙️ <b style="font-size:14.5px;">បច្ចេកទេស និងការអនុវត្ត</b><div style="font-size:12px; color:var(--navy-soft); margin-top:4px;">AI Techniques & Applications</div></div>
+      <div class="dim-card frag" style="border-color:var(--purple);">🧩 <b style="font-size:14.5px;">ការរចនាប្រព័ន្ធ AI</b><div style="font-size:12px; color:var(--navy-soft); margin-top:4px;">AI System Design</div></div>
+    </div>
+    <div class="frag" style="margin-top:16px; display:flex; gap:12px;">
+      <div class="pill" style="background:var(--navy); color:#fff;">🔢 សរុប ១២ សមត្ថភាព</div>
+      <div class="pill" style="background:var(--green-dark); color:#fff;">🎯 បឋមសិក្សា → កម្រិត "យល់ដឹង"</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 4: Druga 3 Misconceptions -->
+<section class="scene" data-notes="Segment 4: ការយល់ច្រឡំរបស់កុមារ ៣ (Druga et al.)
+តើហេតុអ្វីបានជាអក្ខរកម្ម AI សម្រាប់សិស្សមានសារៈសំខាន់ខ្លាំង? អ្នកស្រាវជ្រាវអប់រំ ដូចជាលោកស្រី Stefania Druga និងសហការី បានសិក្សាពីការប្រាស្រ័យទាក់ទងរបស់កុមារជាមួយប្រព័ន្ធ AI ហើយបានរកឃើញការយល់ច្រឡំធំៗចំនួនបី៖
+
+ទីមួយ ការប្រៀបធៀប AI ទៅនឹងមនុស្ស (Anthropomorphism)៖ កុមារតែងតែគិតថា កម្មវិធីជំនួយសំឡេងមានអារម្មណ៍ ភាពជាមិត្ត និងវិញ្ញាណដូចមនុស្ស។
+
+ទីពីរ ការវាយតម្លៃខ្ពស់ហួសហេតុ៖ កុមារច្រើនតែគិតថា ឧបករណ៍ AI 'ឆ្លាតជាងគ្រូបង្រៀន' ហើយមិនដែលធ្វើខុសឡើយ។
+
+ទីបី ការច្រឡំរវាង AI និងភាវរស់៖ កុមារតូចៗពិបាកបែងចែករវាងកម្មវិធីកុំព្យូទ័រ និងភាវរស់ដែលមានជីវិតពិតប្រាកដ។
+
+ការយល់ច្រឡំទាំងនេះមិនមែនជាកំហុសតូចតាចទេ — វាជាកត្តាកំណត់ថា តើកុមារជឿជាក់លើចម្លើយ AI ដោយមិនបានពិចារណាកម្រិតណា។">
+  <div class="scene-eyebrow"><div class="screen-num">៤</div><div class="eyebrow-label">Segment 4</div></div>
+  <div class="scene-title" style="font-size:28px;">ការយល់ច្រឡំធំៗ ៣ របស់កុមារ (Druga et al.)</div>
+  <div class="scene-body">
+    <div class="miscon-row">
+      <div class="miscon-card frag">
+        <div style="font-size:32px;">🤗</div>
+        <b style="font-size:14.5px;">Anthropomorphism</b>
+        <div style="font-size:12px; color:var(--navy-soft); margin-top:6px;">គិតថា AI មានអារម្មណ៍ ភាពជាមិត្ត និងវិញ្ញាណដូចមនុស្ស</div>
+      </div>
+      <div class="miscon-card frag">
+        <div style="font-size:32px;">🏆</div>
+        <b style="font-size:14.5px;">ការវាយតម្លៃខ្ពស់ហួសហេតុ</b>
+        <div style="font-size:12px; color:var(--navy-soft); margin-top:6px;">គិតថា AI "ឆ្លាតជាងគ្រូ" ហើយមិនដែលធ្វើខុស</div>
+      </div>
+      <div class="miscon-card frag">
+        <div style="font-size:32px;">🌀</div>
+        <b style="font-size:14.5px;">ការច្រឡំរវាង AI និងភាវរស់</b>
+        <div style="font-size:12px; color:var(--navy-soft); margin-top:6px;">ពិបាកបែងចែករវាងកម្មវិធីកុំព្យូទ័រ និងជីវិតពិត</div>
+      </div>
+    </div>
+  </div>
+  <div class="frag card" style="margin-top:8px; text-align:center; font-size:14px; max-width:760px; margin-left:auto; margin-right:auto;">
+    ⚠️ ការយល់ច្រឡំទាំងនេះមិនតូចតាចទេ — កំណត់ថាកុមារ <b>ជឿចម្លើយ AI ដោយមិនពិចារណា</b> កម្រិតណា
+  </div>
+</section>
+
+<!-- SCENE 5: Reframing -->
+<section class="scene" data-notes="Segment 5: កែតម្រូវការយល់ច្រឡំដោយទន់ភ្លន់
+ក្នុងនាមជាគ្រូបង្រៀនថ្នាក់បឋមសិក្សា អ្នកអាចកែតម្រូវការយល់ច្រឡំទាំងនេះដោយទន់ភ្លន់ ដោយប្រើប្រាស់ភាសាច្បាស់លាស់ និងត្រឹមត្រូវ — ដូចដែលអ្នកបានកែតម្រូវការយល់ដឹងផ្ទាល់ខ្លួនក្នុងម៉ូឌុលទី ១ ដែរ។
+
+ជំនួសឱ្យការហៅកម្មវិធីជំនួយសំឡេងថាជា 'មិត្តភក្តិឆ្លាតវៃដែលមានខួរក្បាល' សូមពន្យល់ដោយសាមញ្ញថា៖ 'វាគឺជាឧបករណ៍កុំព្យូទ័រ ដែលពូកែខាងទស្សន៍ទាយគំរូភាសា ដោយផ្អែកលើព័ត៌មានដែលមនុស្សបានបញ្ចូលទៅក្នុងវា'។
+
+នៅពេលយើងបង្កើតការយល់ដឹងថា AI គឺជាឧបករណ៍ទស្សន៍ទាយគំរូដែលបង្កើតដោយមនុស្ស មិនមែនជាវិញ្ញាណដែលមានគំនិតនោះទេ សិស្សនឹងរៀនចេះចោទសួរ ផ្ទៀងផ្ទាត់ និងរក្សាព្រំដែនប្រកបដោយសុវត្ថិភាពដោយធម្មជាតិ។">
+  <div class="scene-eyebrow"><div class="screen-num">៥</div><div class="eyebrow-label">Segment 5</div></div>
+  <div class="scene-title">ពន្យល់ដោយភាសាសាមញ្ញ និងត្រឹមត្រូវ</div>
+  <div class="scene-body col" style="max-width:700px; margin:0 auto; align-items:stretch; gap:14px;">
+    <div class="frag speech-bubble" style="text-decoration:line-through; opacity:.55; color:var(--navy-soft); background:#F1F2F5; box-shadow:none; max-width:100%;">❌ "មិត្តភក្តិឆ្លាតវៃដែលមានខួរក្បាល"</div>
+    <div class="frag speech-bubble" style="background:var(--teal); color:#fff; max-width:100%;">✅ "ឧបករណ៍កុំព្យូទ័រ ដែលពូកែទស្សន៍ទាយគំរូភាសា ដោយផ្អែកលើព័ត៌មានដែលមនុស្សបញ្ចូល"</div>
+    <div class="frag card" style="font-size:14.5px; line-height:1.7; text-align:center;">
+      AI = <b>ឧបករណ៍ទស្សន៍ទាយគំរូបង្កើតដោយមនុស្ស</b> មិនមែនវិញ្ញាណដែលមានគំនិតទេ → សិស្សរៀនចេះ <b>ចោទសួរ ផ្ទៀងផ្ទាត់ និងរក្សាព្រំដែន</b>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 6: Capstone Task -->
+<section class="scene" data-notes="Segment 6: ភារកិច្ចបញ្ចប់វគ្គ (Capstone)
+ដើម្បីបញ្ចប់វគ្គសិក្សានេះ អ្នកនឹងរចនាសកម្មភាពថ្នាក់រៀនដ៏សាមញ្ញ និងជាក់ស្តែងមួយ ដែលជួយសិស្សរបស់អ្នកកសាងអក្ខរកម្ម AI ស្របតាមក្របខ័ណ្ឌ UNESCO។
+
+ភារកិច្ចបញ្ចប់វគ្គ (Capstone) នេះ មិនតម្រូវឱ្យមានកុំព្យូទ័រ ឬអ៊ីនធឺណិតក្នុងថ្នាក់រៀនរបស់អ្នកឡើយ។ វាអាចជាការពិភាក្សាសាច់រឿង ១៥ នាទី ល្បែងផ្គូផ្គងគំរូលើក្ដារឈ្នួន ឬសកម្មភាពដើរតួដែលសិស្សធ្វើពុតជាកុំព្យូទ័រដើរតាមវិធាន។
+
+អ្វីដែលសំខាន់ គឺសកម្មភាពនោះមានភាពប្រាកដនិយម គួរឱ្យចាប់អារម្មណ៍ និងអាចយកទៅអនុវត្តបានដោយផ្ទាល់ក្នុងបរិបទបង្រៀនប្រចាំថ្ងៃរបស់អ្នក។">
+  <div class="scene-eyebrow"><div class="screen-num">៦</div><div class="eyebrow-label">Segment 6</div></div>
+  <div class="scene-title">ភារកិច្ចបញ្ចប់វគ្គ — មិនត្រូវការកុំព្យូទ័រ</div>
+  <div class="scene-body">
+    <div class="activity-row">
+      <div class="activity-card frag">
+        <div style="font-size:30px;">📖</div>
+        <b style="font-size:14px;">ពិភាក្សាសាច់រឿង</b>
+        <div style="font-size:11.5px; color:var(--navy-soft); margin-top:6px;">១៥ នាទី អំពី AI</div>
+      </div>
+      <div class="activity-card frag">
+        <div style="font-size:30px;">🪨</div>
+        <b style="font-size:14px;">ល្បែងផ្គូផ្គងគំរូ</b>
+        <div style="font-size:11.5px; color:var(--navy-soft); margin-top:6px;">លើក្ដារឈ្នួន — គ្មានអេឡិចត្រូនិច</div>
+      </div>
+      <div class="activity-card frag">
+        <div style="font-size:30px;">🎭</div>
+        <b style="font-size:14px;">សកម្មភាពដើរតួ</b>
+        <div style="font-size:11.5px; color:var(--navy-soft); margin-top:6px;">សិស្សធ្វើពុតជាកុំព្យូទ័រដើរតាមវិធាន</div>
+      </div>
+    </div>
+  </div>
+  <div class="frag card" style="margin-top:8px; text-align:center; font-size:14.5px; max-width:700px; margin-left:auto; margin-right:auto;">
+    សំខាន់៖ សកម្មភាពត្រូវមាន <b>ភាពប្រាកដនិយម គួរឱ្យចាប់អារម្មណ៍</b> និងអនុវត្តបានផ្ទាល់ក្នុងថ្នាក់រៀនរបស់អ្នក
+  </div>
+</section>
+
+<!-- SCENE 7: Course Conclusion -->
+<section class="scene" data-notes="Segment 7: សេចក្តីសន្និដ្ឋានវគ្គសិក្សា
+អ្នកបានធ្វើដំណើរយ៉ាងវែងឆ្ងាយពេញមួយវគ្គសិក្សានេះ — ចាប់តាំងពីការយល់ដឹងថាអ្វីជា AI ការវាយតម្លៃបន្ទុកចំណេះដឹង ការប្រើប្រាស់រូបមន្ត PARTS ការស្ទាត់ជំនាញចរិយាធម៌ ការការពារកុមារ និងពេលនេះគឺការបង្កើនសមត្ថភាពដល់សិស្សតូចៗ។
+
+ឥឡូវនេះ អ្នកទទួលបាននូវសមត្ថភាពពេញលេញ ក្នុងការដឹកនាំសាលារៀន និងសិស្សរបស់អ្នកដោយទំនុកចិត្ត ឆ្ពោះទៅកាន់អនាគតដែលត្រៀមរួចរាល់សម្រាប់ AI។
+
+សូមបើកសៀវភៅលំហាត់សកម្មភាពរបស់អ្នក ជ្រើសរើសសមត្ថភាពសិស្សមួយ និងរចនាសកម្មភាពមេរៀន Capstone របស់អ្នក។ សូមអបអរសាទរ ហើយខ្ញុំទន្ទឹងរង់ចាំមើលការរចនា Capstone របស់អ្នកទាំងអស់គ្នា!">
+  <div class="scene-eyebrow"><div class="screen-num">៧</div><div class="eyebrow-label">Segment 7</div></div>
+  <div class="scene-title" style="font-size:28px; text-align:center;">ដំណើររបស់អ្នកពេញមួយវគ្គសិក្សា</div>
+  <div class="scene-body col" style="gap:22px;">
+    <div class="journey">
+      <div class="journey-step frag"><div class="journey-dot" style="background:var(--teal);">🤖</div><div class="journey-label">AI ជាអ្វី</div></div>
+      <div class="journey-arrow">→</div>
+      <div class="journey-step frag"><div class="journey-dot" style="background:var(--purple);">🧠</div><div class="journey-label">បន្ទុកចំណេះដឹង</div></div>
+      <div class="journey-arrow">→</div>
+      <div class="journey-step frag"><div class="journey-dot" style="background:var(--orange);">✍️</div><div class="journey-label">PARTS</div></div>
+      <div class="journey-arrow">→</div>
+      <div class="journey-step frag"><div class="journey-dot" style="background:var(--red);">⚖️</div><div class="journey-label">ចរិយាធម៌</div></div>
+      <div class="journey-arrow">→</div>
+      <div class="journey-step frag"><div class="journey-dot" style="background:var(--teal-dark);">🛡️</div><div class="journey-label">ការពារកុមារ</div></div>
+      <div class="journey-arrow">→</div>
+      <div class="journey-step frag"><div class="journey-dot" style="background:var(--green-dark);">🎓</div><div class="journey-label">Capstone សិស្ស</div></div>
+    </div>
+    <div class="frag cta-banner">
+      <div class="tag">🎉 សូមអបអរសាទរ!</div>
+      <div class="main">បើកសៀវភៅលំហាត់ ជ្រើសរើសសមត្ថភាព រចនាសកម្មភាព Capstone របស់អ្នក</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 8 (BONUS): 4 Dimensions Reference -->
+<section class="scene" data-notes="សេចក្តីសង្ខេប៖ ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស ៤ វិមាត្រ (សម្ភារៈយោង)
+Human-Centred Mindset — ការទទួលស្គាល់សិទ្ធិស្វ័យសម្រេច និងព្រំដែនសមស្របសម្រាប់ AI។ បរិបទកម្ពុជា៖ សិស្សរៀនថា AI ជាឧបករណ៍បង្កើតដោយមនុស្ស មិនមែនភាវរស់ ឬមិត្តភក្តិទេ។
+Ethics of AI — ការយល់ដឹងពីភាពយុត្តិធម៌ ភាពលម្អៀង ឯកជនភាព និងការប្រើប្រាស់ប្រកបដោយការទទួលខុសត្រូវ។ បរិបទកម្ពុជា៖ កុមារយល់ថាហេតុអ្វីមិនគួរចែករំលែករូបថត ឬព័ត៌មានគ្រួសារទៅកម្មវិធីសំឡេង/ស្វែងរក។
+AI Techniques & Apps — ការយល់ដឹងពីការសម្គាល់លំនាំ និងគំនិតប្រូបាបជាមូលដ្ឋាន។ បរិបទកម្ពុជា៖ ពន្យល់ AI ជា "ការទាយលំនាំឆ្លាតវៃ" តាមរយៈល្បែងដើរតួ ឬល្បែងទស្សន៍ទាយសាមញ្ញ។
+AI System Design — ការកសាងការយល់ដឹងគ្រឹះអំពីរបៀបដែលក្បួនដោះស្រាយដំណើរការទិន្នន័យចូល។ បរិបទកម្ពុជា៖ ណែនាំល្បែងតម្រៀប និងវិធានឥតភ្ជាប់អេឡិចត្រូនិច ដោយមិនត្រូវការកុំព្យូទ័រ។">
+  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
+  <div class="scene-title" style="font-size:27px;">ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស — លម្អិត ៤ វិមាត្រ</div>
+  <div class="scene-body col" style="align-items:stretch; max-width:920px; margin:0 auto;">
+    <div class="card frag">
+      <div class="principle-card">
+        <div class="icon-circle" style="background:#EAF4FF;">🧑‍🤝‍🧑</div>
+        <div class="lr-text"><b style="font-size:16px;">Human-Centred Mindset</b>
+          <div class="lr-sub">ការទទួលស្គាល់សិទ្ធិស្វ័យសម្រេច និងព្រំដែនសមស្របសម្រាប់ AI</div>
+          <div class="lr-sub" style="color:var(--teal-dark); font-weight:700; margin-top:3px;">→ សិស្សរៀនថា AI ជាឧបករណ៍បង្កើតដោយមនុស្ស មិនមែនភាវរស់ ឬមិត្តភក្តិទេ</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:#FCEBEA;">⚖️</div>
+        <div class="lr-text"><b style="font-size:16px;">Ethics of AI</b>
+          <div class="lr-sub">ការយល់ដឹងពីភាពយុត្តិធម៌ ភាពលម្អៀង ឯកជនភាព និងការទទួលខុសត្រូវ</div>
+          <div class="lr-sub" style="color:var(--red); font-weight:700; margin-top:3px;">→ កុមារយល់ថាហេតុអ្វីមិនគួរចែករំលែករូបថត/ព័ត៌មានគ្រួសារ</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:#FDF1E3;">⚙️</div>
+        <div class="lr-text"><b style="font-size:16px;">AI Techniques & Applications</b>
+          <div class="lr-sub">ការយល់ដឹងពីការសម្គាល់លំនាំ និងគំនិតប្រូបាបជាមូលដ្ឋាន</div>
+          <div class="lr-sub" style="color:var(--orange-dark); font-weight:700; margin-top:3px;">→ ពន្យល់ AI ជា "ការទាយលំនាំឆ្លាតវៃ" តាមល្បែងដើរតួ</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:#F1EEFE;">🧩</div>
+        <div class="lr-text"><b style="font-size:16px;">AI System Design</b>
+          <div class="lr-sub">ការកសាងការយល់ដឹងគ្រឹះអំពីរបៀបដែលក្បួនដោះស្រាយដំណើរការទិន្នន័យ</div>
+          <div class="lr-sub" style="color:var(--purple); font-weight:700; margin-top:3px;">→ ល្បែងតម្រៀប និងវិធានឥតភ្ជាប់អេឡិចត្រូនិច</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 9 (BONUS): Capstone Planning Template -->
+<section class="scene" data-notes="ការណែនាំអនុវត្ត៖ គំរូគម្រោង Capstone អក្ខរកម្ម AI សិស្ស (សម្រាប់ភារកិច្ចចុងក្រោយ)
+១. គោលបំណង & សមត្ថភាព — សំណួរ៖ តើសមត្ថភាពសិស្ស UNESCO មួយណា (កម្រិត 'យល់ដឹង') ដែលសកម្មភាពនេះឆ្លើយតប? ឧទាហរណ៍៖ Human-Centred Mindset — ទទួលស្គាល់ថា AI ជាក្បួនដោះស្រាយបង្កើតដោយមនុស្ស មិនមែនភាវរស់ទេ។
+២. សម្ភារៈ & ការរៀបចំ — សំណួរ៖ តើសម្ភារៈក្រៅបណ្តាញ ឬបច្ចេកវិទ្យាទាបអ្វីខ្លះដែលអ្នកនឹងប្រើ? ឧទាហរណ៍៖ ក្តារឈ្នួន ដីស និងបណ្ណបញ្ជាក់រូបភាពលំនាំ (ឧ. តម្រៀបផ្លែឈើ vs មិនមែនផ្លែឈើ)។
+៣. ជំហានបង្រៀន — សំណួរ៖ តើលំដាប់នៃការបង្ហាញរបស់គ្រូ និងសកម្មភាពសិស្សនឹងកើតឡើងយ៉ាងណា (១៥-២០ នាទី)? ឧទាហរណ៍៖ ល្បែងដើរតួ 'Robot Search' — សិស្សម្នាក់ដើរតាមកាតវិធានតឹងរ៉ឹង គ្រូពន្យល់ថាហេតុអ្វី 'រ៉ូបូត' គ្មានអារម្មណ៍ ឬការយល់ដឹងពិត។
+៤. ត្រួតពិនិត្យការយល់ដឹង — សំណួរ៖ តើអ្នកនឹងផ្ទៀងផ្ទាត់ដោយរបៀបណាថាសិស្សបានកែតម្រូវការយល់ច្រឡំគោលដៅ? ឧទាហរណ៍៖ ការឆ្លុះបញ្ចាំងផ្ទាល់មាត់ — សួរសំណួរត្រួតពិនិត្យ៣ (ឧ. 'ប្រសិនបើទូរស័ព្ទបិទ តើវាសោកសៅ ឬដេកទេ? ហេតុអ្វី?')។">
+  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
+  <div class="scene-title" style="font-size:27px;">គំរូគម្រោង Capstone អក្ខរកម្ម AI សិស្ស</div>
+  <div class="scene-body">
+    <table class="rubric-table frag">
+      <thead>
+        <tr>
+          <th class="pr"></th>
+          <th class="c1">❓ សំណួរគោលនៃការរៀបចំ</th>
+          <th class="c2">🏫 ឧទាហរណ៍បច្ចេកវិទ្យាទាប (កម្ពុជា)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="frag">
+          <td class="pr">១. គោលបំណង<br>& សមត្ថភាព</td>
+          <td class="c1">តើសមត្ថភាព UNESCO មួយណា (កម្រិត "យល់ដឹង") ដែលសកម្មភាពនេះឆ្លើយតប?</td>
+          <td class="c2">Human-Centred Mindset — AI ជាក្បួនដោះស្រាយបង្កើតដោយមនុស្ស មិនមែនភាវរស់</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr">២. សម្ភារៈ<br>& ការរៀបចំ</td>
+          <td class="c1">តើសម្ភារៈក្រៅបណ្តាញ ឬបច្ចេកវិទ្យាទាបអ្វីខ្លះដែលអ្នកនឹងប្រើ?</td>
+          <td class="c2">ក្តារឈ្នួន ដីស និងបណ្ណរូបភាពលំនាំ (តម្រៀបផ្លែឈើ vs មិនមែនផ្លែឈើ)</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr">៣. ជំហាន<br>បង្រៀន</td>
+          <td class="c1">តើលំដាប់នៃការបង្ហាញរបស់គ្រូ និងសកម្មភាពសិស្សនឹងកើតឡើងយ៉ាងណា (១៥-២០ នាទី)?</td>
+          <td class="c2">ល្បែងដើរតួ "Robot Search" ដើរតាមកាតវិធានតឹងរ៉ឹង — គ្រូពន្យល់ហេតុអ្វី "រ៉ូបូត" គ្មានអារម្មណ៍</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr">៤. ត្រួតពិនិត្យ<br>ការយល់ដឹង</td>
+          <td class="c1">តើអ្នកនឹងផ្ទៀងផ្ទាត់ដោយរបៀបណាថាសិស្សបានកែតម្រូវការយល់ច្រឡំគោលដៅ?</td>
+          <td class="c2">ការឆ្លុះបញ្ចាំងផ្ទាល់មាត់៖ "ប្រសិនបើទូរស័ព្ទបិទ តើវាសោកសៅទេ? ហេតុអ្វី?"</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<div class="mascot" id="mascotWrap">
+  <svg width="76" height="76" viewBox="0 0 76 76">
+    <rect x="6" y="6" width="64" height="64" rx="22" fill="var(--teal)"/>
+    <rect x="34" y="0" width="8" height="12" rx="4" fill="var(--teal)"/>
+    <circle cx="38" cy="4" r="6" fill="var(--yellow)"/>
+    <circle cx="26" cy="38" r="8" fill="#fff"/>
+    <circle cx="50" cy="38" r="8" fill="#fff"/>
+    <circle cx="26" cy="38" r="3.6" fill="#2D3142"/>
+    <circle cx="50" cy="38" r="3.6" fill="#2D3142"/>
+    <rect x="28" y="52" width="20" height="6" rx="3" fill="#fff"/>
+  </svg>
+</div>
+
+<div class="notes-drawer" id="notesDrawer">
+  <div class="notes-inner">
+    <h4>ស្គ្រីប / ការនិទានសម្រាប់អេក្រង់នេះ</h4>
+    <p id="notesText"></p>
+  </div>
+</div>
+
+<div class="chrome">
+  <button class="navbtn" id="prevBtn">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="navbtn" id="nextBtn">›</button>
+</div>
+
+<script>
+const scenes = Array.from(document.querySelectorAll('.scene'));
+const dotsWrap = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const progress = document.getElementById('progress');
+const notesText = document.getElementById('notesText');
+const notesDrawer = document.getElementById('notesDrawer');
+let current = 0;
+
+scenes.forEach((s,i)=>{
+  const d = document.createElement('button');
+  d.className = 'dot' + (i===0?' on':'');
+  d.addEventListener('click', ()=> goTo(i, true));
+  dotsWrap.appendChild(d);
+});
+const dots = Array.from(dotsWrap.children);
+
+function fragsIn(scene){ return Array.from(scene.querySelectorAll('.frag')); }
+function resetFrags(scene){ fragsIn(scene).forEach(f=>f.classList.remove('shown')); }
+function showAllFrags(scene){ fragsIn(scene).forEach(f=>f.classList.add('shown')); }
+function revealNextFrag(scene){
+  const frags = fragsIn(scene);
+  const next = frags.find(f=>!f.classList.contains('shown'));
+  if(next){ next.classList.add('shown'); return true; }
+  return false;
+}
+
+function render(){
+  scenes.forEach((s,i)=> s.classList.toggle('active', i===current));
+  dots.forEach((d,i)=> d.classList.toggle('on', i===current));
+  counter.textContent = String(current+1).padStart(2,'0') + ' / ' + scenes.length;
+  progress.style.width = ((current+1)/scenes.length*100) + '%';
+  notesText.textContent = scenes[current].dataset.notes || '';
+}
+
+function goTo(i, showAll){
+  i = Math.max(0, Math.min(scenes.length-1, i));
+  current = i;
+  const scene = scenes[current];
+  if(showAll){ showAllFrags(scene); } else { resetFrags(scene); }
+  render();
+}
+
+function next(){
+  const scene = scenes[current];
+  if(revealNextFrag(scene)) return;
+  if(current < scenes.length-1){ goTo(current+1, false); }
+}
+function prev(){
+  if(current > 0){ goTo(current-1, true); }
+}
+
+document.getElementById('nextBtn').addEventListener('click', next);
+document.getElementById('prevBtn').addEventListener('click', prev);
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); next(); }
+  else if(e.key === 'ArrowLeft'){ e.preventDefault(); prev(); }
+  else if(e.key.toLowerCase() === 'n'){ notesDrawer.classList.toggle('open'); }
+  else if(e.key.toLowerCase() === 'f'){ toggleFullscreen(); }
+});
+document.getElementById('notesBtn').addEventListener('click', ()=> notesDrawer.classList.toggle('open'));
+
+function toggleFullscreen(){
+  if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); }
+  else { document.exitFullscreen(); }
+}
+document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
+
+resetFrags(scenes[0]);
+render();
+</script>
+</body>
+</html>

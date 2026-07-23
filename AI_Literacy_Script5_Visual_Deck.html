@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ការបង្កើតសំណើប្រដេញជាមួយ PARTS — Visual Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{
+  font-family:'Google Sans Khmer';
+  font-style:normal;
+  font-display:swap;
+  font-weight:400 700;
+  src:url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/khmer-wght-normal.woff2') format('woff2-variations');
+}
+@font-face{
+  font-family:'Google Sans Khmer';
+  font-style:normal;
+  font-display:swap;
+  font-weight:400 700;
+  src:url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+:root{
+  --cream:#FFF8EC;
+  --sky:#EAF4FF;
+  --orange:#F2994A;
+  --orange-dark:#D9761F;
+  --teal:#2D9CDB;
+  --teal-dark:#1D7FB8;
+  --green:#6FCF97;
+  --green-dark:#219653;
+  --red:#EB5757;
+  --navy:#2D3142;
+  --navy-soft:#5B5F73;
+  --yellow:#F7C948;
+  --purple:#9B87F5;
+  --purple-dark:#7A63E0;
+  --white:#FFFFFF;
+  --card-radius:26px;
+  /* PARTS letter colors */
+  --p-color:#2D9CDB;
+  --a-color:#F2994A;
+  --r-color:#9B87F5;
+  --t-color:#219653;
+  --s-color:#EB5757;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:'Google Sans Khmer','Baloo 2',sans-serif;
+  background:linear-gradient(160deg,var(--cream) 0%, var(--sky) 100%);
+  color:var(--navy);
+  overflow:hidden;
+  width:100vw;height:100vh;
+  position:relative;
+}
+.deck{position:relative; width:100vw; height:100vh;}
+.scene{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  padding:46px 84px 36px;
+  opacity:0; pointer-events:none;
+  transform:translateY(14px);
+  transition:opacity .45s ease, transform .45s ease;
+}
+.scene.active{opacity:1; pointer-events:auto; transform:translateY(0);}
+.scene-eyebrow{ display:none; }
+.screen-num{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--navy); color:#fff; font-weight:800; font-family:'Baloo 2';
+  display:flex; align-items:center; justify-content:center; font-size:18px; flex:none;
+}
+.eyebrow-label{font-size:15px; font-weight:600; color:var(--navy-soft); letter-spacing:.3px;}
+.scene-title{font-size:36px; font-weight:800; color:var(--navy); margin:4px 0 16px; line-height:1.28;}
+.scene-title.center{text-align:center;}
+.scene-sub{font-size:18px; color:var(--navy-soft); font-weight:500; margin-bottom:8px;}
+.scene-body{flex:1; display:flex; align-items:center; gap:44px; min-height:0;}
+.scene-body.col{flex-direction:column; justify-content:center;}
+.frag{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+.frag.shown{ opacity:1; transform:translateY(0); }
+
+.card{background:var(--white); border-radius:var(--card-radius); box-shadow:0 14px 34px rgba(45,49,66,.10); padding:26px 30px;}
+.pill{display:inline-flex; align-items:center; gap:10px; background:var(--white); border-radius:999px; padding:9px 18px; box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:15px;}
+
+.mascot{position:absolute; right:40px; bottom:34px; width:72px; height:72px; animation:bob 2.6s ease-in-out infinite; z-index:5;}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-9px) rotate(2deg);}}
+
+.chrome{ display:none; }
+.navbtn{width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(45,49,66,.25);}
+.dots{display:flex; gap:9px; align-items:center;}
+.dot{width:11px; height:11px; border-radius:50%; background:#D9DEE8; cursor:pointer; border:none; padding:0; transition:all .2s ease;}
+.dot.on{background:var(--orange); width:26px; border-radius:6px;}
+.topbar{ display:none; }
+.iconbtn{background:var(--white); border:none; border-radius:14px; padding:10px 16px; font-family:inherit; font-weight:700; font-size:14px; color:var(--navy); box-shadow:0 6px 16px rgba(45,49,66,.12); cursor:pointer; display:flex; gap:8px; align-items:center;}
+.counter{ display:none; }
+
+.notes-drawer{position:absolute; left:0; right:0; bottom:0; height:0; overflow:hidden; background:var(--navy); color:#fff; z-index:40; transition:height .3s ease; border-radius:24px 24px 0 0;}
+.notes-drawer.open{height:34%;}
+.notes-inner{padding:24px 56px; height:100%; overflow-y:auto;}
+.notes-inner h4{margin:0 0 8px; color:var(--yellow); font-size:14px; letter-spacing:.5px;}
+.notes-inner p{font-size:17px; line-height:1.7; margin:0; font-weight:400; white-space:pre-line;}
+
+.progress{position:absolute; top:0; left:0; height:6px; background:var(--orange); z-index:50; transition:width .3s ease;}
+
+.illus-wrap{flex:none; display:flex; align-items:center; justify-content:center;}
+.list-row{display:flex; align-items:center; gap:18px; font-size:19px; font-weight:600; padding:13px 0; border-bottom:2px dashed #E4E8F0;}
+.list-row:last-child{border-bottom:none;}
+.list-row .lr-text{flex:1;}
+.list-row .lr-sub{display:block; font-size:13.5px; font-weight:500; color:var(--navy-soft); margin-top:3px;}
+.num-badge{width:38px;height:38px;border-radius:11px; flex:none; display:flex; align-items:center; justify-content:center; font-family:'Baloo 2'; font-weight:800; color:#fff; font-size:16px;}
+.icon-circle{width:64px;height:64px;border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:28px;}
+.vs-col{flex:1; background:var(--white); border-radius:var(--card-radius); padding:26px; box-shadow:0 14px 34px rgba(45,49,66,.10);}
+.vs-col h3{margin:0 0 8px; font-size:19px;}
+.vs-col p{font-size:14.5px; line-height:1.6; color:var(--navy-soft); margin:0;}
+.badge-tag{display:inline-block; font-size:12px; font-weight:800; padding:4px 12px; border-radius:999px; color:#fff; margin-bottom:9px;}
+.principle-card{display:flex; gap:18px; align-items:flex-start; padding:14px 0; border-bottom:2px dashed #E4E8F0;}
+.principle-card:last-child{border-bottom:none;}
+
+.rubric-table{width:100%; border-collapse:separate; border-spacing:0 10px; font-size:13.5px;}
+.rubric-table th{font-size:13px; font-weight:800; color:#fff; padding:10px 12px; text-align:left;}
+.rubric-table th.rf{background:var(--teal-dark); border-radius:12px 0 0 12px;}
+.rubric-table th.op{background:var(--orange-dark); border-radius:0 12px 12px 0;}
+.rubric-table th.pr{background:transparent;}
+.rubric-table td{background:#fff; padding:12px 12px; vertical-align:top; line-height:1.55; box-shadow:0 4px 10px rgba(45,49,66,.06);}
+.rubric-table td.pr{background:transparent; box-shadow:none; font-weight:800; font-size:14px; color:var(--navy); padding-right:8px;}
+.rubric-table td.rf{border-radius:12px 0 0 12px;}
+.rubric-table td.op{border-radius:0 12px 12px 0;}
+
+.cta-banner{background:var(--navy); color:#fff; border-radius:var(--card-radius); padding:22px 30px; text-align:center; box-shadow:0 14px 30px rgba(45,49,66,.25);}
+.cta-banner .tag{color:var(--yellow); font-size:13px; font-weight:800; letter-spacing:.4px; margin-bottom:6px;}
+.cta-banner .main{font-size:20px; font-weight:800;}
+
+/* ---- Script 5 specific: PARTS ---- */
+.parts-row{display:flex; gap:16px; justify-content:center; width:100%;}
+.parts-letter{flex:1; max-width:190px; border-radius:20px; padding:22px 14px; text-align:center; color:#fff; box-shadow:0 12px 26px rgba(45,49,66,.16);}
+.parts-letter .big{font-family:'Baloo 2'; font-weight:800; font-size:44px; line-height:1;}
+.parts-letter .name{font-size:13px; font-weight:800; margin-top:6px;}
+.parts-letter .desc{font-size:11.5px; line-height:1.5; margin-top:8px; opacity:.95;}
+
+.prompt-builder{background:var(--navy); color:#fff; border-radius:var(--card-radius); padding:24px 28px; max-width:820px; font-size:14.5px; line-height:1.9;}
+.pb-line{display:block; padding:2px 0;}
+.pb-tag{font-weight:800; font-family:'Baloo 2'; font-size:11px; border-radius:6px; padding:1px 8px; margin-right:8px;}
+
+.template-card{background:#fff; border-radius:20px; padding:20px 24px; box-shadow:0 12px 26px rgba(45,49,66,.12); max-width:420px; font-size:14px; line-height:1.7;}
+.bracket{background:#FDF1E3; color:var(--orange-dark); font-weight:700; border-radius:6px; padding:1px 6px;}
+.bracket-filled{background:#E9F9EF; color:var(--green-dark); font-weight:700; border-radius:6px; padding:1px 6px;}
+
+.category-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; width:100%; max-width:820px;}
+.category-card{display:flex; gap:14px; align-items:flex-start; background:#fff; border-radius:18px; padding:18px 20px; box-shadow:0 10px 22px rgba(45,49,66,.1);}
+
+footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center; font-size:11px; color:#B7BCC9; z-index:1;}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">01 / 08</div>
+
+<div class="topbar">
+  <button class="iconbtn" id="notesBtn">📝 ស្គ្រីប (N)</button>
+  <button class="iconbtn" id="fsBtn">⛶ Fullscreen</button>
+</div>
+
+<div class="deck" id="deck">
+
+<!-- SCENE 1: Cold Open -->
+<section class="scene" data-notes="Segment 1: Cold Open — ការប្រៀបធៀបសំណើម្ខាងម្ខាង
+ឧបករណ៍ AI តែមួយដូចគ្នា ប៉ុន្តែផ្តល់លទ្ធផលពីរប្លែកគ្នារកទីបំផុតគ្មាន — ហើយអ្វីដែលបានផ្លាស់ប្តូរនោះ គឺមានតែ 'សំណើប្រដេញ' (Prompt) ប៉ុណ្ណោះ។
+
+នៅពេលដែលគ្រូបង្រៀនភាគច្រើនទទួលបានលទ្ធផលជាមធ្យម ឬទូទៅពេកពី AI ពួកគេច្រើនតែគិតថា ឧបករណ៍នេះមិនឆ្លាតគ្រប់គ្រាន់ឡើយ។ ប៉ុន្តែ ការបង្កើតសំណើប្រដេញ (Prompt Engineering) មិនមែនជារឿងសំណាង ឬការសរសេរកូដបច្ចេកទេសដ៏ស្មុគស្មាញនោះទេ។ វាជាជំនាញដែលមានរចនាសម្ព័ន្ធច្បាស់លាស់ ដែលនរណាក៏អាចចេះស្ទាត់ជំនាញបានដែរ។
+
+នៅក្នុងវីដេអូនេះ យើងនឹងបំបែករូបមន្តជាក់លាក់ ដើម្បីផ្លាស់ប្តូរចម្លើយ AI ស្រពិចស្រពិល ឱ្យទៅជាសម្ភារៈបង្រៀនដែលតម្រូវតាមតម្រូវការជាក់ស្តែងជានិច្ច។">
+  <div class="scene-eyebrow"><div class="screen-num">១</div><div class="eyebrow-label">Segment 1</div></div>
+  <div class="scene-title">ឧបករណ៍ AI ដូចគ្នា — លទ្ធផលពីរប្លែកគ្នា</div>
+  <div class="scene-body">
+    <div class="vs-col frag">
+      <span class="badge-tag" style="background:var(--navy-soft);">សំណើខ្សោយ</span>
+      <div class="card" style="background:#F1F2F5; padding:14px; font-size:13.5px; font-weight:700; margin:8px 0 14px;">"សរសេរមេរៀនអំពីភាគរយឱ្យខ្ញុំ"</div>
+      <h3 style="color:var(--navy-soft);">→ លទ្ធផលទូទៅ</h3>
+      <p style="opacity:.7;">មិនច្បាស់កម្រិតថ្នាក់ គ្មានឧទាហរណ៍ជាក់ស្តែង មិនអាចយកទៅប្រើភ្លាមបានទេ</p>
+    </div>
+    <div class="vs-col frag" style="border:2px solid var(--teal);">
+      <span class="badge-tag" style="background:var(--teal);">សំណើរឹងមាំ (PARTS)</span>
+      <div class="card" style="background:#EAF4FF; padding:14px; font-size:13px; font-weight:700; margin:8px 0 14px;">"...ជួយសិស្សថ្នាក់ទី៥ ជម្នះការច្រឡំភាគយក/ភាគបែង ជាមេរៀន២០នាទី..."</div>
+      <h3 style="color:var(--teal-dark);">→ លទ្ធផលតម្រូវតាមតម្រូវការ</h3>
+      <p>ត្រៀមរួចរាល់សម្រាប់ថ្នាក់រៀន — ជាក់លាក់ អាចប្រើបានភ្លាម</p>
+    </div>
+  </div>
+  <div class="frag card" style="margin-top:8px; text-align:center; font-size:15px; max-width:700px; margin-left:auto; margin-right:auto;">
+    💡 អ្វីដែលបានផ្លាស់ប្តូរនោះ គឺមានតែ <b>សំណើប្រដេញ (Prompt)</b> ប៉ុណ្ណោះ — ជាជំនាញដែលនរណាក៏អាចស្ទាត់ជំនាញបាន
+  </div>
+</section>
+
+<!-- SCENE 2: Four AI Tool Categories -->
+<section class="scene" data-notes="Segment 2: ប្រភេទឧបករណ៍ AI សម្រាប់គ្រូ
+មុនពេលយើងពិនិត្យមើលរូបមន្ត សូមស្វែងយល់ពីទីតាំងដែល AI ចូលរួមក្នុងកិច្ចការបង្រៀនប្រចាំថ្ងៃរបស់អ្នក។ ការប្រើយន្តការ AI ភាគច្រើនសម្រាប់អប់រំ ចែកចេញជាបួនប្រភេទសំខាន់ៗ៖
+
+• ទីមួយ ជំនួយការរៀបចំកិច្ចតែងការបង្រៀន (Lesson Planning Assistants)៖ ឧបករណ៍ដែលជួយរៀបចំសេចក្តីព្រាងមេរៀន សំណួរពិភាក្សា និងសកម្មភាពចម្រុះ។
+• ទីពីរ ជំនួយការផ្តល់មតិ និងវាយតម្លៃ (Feedback and Grading Helpers)៖ ជំនួយការសរសេរមតិកែលម្អដំបូង និងរូបរិកវាយតម្លៃលើកិច្ចការសិស្ស។
+• ទីបី ជំនួយការរដ្ឋបាល និងទំនាក់ទំនង (Administrative & Communication Helpers)៖ ឧបករណ៍សរសេរអ៊ីមែលទៅកាន់អាណាព្យាបាល ព្រឹត្តិបត្រព័ត៌មាន និងកំណត់ត្រាប្រជុំ។
+• ទីបួន ឧបករណ៍បង្រៀនបន្ថែម និងអនុវត្ត (Tutoring & Practice Tools)៖ ឧបករណ៍អន្តរកម្មដែលផ្តល់ការពន្យល់តាមជំហាន ឬលំហាត់អនុវត្តដោយផ្ទាល់ដល់សិស្ស។
+
+ចំណុចល្អបំផុតនោះគឺ៖ អ្នកមិនចាំបាច់ជាវកម្មវិធីបួនផ្សេងគ្នានោះទេ។ កម្មវិធី AI Chatbot ទូទៅតែមួយ អាចបំពេញតួនាទីទាំងបួននេះយ៉ាងល្អប្រសើរ — ប្រសិនបើអ្នកចេះប្រើប្រាស់សំណើប្រដេញបានត្រឹមត្រូវ។">
+  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">Segment 2</div></div>
+  <div class="scene-title" style="font-size:30px;">AI សម្រាប់គ្រូ — ៤ ប្រភេទសំខាន់</div>
+  <div class="scene-body col">
+    <div class="category-grid">
+      <div class="category-card frag">
+        <div class="icon-circle" style="background:#EAF4FF;">📝</div>
+        <div><b style="font-size:15px;">រៀបចំកិច្ចតែងការបង្រៀន</b><div style="font-size:12.5px; color:var(--navy-soft); margin-top:4px;">ព្រាងមេរៀន សំណួរពិភាក្សា សកម្មភាពចម្រុះ</div></div>
+      </div>
+      <div class="category-card frag">
+        <div class="icon-circle" style="background:#E9F9EF;">✅</div>
+        <div><b style="font-size:15px;">មតិកែលម្អ & វាយតម្លៃ</b><div style="font-size:12.5px; color:var(--navy-soft); margin-top:4px;">មតិដំបូង និងរូបរិកវាយតម្លៃកិច្ចការសិស្ស</div></div>
+      </div>
+      <div class="category-card frag">
+        <div class="icon-circle" style="background:#FDF1E3;">✉️</div>
+        <div><b style="font-size:15px;">រដ្ឋបាល & ទំនាក់ទំនង</b><div style="font-size:12.5px; color:var(--navy-soft); margin-top:4px;">អ៊ីមែលអាណាព្យាបាល ព្រឹត្តិបត្រ កំណត់ត្រាប្រជុំ</div></div>
+      </div>
+      <div class="category-card frag">
+        <div class="icon-circle" style="background:#F1EEFE;">🎯</div>
+        <div><b style="font-size:15px;">បង្រៀនបន្ថែម & អនុវត្ត</b><div style="font-size:12.5px; color:var(--navy-soft); margin-top:4px;">ការពន្យល់តាមជំហាន និងលំហាត់ផ្ទាល់ដល់សិស្ស</div></div>
+      </div>
+    </div>
+    <div class="frag card" style="margin-top:20px; text-align:center; font-size:14.5px; max-width:700px;">
+      🤖 AI Chatbot <b>តែមួយ</b> អាចបំពេញតួនាទីទាំងបួននេះបាន — ប្រសិនបើអ្នកចេះប្រើប្រាស់ <b>Prompt</b> ត្រឹមត្រូវ
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 3: PARTS Formula -->
+<section class="scene" data-notes="Segment 3: រូបមន្ត PARTS
+ដើម្បីទទួលបានលទ្ធផលមានប្រយោជន៍ និងទៀងទាត់ពី AI សូមប្រើប្រាស់រូបមន្ត PARTS។ វាជាពាក្យកាត់នៃសមាសភាគសំខាន់ៗចំនួនប្រាំ ដែលសំណើប្រដេញដ៏ល្អគ្រប់រូបត្រូវតែមាន៖
+
+• P — គោលបំណង (Purpose)៖ តើអ្វីជាវត្ថុបំណងសិក្សា ឬលទ្ធផលជាក់ស្តែងដែលអ្នកចង់សម្រេច?
+• A — អ្នកស្តាប់/សិស្សគោលដៅ (Audience)៖ តើសម្ភារៈនេះរៀបចំឡើងសម្រាប់នរណា?
+• R — តួនាទី (Role)៖ តើតួនាទីអ្វីដែល AI គួរបំពេញ?
+• T — ភារកិច្ច (Task)៖ តើអ្វីជាសមិទ្ធផលជាក់ស្តែងដែលអ្នកតម្រូវឱ្យ AI បង្កើត?
+• S — រចនាប័ទ្ម (Style)៖ តើអ្វីជាលក្ខខណ្ឌទម្រង់ សំឡេង និងប្រវែងអត្ថបទ?
+
+នៅពេលណាដែលចម្លើយ AI មានអារម្មណ៍ថាទូទៅពេក ឬគ្មានប្រយោជន៍ វាស្ទើរតែតែងតែមកពីសំណើប្រដេញរបស់អ្នកខ្វះខាតពីរ ឬបីសមាសភាគក្នុងចំណោមធាតុទាំងប្រាំនេះ។">
+  <div class="scene-eyebrow"><div class="screen-num">៣</div><div class="eyebrow-label">Segment 3</div></div>
+  <div class="scene-title" style="font-size:34px; text-align:center;">រូបមន្ត PARTS — ៥ សមាសភាគ</div>
+  <div class="scene-body col" style="gap:18px;">
+    <div class="parts-row">
+      <div class="parts-letter frag" style="background:linear-gradient(160deg,#6BC1F0,var(--p-color));">
+        <div class="big">P</div>
+        <div class="name">គោលបំណង<br>Purpose</div>
+        <div class="desc">តើវត្ថុបំណងសិក្សាអ្វី?</div>
+      </div>
+      <div class="parts-letter frag" style="background:linear-gradient(160deg,#F5AC71,var(--a-color));">
+        <div class="big">A</div>
+        <div class="name">សិស្សគោលដៅ<br>Audience</div>
+        <div class="desc">តើសម្ភារៈនេះសម្រាប់នរណា?</div>
+      </div>
+      <div class="parts-letter frag" style="background:linear-gradient(160deg,#B9ADF8,var(--r-color));">
+        <div class="big">R</div>
+        <div class="name">តួនាទី<br>Role</div>
+        <div class="desc">តើ AI គួរដើរតួអ្វី?</div>
+      </div>
+      <div class="parts-letter frag" style="background:linear-gradient(160deg,#6FCF97,var(--t-color));">
+        <div class="big">T</div>
+        <div class="name">ភារកិច្ច<br>Task</div>
+        <div class="desc">តើត្រូវផលិតអ្វីជាក់ស្តែង?</div>
+      </div>
+      <div class="parts-letter frag" style="background:linear-gradient(160deg,#F08A8A,var(--s-color));">
+        <div class="big">S</div>
+        <div class="name">រចនាប័ទ្ម<br>Style</div>
+        <div class="desc">ទម្រង់ សម្លេង ប្រវែង?</div>
+      </div>
+    </div>
+    <div class="frag card" style="font-size:14.5px; text-align:center; max-width:760px;">
+      ចម្លើយ AI ទូទៅ ឬគ្មានប្រយោជន៍ → ស្ទើរតែតែងតែខ្វះខាត <b>២-៣ សមាសភាគ</b> ក្នុងចំណោមទាំងប្រាំនេះ
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 4: PARTS in Action -->
+<section class="scene" data-notes="Segment 4: PARTS ក្នុងការអនុវត្តជាក់ស្តែង
+សូមមើលការអនុវត្តរូបមន្ត PARTS ដោយផ្លាស់ប្តូរសំណើប្រដេញដ៏ខ្សោយពីដំបូង។
+
+យើងចាប់ផ្តើមពីសំណើខ្សោយ៖ 'សរសេរមេរៀនអំពីភាគរយឱ្យខ្ញុំ'។
+ឥឡូវនេះ សូមបន្ថែមសមាសភាគ PARTS តាមស្រទាប់៖
+
+• បន្ថែម Purpose គោលបំណង៖ '...ដើម្បីជួយសិស្សដែលនៅតែច្រឡំរវាងភាគយក និងភាគបែង'។
+• បន្ថែម Audience សិស្សគោលដៅ៖ '...សម្រាប់សិស្សថ្នាក់ទី ៥ ដែលមានសមត្ថភាពចម្រុះ'។
+• បន្ថែម Role តួនាទី៖ '...ដើរតួជាគ្រូបង្រៀនគណិតវិទ្យាបឋមសិក្សាដែលមានបទពិសោធន៍'។
+• បន្ថែម Task ភារកិច្ច៖ '...រៀបចំសេចក្តីព្រាងមេរៀនខ្លី ២០ នាទី ដោយមានឧទាហរណ៍រូបភាពជាក់ស្តែង ១ និងលំហាត់អនុវត្តស្ទង់ការយល់ដឹង ២'។
+• បន្ថែម Style រចនាប័ទ្ម៖ '...ប្រើប្រាស់ភាសាងាយយល់ និងលើកទឹកចិត្ត ហើយរៀបចំជាជំហានៗមានលេខរៀង'។
+
+សូមពិនិត្យមើលភាពខុសគ្នា! វាជាប្រធានបទដូចគ្នាបេះបិទ ប៉ុន្តែតាមរយៈការរៀបចំសំណើដោយប្រើ PARTS អ្នកបានផ្លាស់ប្តូរសំណើស្រពិចស្រពិល ឱ្យទៅជាកិច្ចតែងការបង្រៀនដែលត្រៀមរួចរាល់សម្រាប់យកទៅប្រើប្រាស់ក្នុងថ្នាក់រៀន។">
+  <div class="scene-eyebrow"><div class="screen-num">៤</div><div class="eyebrow-label">Segment 4</div></div>
+  <div class="scene-title" style="font-size:28px;">PARTS ក្នុងការអនុវត្តជាក់ស្តែង</div>
+  <div class="scene-body col">
+    <div class="prompt-builder">
+      <span class="pb-line" style="opacity:.6;">"សរសេរមេរៀនអំពីភាគរយឱ្យខ្ញុំ..."</span>
+      <span class="pb-line frag"><span class="pb-tag" style="background:var(--p-color);">P</span>ដើម្បីជួយសិស្សដែលនៅតែច្រឡំរវាងភាគយក និងភាគបែង</span>
+      <span class="pb-line frag"><span class="pb-tag" style="background:var(--a-color);">A</span>សម្រាប់សិស្សថ្នាក់ទី៥ ដែលមានសមត្ថភាពចម្រុះ</span>
+      <span class="pb-line frag"><span class="pb-tag" style="background:var(--r-color);">R</span>ដើរតួជាគ្រូគណិតវិទ្យាបឋមសិក្សាដែលមានបទពិសោធន៍</span>
+      <span class="pb-line frag"><span class="pb-tag" style="background:var(--t-color);">T</span>រៀបចំមេរៀនខ្លី២០នាទី + ឧទាហរណ៍ជាក់ស្តែង១ + សំណួរត្រួតពិនិត្យ២</span>
+      <span class="pb-line frag"><span class="pb-tag" style="background:var(--s-color);">S</span>ភាសាងាយយល់ លើកទឹកចិត្ត ជាជំហានៗមានលេខរៀង</span>
+    </div>
+    <div class="frag card" style="margin-top:16px; text-align:center; font-size:14.5px; max-width:700px;">
+      ប្រធានបទដូចគ្នាបេះបិទ — ប៉ុន្តែឥឡូវក្លាយជា <b>កិច្ចតែងការបង្រៀនត្រៀមរួចរាល់</b> សម្រាប់ថ្នាក់រៀន
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 5: Reusable Templates -->
+<section class="scene" data-notes="Segment 5: បង្កើតគំរូអាចប្រើឡើងវិញបាន
+ផលចំណេញផលិតភាពពិតប្រាកដ កើតឡើងនៅពេលដែលអ្នកបំប្លែងសំណើ PARTS ដែលជោគជ័យ ឱ្យទៅជាគំរូដែលអាចយកទៅប្រើប្រាស់ឡើងវិញបាន (Reusable Template)។
+
+ជំនួសឱ្យការសរសេរសំណើពីចំនុចសូន្យរាល់ថ្ងៃ សូមបង្កើតគំរូមេដែលមានចន្លោះកែប្រែក្នុងរង្វង់ក្រចក — ដូចជា [ប្រធានបទ], [កម្រិតថ្នាក់], ឬ [ការយល់ច្រឡំទូទៅ]។ សប្តាហ៍ក្រោយ នៅពេលអ្នកត្រូវការមេរៀនអំពីទសភាគ ឬភាគរយ អ្នកគ្រាន់តែចម្លងគំរូមេរបស់អ្នក ប្តូរពាក្យក្នុងរង្វង់ក្រចកពីរឬបីពាក្យ រួចចុចផ្ញើជាការស្រេច។
+
+ការចំណាយពេល ៥ នាទីដើម្បីបង្កើតគំរូ PARTS ដ៏រឹងមាំមួយ នឹងជួយរំដោះពេលវេលារៀបចំមេរៀនរបស់អ្នកបានរាប់ម៉ោងជារៀងរាល់សប្តាហ៍។">
+  <div class="scene-eyebrow"><div class="screen-num">៥</div><div class="eyebrow-label">Segment 5</div></div>
+  <div class="scene-title">បង្កើតគំរូ PARTS អាចប្រើឡើងវិញបាន</div>
+  <div class="scene-body">
+    <div class="frag template-card">
+      <div style="font-size:11px; font-weight:800; color:var(--navy-soft); margin-bottom:8px;">🗂️ គំរូមេ (Master Template)</div>
+      <div>...ជួយសិស្សជម្នះការយល់ច្រឡំអំពី <span class="bracket">[ការយល់ច្រឡំទូទៅ]</span>...</div>
+      <div style="margin-top:6px;">...សម្រាប់សិស្សថ្នាក់ទី <span class="bracket">[កម្រិតថ្នាក់]</span>...</div>
+      <div style="margin-top:6px;">...មេរៀនអំពី <span class="bracket">[ប្រធានបទ]</span>...</div>
+    </div>
+    <div class="frag" style="font-size:32px; color:var(--navy-soft);">📋→</div>
+    <div class="frag template-card" style="border:2px solid var(--green-dark);">
+      <div style="font-size:11px; font-weight:800; color:var(--green-dark); margin-bottom:8px;">✅ សប្តាហ៍ក្រោយ៖ ចម្លង + ប្តូរពាក្យ</div>
+      <div>...ជួយសិស្សជម្នះការយល់ច្រឡំអំពី <span class="bracket-filled">ការបូក/ដកទសភាគ</span>...</div>
+      <div style="margin-top:6px;">...សម្រាប់សិស្សថ្នាក់ទី <span class="bracket-filled">៦</span>...</div>
+      <div style="margin-top:6px;">...មេរៀនអំពី <span class="bracket-filled">ការបំលែងភាគរយ</span>...</div>
+    </div>
+  </div>
+  <div class="frag card" style="margin-top:8px; text-align:center; font-size:14.5px; max-width:700px; margin-left:auto; margin-right:auto;">
+    ⏱️ ការចំណាយពេល ៥ នាទី បង្កើតគំរូរឹងមាំ → សន្សំពេលរាប់ម៉ោងជារៀងរាល់សប្តាហ៍
+  </div>
+</section>
+
+<!-- SCENE 6: Conclusion -->
+<section class="scene" data-notes="Segment 6: សេចក្តីសន្និដ្ឋាន និងជំហានបន្ទាប់
+ការបង្កើតសំណើប្រដេញ មិនមែនជាការទន្ទេញពាក្យអាថ៌កំបាំងនោះទេ។ វាគឺជាការផ្តល់នូវបរិបទគរុកោសល្យដែល AI ត្រូវការ ដើម្បីបង្កើតការងារដែលមានតម្លៃពិតប្រាកដ។
+
+សូមរក្សាបញ្ជីត្រួតពិនិត្យ PARTS នៅចំពោះមុខអ្នក។ នៅក្នុងសកម្មភាពទី ៣, ៤ និង ៥ អ្នកនឹងយករូបមន្តនេះទៅអនុវត្តផ្ទាល់ — ដោយការសរសេរ កែលម្អ និងសាកល្បងសំណើប្រដេញផ្ទាល់ខ្លួន ដើម្បីបង្កើតបណ្ណាល័យគំរូបង្រៀនដែលអាចប្រើប្រាស់ឡើងវិញបាន។
+
+សូមឈានទៅកាន់សកម្មភាពទី ៣ និងចាប់ផ្តើមប្រើប្រាស់រូបមន្ត PARTS ទាំងអស់គ្នា!">
+  <div class="scene-eyebrow"><div class="screen-num">៦</div><div class="eyebrow-label">Segment 6</div></div>
+  <div class="scene-title">សូមចងចាំ PARTS ជានិច្ច</div>
+  <div class="scene-body col" style="gap:20px;">
+    <div class="frag" style="display:flex; gap:12px;">
+      <div class="pill" style="background:var(--p-color); color:#fff;">P</div>
+      <div class="pill" style="background:var(--a-color); color:#fff;">A</div>
+      <div class="pill" style="background:var(--r-color); color:#fff;">R</div>
+      <div class="pill" style="background:var(--t-color); color:#fff;">T</div>
+      <div class="pill" style="background:var(--s-color); color:#fff;">S</div>
+    </div>
+    <div class="frag card" style="font-size:15px; line-height:1.75; text-align:center; max-width:720px;">
+      ការបង្កើតសំណើប្រដេញ មិនមែនការទន្ទេញពាក្យអាថ៌កំបាំងទេ — វាគឺជាការផ្តល់ <b>បរិបទគរុកោសល្យ</b> ដែល AI ត្រូវការ ដើម្បីបង្កើតការងារមានតម្លៃពិតប្រាកដ
+    </div>
+    <div class="frag cta-banner">
+      <div class="tag">ជំហានបន្ទាប់</div>
+      <div class="main">🚀 សកម្មភាពទី ៣, ៤ & ៥៖ អនុវត្តរូបមន្ត PARTS</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 7 (BONUS): PARTS Pedagogical Definitions -->
+<section class="scene" data-notes="សេចក្តីសង្ខេប៖ និយមន័យគរុកោសល្យនៃ PARTS (សម្ភារៈយោង)
+P - Purpose៖ គោលដៅ ឬបញ្ហាសិក្សាមូលដ្ឋានដែលត្រូវដោះស្រាយ។ ផលប៉ះពាល់៖ ការពារលទ្ធផលទូទៅ ដោយផ្អែកលើតម្រូវការជាក់លាក់។
+A - Audience៖ ក្រុមសិស្សគោលដៅ កម្រិតថ្នាក់ និងកម្រិតត្រៀមខ្លួន។ ផលប៉ះពាល់៖ លៃតម្រូវវាក្យសព្ទ ជម្រៅការគិត និងការគាំទ្រ។
+R - Role៖ តួនាទី ឬទស្សនវិស័យដែល AI គួរដើរតួ។ ផលប៉ះពាល់៖ បង្កើតសម្លេងវិជ្ជាជីវៈសមស្រប។
+T - Task៖ សេចក្តីណែនាំ ឬលទ្ធផលជាក់ស្តែងច្បាស់លាស់។ ផលប៉ះពាល់៖ ដឹកនាំ AI ឱ្យបង្កើតសមិទ្ធផលជាក់លាក់។
+S - Style៖ ទម្រង់ លក្ខខណ្ឌរចនាសម្ព័ន្ធ ប្រវែង និងសម្លេង។ ផលប៉ះពាល់៖ ធានាទម្រង់ត្រៀមរួចរាល់សម្រាប់ប្រើប្រាស់។">
+  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
+  <div class="scene-title" style="font-size:28px;">និយមន័យគរុកោសល្យនៃ PARTS</div>
+  <div class="scene-body col" style="align-items:stretch; max-width:920px; margin:0 auto;">
+    <div class="card frag">
+      <div class="principle-card">
+        <div class="icon-circle" style="background:var(--p-color); color:#fff; font-family:'Baloo 2'; font-weight:800;">P</div>
+        <div class="lr-text"><b style="font-size:16px;">Purpose — គោលបំណង</b>
+          <div class="lr-sub">គោលដៅ ឬបញ្ហាសិក្សាមូលដ្ឋានដែលត្រូវដោះស្រាយ</div>
+          <div class="lr-sub" style="color:var(--p-color); font-weight:700; margin-top:3px;">→ ការពារលទ្ធផលទូទៅ ដោយផ្អែកលើតម្រូវការជាក់លាក់</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:var(--a-color); color:#fff; font-family:'Baloo 2'; font-weight:800;">A</div>
+        <div class="lr-text"><b style="font-size:16px;">Audience — សិស្សគោលដៅ</b>
+          <div class="lr-sub">ក្រុមសិស្សគោលដៅ កម្រិតថ្នាក់ និងកម្រិតត្រៀមខ្លួន</div>
+          <div class="lr-sub" style="color:var(--a-color); font-weight:700; margin-top:3px;">→ លៃតម្រូវវាក្យសព្ទ ជម្រៅការគិត និងការគាំទ្រ</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:var(--r-color); color:#fff; font-family:'Baloo 2'; font-weight:800;">R</div>
+        <div class="lr-text"><b style="font-size:16px;">Role — តួនាទី</b>
+          <div class="lr-sub">តួនាទី ឬទស្សនវិស័យដែល AI គួរដើរតួ</div>
+          <div class="lr-sub" style="color:var(--r-color); font-weight:700; margin-top:3px;">→ បង្កើតសម្លេងវិជ្ជាជីវៈសមស្រប</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:var(--t-color); color:#fff; font-family:'Baloo 2'; font-weight:800;">T</div>
+        <div class="lr-text"><b style="font-size:16px;">Task — ភារកិច្ច</b>
+          <div class="lr-sub">សេចក្តីណែនាំ ឬលទ្ធផលជាក់ស្តែងច្បាស់លាស់</div>
+          <div class="lr-sub" style="color:var(--t-color); font-weight:700; margin-top:3px;">→ ដឹកនាំ AI ឱ្យបង្កើតសមិទ្ធផលជាក់លាក់</div>
+        </div>
+      </div>
+      <div class="principle-card frag">
+        <div class="icon-circle" style="background:var(--s-color); color:#fff; font-family:'Baloo 2'; font-weight:800;">S</div>
+        <div class="lr-text"><b style="font-size:16px;">Style — រចនាប័ទ្ម</b>
+          <div class="lr-sub">ទម្រង់ លក្ខខណ្ឌរចនាសម្ព័ន្ធ ប្រវែង និងសម្លេង</div>
+          <div class="lr-sub" style="color:var(--s-color); font-weight:700; margin-top:3px;">→ ធានាទម្រង់ត្រៀមរួចរាល់សម្រាប់ប្រើប្រាស់</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 8 (BONUS): Master PARTS Prompt Builder -->
+<section class="scene" data-notes="គំរូអនុវត្ត៖ ឧបករណ៍បង្កើតសំណើ PARTS ដ៏សំខាន់ (សម្រាប់សកម្មភាពទី ៣,៤,៥)
+Purpose — សំណួរ៖ តើគោលដៅសិក្សា ការយល់ច្រឡំ ឬបញ្ហាជាក់លាក់អ្វីដែលអ្នកកំពុងដោះស្រាយ? ឧទាហរណ៍៖ '...ដើម្បីជួយសិស្សថ្នាក់ទី៥ ជម្នះការយល់ច្រឡំទូទៅរវាងភាគយក និងភាគបែង។'
+Audience — សំណួរ៖ តើអ្នកណានឹងទទួលបានលទ្ធផលនេះ? តើកម្រិតថ្នាក់ និងកម្រិតត្រៀមខ្លួនរបស់ពួកគេដូចម្តេច? ឧទាហរណ៍៖ '...រៀបចំសម្រាប់សិស្សថ្នាក់ទី៥ដែលមានសមត្ថភាពចម្រុះ រួមទាំងសិស្សរៀនភាសាអង់គ្លេស។'
+Role — សំណួរ៖ តើតួនាទី ឬជំនាញអ្វីដែល AI គួរដើរតួ? ឧទាហរណ៍៖ '...ដើរតួជាអ្នកជំនាញកម្មវិធីសិក្សា STEM បឋមសិក្សា និងជាគ្រូបង្រៀនអត់ធ្មត់។'
+Task — សំណួរ៖ តើសមិទ្ធផលបង្រៀនជាក់លាក់អ្វីដែល AI គួរបង្កើត? ឧទាហរណ៍៖ '...រៀបចំមេរៀនខ្លី២០នាទី មានឧទាហរណ៍ជាក់ស្តែង១ និងសំណួរត្រួតពិនិត្យ២។'
+Style — សំណួរ៖ តើទម្រង់ លក្ខខណ្ឌរចនាសម្ព័ន្ធ សម្លេង និងលក្ខខណ្ឌប្រវែងអ្វីខ្លះ? ឧទាហរណ៍៖ '...ធ្វើទម្រង់ជាជំហានមានលេខរៀង ភាសាច្បាស់លាស់លើកទឹកចិត្ត កំណត់ ៣០០ពាក្យ។'">
+  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
+  <div class="scene-title" style="font-size:27px;">ឧបករណ៍បង្កើតសំណើ PARTS ដ៏សំខាន់</div>
+  <div class="scene-body">
+    <table class="rubric-table frag">
+      <thead>
+        <tr>
+          <th class="pr"></th>
+          <th class="rf">❓ សំណួរសាងសង់សំណើ</th>
+          <th class="op">✍️ ឧទាហរណ៍ផ្នែកសំណើ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="frag">
+          <td class="pr" style="color:var(--p-color);">P<br>Purpose</td>
+          <td class="rf">តើគោលដៅសិក្សា ការយល់ច្រឡំ ឬបញ្ហាជាក់លាក់អ្វីដែលអ្នកកំពុងដោះស្រាយ?</td>
+          <td class="op">"...ដើម្បីជួយសិស្សថ្នាក់ទី៥ ជម្នះការយល់ច្រឡំរវាងភាគយក និងភាគបែង។"</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr" style="color:var(--a-color);">A<br>Audience</td>
+          <td class="rf">តើអ្នកណានឹងទទួលបានលទ្ធផលនេះ? កម្រិតថ្នាក់ និងកម្រិតត្រៀមខ្លួនដូចម្តេច?</td>
+          <td class="op">"...រៀបចំសម្រាប់សិស្សថ្នាក់ទី៥ដែលមានសមត្ថភាពចម្រុះ រួមទាំង EL។"</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr" style="color:var(--r-color);">R<br>Role</td>
+          <td class="rf">តើតួនាទី ឬជំនាញអ្វីដែល AI គួរដើរតួ?</td>
+          <td class="op">"...ដើរតួជាអ្នកជំនាញកម្មវិធីសិក្សា STEM និងគ្រូអត់ធ្មត់។"</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr" style="color:var(--t-color);">T<br>Task</td>
+          <td class="rf">តើសមិទ្ធផលបង្រៀនជាក់លាក់អ្វីដែល AI គួរបង្កើត?</td>
+          <td class="op">"...រៀបចំមេរៀនខ្លី២០នាទី ជាមួយឧទាហរណ៍១ និងសំណួរត្រួតពិនិត្យ២។"</td>
+        </tr>
+        <tr class="frag">
+          <td class="pr" style="color:var(--s-color);">S<br>Style</td>
+          <td class="rf">តើទម្រង់ លក្ខខណ្ឌរចនាសម្ព័ន្ធ សម្លេង និងប្រវែងអ្វីខ្លះ?</td>
+          <td class="op">"...ជាជំហានមានលេខរៀង ភាសាច្បាស់លាស់លើកទឹកចិត្ត កំណត់៣០០ពាក្យ។"</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<div class="mascot" id="mascotWrap">
+  <svg width="76" height="76" viewBox="0 0 76 76">
+    <rect x="6" y="6" width="64" height="64" rx="22" fill="var(--teal)"/>
+    <rect x="34" y="0" width="8" height="12" rx="4" fill="var(--teal)"/>
+    <circle cx="38" cy="4" r="6" fill="var(--yellow)"/>
+    <circle cx="26" cy="38" r="8" fill="#fff"/>
+    <circle cx="50" cy="38" r="8" fill="#fff"/>
+    <circle cx="26" cy="38" r="3.6" fill="#2D3142"/>
+    <circle cx="50" cy="38" r="3.6" fill="#2D3142"/>
+    <rect x="28" y="52" width="20" height="6" rx="3" fill="#fff"/>
+  </svg>
+</div>
+
+<div class="notes-drawer" id="notesDrawer">
+  <div class="notes-inner">
+    <h4>ស្គ្រីប / ការនិទានសម្រាប់អេក្រង់នេះ</h4>
+    <p id="notesText"></p>
+  </div>
+</div>
+
+<div class="chrome">
+  <button class="navbtn" id="prevBtn">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="navbtn" id="nextBtn">›</button>
+</div>
+
+<script>
+const scenes = Array.from(document.querySelectorAll('.scene'));
+const dotsWrap = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const progress = document.getElementById('progress');
+const notesText = document.getElementById('notesText');
+const notesDrawer = document.getElementById('notesDrawer');
+let current = 0;
+
+scenes.forEach((s,i)=>{
+  const d = document.createElement('button');
+  d.className = 'dot' + (i===0?' on':'');
+  d.addEventListener('click', ()=> goTo(i, true));
+  dotsWrap.appendChild(d);
+});
+const dots = Array.from(dotsWrap.children);
+
+function fragsIn(scene){ return Array.from(scene.querySelectorAll('.frag')); }
+function resetFrags(scene){ fragsIn(scene).forEach(f=>f.classList.remove('shown')); }
+function showAllFrags(scene){ fragsIn(scene).forEach(f=>f.classList.add('shown')); }
+function revealNextFrag(scene){
+  const frags = fragsIn(scene);
+  const next = frags.find(f=>!f.classList.contains('shown'));
+  if(next){ next.classList.add('shown'); return true; }
+  return false;
+}
+
+function render(){
+  scenes.forEach((s,i)=> s.classList.toggle('active', i===current));
+  dots.forEach((d,i)=> d.classList.toggle('on', i===current));
+  counter.textContent = String(current+1).padStart(2,'0') + ' / ' + scenes.length;
+  progress.style.width = ((current+1)/scenes.length*100) + '%';
+  notesText.textContent = scenes[current].dataset.notes || '';
+}
+
+function goTo(i, showAll){
+  i = Math.max(0, Math.min(scenes.length-1, i));
+  current = i;
+  const scene = scenes[current];
+  if(showAll){ showAllFrags(scene); } else { resetFrags(scene); }
+  render();
+}
+
+function next(){
+  const scene = scenes[current];
+  if(revealNextFrag(scene)) return;
+  if(current < scenes.length-1){ goTo(current+1, false); }
+}
+function prev(){
+  if(current > 0){ goTo(current-1, true); }
+}
+
+document.getElementById('nextBtn').addEventListener('click', next);
+document.getElementById('prevBtn').addEventListener('click', prev);
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); next(); }
+  else if(e.key === 'ArrowLeft'){ e.preventDefault(); prev(); }
+  else if(e.key.toLowerCase() === 'n'){ notesDrawer.classList.toggle('open'); }
+  else if(e.key.toLowerCase() === 'f'){ toggleFullscreen(); }
+});
+document.getElementById('notesBtn').addEventListener('click', ()=> notesDrawer.classList.toggle('open'));
+
+function toggleFullscreen(){
+  if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); }
+  else { document.exitFullscreen(); }
+}
+document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
+
+resetFrags(scenes[0]);
+render();
+</script>
+</body>
+</html>
