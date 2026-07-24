@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>វិទ្យាសាស្ត្រនៃការរៀនសូត្រ និងក្របខ័ណ្ឌវាយតម្លៃ AI — Visual Deck</title>
+<title>វិទ្យាសាស្ត្រនៃការរៀនសូត្រ និងទំនាក់ទំនងគ្រូ-សិស្ស — Visual Deck</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -51,100 +51,174 @@ body{
   width:100vw;height:100vh;
   position:relative;
 }
-.deck{position:relative; width:100vw; height:100vh;}
+.deck{
+  position:relative;
+  width:100vw;height:100vh;
+}
 .scene{
   position:absolute; inset:0;
   display:flex; flex-direction:column;
-  padding:46px 84px 36px;
+  padding:52px 88px 40px;
   opacity:0; pointer-events:none;
   transform:translateY(14px);
   transition:opacity .45s ease, transform .45s ease;
 }
 .scene.active{opacity:1; pointer-events:auto; transform:translateY(0);}
-.scene-eyebrow{ display:none; }
+.scene-eyebrow{display:none;}
 .screen-num{
   width:44px;height:44px;border-radius:50%;
   background:var(--navy); color:#fff; font-weight:800; font-family:'Baloo 2';
-  display:flex; align-items:center; justify-content:center; font-size:18px; flex:none;
+  display:flex; align-items:center; justify-content:center; font-size:18px;
+  flex:none;
 }
 .eyebrow-label{font-size:15px; font-weight:600; color:var(--navy-soft); letter-spacing:.3px;}
-.scene-title{font-size:38px; font-weight:800; color:var(--navy); margin:4px 0 16px; line-height:1.28;}
+.scene-title{font-size:42px; font-weight:800; color:var(--navy); margin:6px 0 18px; line-height:1.25;}
 .scene-title.center{text-align:center;}
-.scene-sub{font-size:18px; color:var(--navy-soft); font-weight:500; margin-bottom:8px;}
-.scene-body{flex:1; display:flex; align-items:center; gap:44px; min-height:0;}
+.scene-sub{font-size:20px; color:var(--navy-soft); font-weight:500; margin-bottom:10px;}
+.scene-body{flex:1; display:flex; align-items:center; gap:56px; min-height:0;}
 .scene-body.col{flex-direction:column; justify-content:center;}
-.frag{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
-.frag.shown{ opacity:1; transform:translateY(0); }
+.frag{opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease;}
+.frag.shown{opacity:1; transform:translateY(0);}
 
-.card{background:var(--white); border-radius:var(--card-radius); box-shadow:0 14px 34px rgba(45,49,66,.10); padding:26px 30px;}
-.pill{display:inline-flex; align-items:center; gap:10px; background:var(--white); border-radius:999px; padding:9px 18px; box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:15px;}
+/* generic cards */
+.card{
+  background:var(--white); border-radius:var(--card-radius);
+  box-shadow:0 14px 34px rgba(45,49,66,.10);
+  padding:28px 32px;
+}
+.pill{
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--white); border-radius:999px; padding:10px 20px;
+  box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:17px;
+}
 
-.mascot{position:absolute; right:40px; bottom:34px; width:72px; height:72px; animation:bob 2.6s ease-in-out infinite; z-index:5;}
+/* mascot */
+.mascot{
+  position:absolute; right:40px; bottom:34px; width:76px; height:76px;
+  animation:bob 2.6s ease-in-out infinite; z-index:5;
+}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-9px) rotate(2deg);}}
 
-.chrome{ display:none; }
-.navbtn{width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(45,49,66,.25);}
+/* nav (hidden on desktop — keyboard-driven) */
+.chrome{display:none;}
+.navbtn{
+  width:52px; height:52px; border-radius:50%; border:none;
+  background:var(--navy); color:#fff; font-size:22px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 8px 20px rgba(45,49,66,.25);
+}
 .dots{display:flex; gap:9px; align-items:center;}
 .dot{width:11px; height:11px; border-radius:50%; background:#D9DEE8; cursor:pointer; border:none; padding:0; transition:all .2s ease;}
 .dot.on{background:var(--orange); width:26px; border-radius:6px;}
-.topbar{ display:none; }
-.iconbtn{background:var(--white); border:none; border-radius:14px; padding:10px 16px; font-family:inherit; font-weight:700; font-size:14px; color:var(--navy); box-shadow:0 6px 16px rgba(45,49,66,.12); cursor:pointer; display:flex; gap:8px; align-items:center;}
-.counter{ display:none; }
+.topbar{display:none;}
+.iconbtn{
+  background:var(--white); border:none; border-radius:14px; padding:10px 16px;
+  font-family:inherit; font-weight:700; font-size:14px; color:var(--navy);
+  box-shadow:0 6px 16px rgba(45,49,66,.12); cursor:pointer; display:flex; gap:8px; align-items:center;
+}
+.counter{display:none;}
 
-.notes-drawer{position:absolute; left:0; right:0; bottom:0; height:0; overflow:hidden; background:var(--navy); color:#fff; z-index:40; transition:height .3s ease; border-radius:24px 24px 0 0;}
+/* notes drawer */
+.notes-drawer{
+  position:absolute; left:0; right:0; bottom:0; height:0; overflow:hidden;
+  background:var(--navy); color:#fff; z-index:40; transition:height .3s ease;
+  border-radius:24px 24px 0 0;
+}
 .notes-drawer.open{height:34%;}
-.notes-inner{padding:24px 56px; height:100%; overflow-y:auto;}
-.notes-inner h4{margin:0 0 8px; color:var(--yellow); font-size:14px; letter-spacing:.5px;}
-.notes-inner p{font-size:17px; line-height:1.7; margin:0; font-weight:400; white-space:pre-line;}
+.notes-inner{padding:26px 60px; height:100%; overflow-y:auto;}
+.notes-inner h4{margin:0 0 10px; color:var(--yellow); font-size:15px; letter-spacing:.5px;}
+.notes-inner p{font-size:18px; line-height:1.7; margin:0; font-weight:400; white-space:pre-line;}
 
-.progress{position:absolute; top:0; left:0; height:6px; background:var(--orange); z-index:50; transition:width .3s ease;}
+/* progress bar top */
+.progress{
+  position:absolute; top:0; left:0; height:6px; background:var(--orange); z-index:50;
+  transition:width .3s ease;
+}
 
+/* ---------- shared illustration helpers ---------- */
 .illus-wrap{flex:none; display:flex; align-items:center; justify-content:center;}
-.speech-bubble{position:relative; background:var(--white); border-radius:22px; padding:18px 24px; box-shadow:0 10px 26px rgba(45,49,66,.12); font-size:19px; font-weight:700; max-width:460px; line-height:1.5;}
-.list-row{display:flex; align-items:center; gap:18px; font-size:19px; font-weight:600; padding:13px 0; border-bottom:2px dashed #E4E8F0;}
+.speech-bubble{
+  position:relative; background:var(--white); border-radius:24px; padding:22px 28px;
+  box-shadow:0 10px 26px rgba(45,49,66,.12); font-size:22px; font-weight:700; max-width:480px; line-height:1.5;
+}
+.list-row{
+  display:flex; align-items:center; gap:20px; font-size:24px; font-weight:600; padding:14px 0;
+  border-bottom:2px dashed #E4E8F0;
+}
 .list-row:last-child{border-bottom:none;}
 .list-row .lr-text{flex:1;}
-.list-row .lr-sub{display:block; font-size:13.5px; font-weight:500; color:var(--navy-soft); margin-top:3px;}
-.num-badge{width:38px;height:38px;border-radius:11px; flex:none; display:flex; align-items:center; justify-content:center; font-family:'Baloo 2'; font-weight:800; color:#fff; font-size:16px;}
-.icon-circle{width:64px;height:64px;border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:28px;}
-.vs-col{flex:1; background:var(--white); border-radius:var(--card-radius); padding:26px; box-shadow:0 14px 34px rgba(45,49,66,.10);}
-.vs-col h3{margin:0 0 8px; font-size:19px;}
-.vs-col p{font-size:14.5px; line-height:1.6; color:var(--navy-soft); margin:0;}
-.badge-tag{display:inline-block; font-size:12px; font-weight:800; padding:4px 12px; border-radius:999px; color:#fff; margin-bottom:9px;}
+.list-row .lr-sub{display:block; font-size:17px; font-weight:500; color:var(--navy-soft); margin-top:3px;}
+.num-badge{
+  width:40px;height:40px;border-radius:12px; flex:none; display:flex; align-items:center; justify-content:center;
+  font-family:'Baloo 2'; font-weight:800; color:#fff; font-size:22px;
+}
+.icon-circle{
+  width:56px;height:56px;border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:29px;
+}
+.vs-col{flex:1; background:var(--white); border-radius:var(--card-radius); padding:28px; box-shadow:0 14px 34px rgba(45,49,66,.10);}
+.vs-col h3{margin:0 0 10px; font-size:25px;}
+.vs-col p{font-size:19px; line-height:1.6; color:var(--navy-soft); margin:0;}
+.badge-tag{display:inline-block; font-size:15px; font-weight:800; padding:4px 12px; border-radius:999px; color:#fff; margin-bottom:10px;}
 
-/* ---- Script 3 specific ---- */
-.load-row{display:flex; gap:24px; width:100%; justify-content:center;}
-.load-card{flex:1; max-width:340px; border-radius:22px; padding:30px 24px; color:#fff; text-align:center; box-shadow:0 12px 26px rgba(45,49,66,.16);}
-.load-card .li{font-size:52px; margin-bottom:8px;}
-.load-card .lt{font-size:19px; font-weight:800; margin-bottom:8px;}
-.load-card .ld{font-size:14.5px; line-height:1.6; opacity:.95;}
-.load-card .arrow{font-size:13px; font-weight:800; margin-top:10px; background:rgba(255,255,255,.22); border-radius:999px; padding:4px 10px; display:inline-block;}
+/* ---------- Script 3 specific: load cards, principle cards ---------- */
+.load-grid{display:flex; gap:22px; width:100%; max-width:1200px; margin:0 auto;}
+.load-card{
+  flex:1; background:var(--white); border-radius:26px; padding:30px 24px 26px; text-align:center;
+  box-shadow:0 16px 34px rgba(45,49,66,.10); border-top:8px solid var(--lc);
+  display:flex; flex-direction:column; align-items:center;
+}
+.load-icon{
+  width:64px; height:64px; border-radius:50%; background:var(--lc-soft, #EAF4FF);
+  display:flex; align-items:center; justify-content:center; font-size:32px; margin-bottom:14px; flex:none;
+}
+.load-name{font-size:21px; font-weight:800; color:var(--navy); margin-bottom:4px;}
+.load-name span{display:block; font-size:14px; font-weight:600; color:var(--navy-soft); margin-top:2px;}
+.load-desc{font-size:16px; line-height:1.55; color:var(--navy-soft); font-weight:500;}
 
-.bars{display:flex; align-items:flex-end; gap:80px; height:270px; justify-content:center;}
-.bar-col{display:flex; flex-direction:column; align-items:center; width:230px;}
-.bar{width:100%; border-radius:14px 14px 0 0; display:flex; align-items:flex-start; justify-content:center; padding-top:12px; color:#fff; font-family:'Baloo 2'; font-weight:800; font-size:15px;}
-.bar-label{margin-top:12px; font-size:14px; font-weight:700; text-align:center; line-height:1.4;}
-.bar-tag{font-size:12px; font-weight:700; margin-top:4px; text-align:center; color:var(--navy-soft);}
-
-.cta-banner{background:var(--navy); color:#fff; border-radius:var(--card-radius); padding:22px 30px; text-align:center; box-shadow:0 14px 30px rgba(45,49,66,.25);}
-.cta-banner .tag{color:var(--yellow); font-size:13px; font-weight:800; letter-spacing:.4px; margin-bottom:6px;}
-.cta-banner .main{font-size:20px; font-weight:800;}
-
-.rubric-table{width:100%; border-collapse:separate; border-spacing:0 10px; font-size:13.5px;}
-.rubric-table th{font-size:13px; font-weight:800; color:#fff; padding:10px 12px; text-align:left;}
-.rubric-table th.rf{background:var(--red); border-radius:12px 0 0 12px;}
-.rubric-table th.op{background:var(--green-dark);}
-.rubric-table th.ap{background:var(--teal-dark); border-radius:0 12px 12px 0;}
-.rubric-table th.pr{background:transparent;}
-.rubric-table td{background:#fff; padding:12px 12px; vertical-align:top; line-height:1.5; box-shadow:0 4px 10px rgba(45,49,66,.06);}
-.rubric-table td.pr{background:transparent; box-shadow:none; font-weight:800; font-size:14px; color:var(--navy); padding-right:8px;}
-.rubric-table td.rf{border-radius:12px 0 0 12px;}
-.rubric-table td.ap{border-radius:0 12px 12px 0;}
-
-.principle-card{display:flex; gap:18px; align-items:flex-start; padding:14px 0; border-bottom:2px dashed #E4E8F0;}
-.principle-card:last-child{border-bottom:none;}
+.prompt-box{
+  display:flex; align-items:flex-start; gap:14px; background:var(--navy); color:#fff;
+  border-radius:20px; padding:20px 26px; font-size:18px; line-height:1.6; max-width:900px; margin:0 auto;
+  box-shadow:0 14px 30px rgba(45,49,66,.25);
+}
+.prompt-box b{color:var(--yellow);}
 
 footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center; font-size:11px; color:#B7BCC9; z-index:1;}
+
+/* ---------- generic mobile responsiveness ---------- */
+@media (max-width: 768px){
+  body{overflow:hidden;}
+  .scene{padding:22px 20px 92px !important; overflow-y:auto;}
+  .scene-title{font-size:24px !important; margin:4px 0 12px !important; text-align:center;}
+  .scene-sub{font-size:15px; text-align:center;}
+  .scene-body{flex-direction:column !important; gap:16px !important; justify-content:flex-start !important; align-items:stretch !important;}
+  .card{padding:18px 20px !important; font-size:15px !important;}
+  .vs-col{padding:18px 20px !important; width:100% !important;}
+  .vs-col h3{font-size:18px !important;}
+  .vs-col p{font-size:14.5px !important;}
+  .load-grid{flex-direction:column !important; gap:14px !important;}
+  .load-card{padding:18px 16px !important;}
+  .load-icon{width:48px !important; height:48px !important; font-size:24px !important; margin-bottom:8px !important;}
+  .load-name{font-size:17px !important;}
+  .load-desc{font-size:14px !important;}
+  .list-row{font-size:16px !important; padding:9px 0 !important; gap:10px !important;}
+  .icon-circle{width:40px !important; height:40px !important; font-size:19px !important;}
+  .num-badge{width:32px !important; height:32px !important; font-size:16px !important;}
+  .prompt-box{font-size:14.5px !important; padding:14px 16px !important;}
+  .badge-tag{font-size:12px !important;}
+  .illus-wrap svg{width:150px !important; height:auto !important;}
+  .mascot{display:none;}
+
+  .chrome{
+    display:flex !important; position:fixed; bottom:0; left:0; right:0;
+    background:rgba(255,255,255,.95); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border-top:1px solid rgba(0,0,0,.05); padding:12px 20px; justify-content:space-between; align-items:center; z-index:100;
+  }
+  .navbtn{width:40px !important; height:40px !important; font-size:18px !important;}
+  .dot{width:8px !important; height:8px !important;}
+  .dot.on{width:20px !important;}
+  .topbar{display:none !important;}
+  .counter{display:none !important;}
+}
 </style>
 </head>
 <body>
@@ -159,276 +233,219 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
 
 <div class="deck" id="deck">
 
-<!-- SCENE 1: Segment 1 Cold Open -->
-<section class="scene" data-notes="⏱️ 0:00–0:35 (35 វិនាទី) — Segment 1: Cold Open
-តើ AI អាចជួយសិស្សឱ្យរៀនបានដែរឬទេ? តាមពិត នេះគឺជាសំណួរមិនទាន់ត្រឹមត្រូវឡើយក្នុងការចាប់ផ្តើម។
+<!-- SCENE 1 -->
+<section class="scene" data-notes="តើ AI អាចជួយសិស្សឱ្យរៀនបានដែរឬទេ? តាមពិត ការចាប់ផ្តើមដោយសំណួរនេះមិនសូវត្រូវទេ។ សំណួរដំបូងដែលគួរសួរគឺ តើសិស្សរៀនសូត្រតាមរបៀបណាឱ្យពិតប្រាកដ?
 
-សំណួរដំបូងដែលត្រឹមត្រូវគឺ៖ តើសិស្សរៀនសូត្រតាមរបៀបណាឱ្យពិតប្រាកដ? នៅពេលដែលអ្នកយល់ដឹងពីដំណើរការនៃការចងចាំ និងការគិតរបស់មនុស្ស អ្នកនឹងទទួលបានរ៉ាដាវាយតម្លៃប្រកបដោយវិទ្យាសាស្ត្រ ដើម្បីពិនិត្យមើលឧបករណ៍ណាមួយ — រួមទាំង AI ផងដែរ — ថា តើវាពិតជាជួយដល់ដំណើរការរៀនសូត្រ ឬគ្រាន់តែបង្កើតរូបភាពបោកបញ្ឆោតនៃការរៀនសូត្រប៉ុណ្ណោះ។">
-  <div class="scene-eyebrow"><div class="screen-num">១</div><div class="eyebrow-label">Segment 1 · 0:00–0:35</div></div>
+នៅពេលដែលអ្នកយល់ដឹងពីដំណើរការនៃការចងចាំ (memory) និងការគិតរបស់មនុស្ស អ្នកនឹងអាចធ្វើការវាយតម្លៃផ្អែកលើវិទ្យាសាស្ត្រ ទៅលើឧបករណ៍បង្រៀនណាមួយ រួមទាំង AI ផងដែរ ថាតើវាពិតជាជួយដល់ដំណើរការរៀនសូត្រ ឬគ្រាន់តែបង្កើតរូបភាពបោកបញ្ឆោតនៃការរៀនសូត្រប៉ុណ្ណោះ។
+
+ម៉ូឌុលមួយនេះនឹងផ្តល់ឱ្យអ្នកនូវចំណេះដឹងជាក់ស្តែងទាក់ទងវិទ្យាសាស្ត្រនៃការរៀនសូត្រ និងការលូតលាស់របស់មនុស្ស (The Science of Learning and Development)។">
+  <div class="scene-eyebrow"><div class="screen-num">១</div><div class="eyebrow-label">ការចាប់ផ្តើម</div></div>
   <div class="scene-title">សំណួរត្រឹមត្រូវជាមុនសិន</div>
   <div class="scene-body">
-    <div class="illus-wrap frag" style="flex:1; justify-content:flex-start;">
-      <svg width="330" height="380" viewBox="0 0 260 300">
-        <ellipse cx="130" cy="285" rx="80" ry="12" fill="#000" opacity=".06"/>
-        <rect x="98" y="140" width="94" height="90" rx="28" fill="var(--teal)"/>
-        <circle cx="90" cy="168" r="15" fill="var(--teal-dark)"/>
-        <circle cx="192" cy="155" r="15" fill="var(--teal-dark)"/>
-        <circle cx="145" cy="95" r="55" fill="#F2C29B"/>
-        <path d="M90 88a55 55 0 0 1 110 0v-6q-55-32-110 0z" fill="#2D2A26"/>
-        <circle cx="126" cy="98" r="5.5" fill="#2D3142"/>
-        <circle cx="164" cy="98" r="5.5" fill="#2D3142"/>
-        <path d="M128 116q17 12 34 0" stroke="#2D3142" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-      </svg>
-    </div>
-    <div style="flex:1; display:flex; flex-direction:column; gap:16px;">
-      <div class="frag speech-bubble" style="text-decoration:line-through; opacity:.55; color:var(--navy-soft); background:#F1F2F5; box-shadow:none;">តើ AI អាចជួយសិស្សរៀនបានទេ?</div>
-      <div class="frag speech-bubble" style="background:var(--orange); color:#fff;">សំណួរត្រឹមត្រូវ៖<br>តើសិស្សរៀនសូត្រតាមរបៀបណា ឱ្យពិតប្រាកដ?</div>
-      <div class="frag card" style="font-size:15px; line-height:1.7;">យល់ពីរបៀបចងចាំ និងគិតរបស់មនុស្ស → បានរ៉ាដាវាយតម្លៃប្រកបដោយវិទ្យាសាស្ត្រ សម្រាប់ពិនិត្យឧបករណ៍ណាមួយ (រួមទាំង AI)</div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 2: Segment 2 -->
-<section class="scene" data-notes="⏱️ 0:35–1:20 (45 វិនាទី) — Segment 2: Why Learning Science Comes First
-ឧបករណ៍ AI ណាក៏ដោយ អាចមើលទៅគួរឱ្យចាប់អារម្មណ៍ខ្លាំងណាស់នៅក្នុងការបង្ហាញសាកល្បង។ វាអាចបង្កើតកិច្ចតែងការបង្រៀនបានយ៉ាងឆាប់រហ័ស ឬសរសេរអត្ថបទយ៉ាងរលូន។ ប៉ុន្តែការសាកល្បងពិតប្រាកដតែមួយគត់ គឺថាតើវាធ្វើការស្របទៅនឹងរបៀបដែលការចងចាំ និងការយកចិត្តទុកដាក់របស់មនុស្សដំណើរការ — ឬមួយក៏ប្រឆាំងនឹងវា។
-
-នោះហើយជាអ្វីដែលម៉ូឌុលនេះផ្តល់ជូនអ្នក៖ ម៉ូដែលអនុវត្តជាក់ស្តែងនៃវិទ្យាសាស្ត្រនៃការរៀនសូត្រ។ ជាមួយនឹងក្របខ័ណ្ឌនេះ អ្នកនឹងវាយតម្លៃការប្រើយន្តការ AI ដោយទំនុកចិត្ត និងភាពត្រឹមត្រូវផ្នែកគរុកោសល្យ ដោយមិនចាញ់បោកការផ្សព្វផ្សាយពាណិជ្ជកម្មឡើយ។">
-  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">Segment 2 · 0:35–1:20</div></div>
-  <div class="scene-title" style="font-size:32px;">ហេតុអ្វីត្រូវចាប់ផ្តើមពីវិទ្យាសាស្ត្រការរៀនសូត្រ</div>
-  <div class="scene-body">
-    <div style="display:flex; align-items:center; gap:14px; width:100%; justify-content:center;">
-      <div class="frag card" style="text-align:center; padding:26px 22px; width:190px;">
-        <div style="font-size:42px;">🤖</div>
-        <div style="font-weight:800; font-size:16px; margin-top:8px;">ឧបករណ៍ AI</div>
-        <div style="font-size:13px; color:var(--navy-soft); margin-top:4px;">មើលទៅគួរឱ្យចាប់អារម្មណ៍</div>
-      </div>
-      <div class="frag" style="font-size:32px; color:var(--navy-soft);">→</div>
-      <div class="frag card" style="text-align:center; padding:26px 22px; width:190px; background:var(--navy); color:#fff;">
-        <div style="font-size:42px;">❓</div>
-        <div style="font-weight:800; font-size:16px; margin-top:8px;">តើដំណើរការទេ?</div>
-      </div>
-      <div class="frag" style="font-size:32px; color:var(--navy-soft);">→</div>
-      <div class="frag card" style="text-align:center; padding:24px 26px; width:340px; background:#EAF4FF; border:2px solid var(--teal);">
-        <div style="font-weight:800; font-size:16px; color:var(--teal-dark); margin-bottom:12px;">ស្ថាបត្យកម្មវិទ្យាសាស្ត្រការរៀនសូត្រ</div>
-        <div style="display:flex; gap:8px; justify-content:center;">
-          <div class="pill" style="font-size:13px; background:var(--teal); color:#fff; box-shadow:none;">🧠 អង្គចងចាំបណ្ដោះអាសន្ន</div>
-        </div>
-        <div style="display:flex; gap:8px; justify-content:center; margin-top:10px;">
-          <div class="pill" style="font-size:13px; background:var(--green-dark); color:#fff; box-shadow:none;">📚 អង្គចងចាំរយៈពេលវែង</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="frag card" style="margin-top:8px; font-size:15px; text-align:center; max-width:820px; margin-left:auto; margin-right:auto;">
-    ជាមួយក្របខ័ណ្ឌនេះ អ្នកនឹងវាយតម្លៃការប្រើប្រាស់ AI ដោយទំនុកចិត្ត និងភាពត្រឹមត្រូវផ្នែកគរុកោសល្យ — មិនចាញ់បោកការផ្សព្វផ្សាយពាណិជ្ជកម្មឡើយ
-  </div>
-</section>
-
-<!-- SCENE 3: Segment 3 Cognitive Load Theory -->
-<section class="scene" data-notes="⏱️ 1:20–3:00 (1 នាទី 40 វិនាទី) — Segment 3: Cognitive Load Theory
-ស្នូលនៃវិទ្យាសាស្ត្រនៃការរៀនសូត្រ គឺទ្រឹស្តីបន្ទុកចំណេះដឹង (Cognitive Load Theory) ដែលអភិវឌ្ឍដោយលោក John Sweller។ ទ្រឹស្តីនេះពន្យល់ថា អង្គចងចាំបណ្តោះអាសន្ន (Working Memory) របស់មនុស្សយើងមានកម្រិតកំណត់យ៉ាងច្បាស់។ រាល់ភារកិច្ចសិក្សាទាំងអស់ បង្កើតនូវបន្ទុកផ្លូវចិត្តបីយ៉ាង៖
-
-• បន្ទុកពីធម្មជាតិ (Intrinsic Load)៖ ភាពស្មុគស្មាញពីកំណើតនៃខ្លឹមសារមេរៀន — ដូចជាការរៀនរូបវិទ្យាកង់ទិច ធៀបនឹងការបូកលេខគ្រឹះ។
-• បន្ទុកក្រៅផ្លូវ (Extraneous Load)៖ ការខិតខំប្រឹងប្រែងផ្លូវចិត្តដែលមិនចាំបាច់ បណ្តាលមកពីការរចនាមិនបានល្អ — ស្លាយដែលមានអក្សរញ៉េរ៉េ ការណែនាំមិនច្បាស់លាស់ ឬការបំបែកព័ត៌មានជាច្រើនកន្លែង។
-• បន្ទុកមានប្រយោជន៍ (Germane Load)៖ ការខិតខំប្រឹងប្រែងផ្លូវចិត្តដែលមានផលិតភាពក្នុងការស្វែងយល់ និងបង្កើតរចនាសម្ព័ន្ធចំណេះដឹងវែងឆ្ងាយ។
-
-ការបង្រៀនដែលមានប្រសិទ្ធភាព — និងការប្រើប្រាស់ AI ដែលមានប្រសិទ្ធភាព — ធ្វើរឿងមួយយ៉ាងទៀងទាត់៖ វាលុបបំបាត់ 'បន្ទុកក្រៅផ្លូវ' ដើម្បីរំដោះអង្គចងចាំបណ្តោះអាសន្ន ឱ្យទៅផ្តោតលើ 'បន្ទុកមានប្រយោជន៍' វិញ។">
-  <div class="scene-eyebrow"><div class="screen-num">៣</div><div class="eyebrow-label">Segment 3 · 1:20–3:00</div></div>
-  <div class="scene-title" style="font-size:30px;">ទ្រឹស្តីបន្ទុកចំណេះដឹង (Cognitive Load Theory)</div>
-  <div class="scene-body col" style="gap:20px;">
-    <div class="load-row">
-      <div class="load-card frag" style="background:linear-gradient(160deg,#8B93A8,var(--navy));">
-        <div class="li">🧩</div>
-        <div class="lt">បន្ទុកពីធម្មជាតិ<br><span style="font-weight:600; font-size:12px;">Intrinsic Load</span></div>
-        <div class="ld">ភាពស្មុគស្មាញពីកំណើតនៃខ្លឹមសារ — ដូចរូបវិទ្យាកង់ទិច ធៀបនឹងការបូកលេខ</div>
-        <div class="arrow">⏸ ថេរ</div>
-      </div>
-      <div class="load-card frag" style="background:linear-gradient(160deg,#F08A8A,var(--red));">
-        <div class="li">🌀</div>
-        <div class="lt">បន្ទុកក្រៅផ្លូវ<br><span style="font-weight:600; font-size:12px;">Extraneous Load</span></div>
-        <div class="ld">ការខិតខំមិនចាំបាច់ពីការរចនាមិនល្អ — ស្លាយច្របូកច្របល់ ការណែនាំមិនច្បាស់</div>
-        <div class="arrow">↓ កាត់បន្ថយ</div>
-      </div>
-      <div class="load-card frag" style="background:linear-gradient(160deg,#8FD1AE,var(--green-dark));">
-        <div class="li">🧠</div>
-        <div class="lt">បន្ទុកមានប្រយោជន៍<br><span style="font-weight:600; font-size:12px;">Germane Load</span></div>
-        <div class="ld">ការខិតខំផ្លូវចិត្តមានផលិតភាព ក្នុងការកសាងចំណេះដឹងវែងឆ្ងាយ</div>
-        <div class="arrow">↑ បង្កើន</div>
-      </div>
-    </div>
-    <div class="frag card" style="font-size:15px; text-align:center; max-width:820px;">
-      ការបង្រៀន និង AI ដែលមានប្រសិទ្ធភាព៖ <b>លុបបំបាត់បន្ទុកក្រៅផ្លូវ</b> ដើម្បីរំដោះទំហំសម្រាប់ <b>បន្ទុកមានប្រយោជន៍</b>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 4: Segment 4 Worksheet Design -->
-<section class="scene" data-notes="⏱️ 3:00–4:00 (1 នាទី) — Segment 4: Applying It to Worksheet Design
-សូមបកប្រែទ្រឹស្តីនេះទៅជាឧទាហរណ៍អនុវត្តជាក់ស្តែងក្នុងថ្នាក់រៀន៖ ការរចនាសន្លឹកកិច្ចការ។
-
-ស្រមៃមើលសន្លឹកកិច្ចការជីវវិទ្យាមួយ ដែលរូបភាពកោសិកាស្ថិតនៅលើទំព័រទី ១ ហើយបញ្ជីនិយមន័យស្ថិតនៅលើទំព័រទី ២។ សិស្សត្រូវតែត្រឡប់ចុះត្រឡប់ឡើងជាប្រចាំ ដើម្បីផ្គូផ្គងលេខទៅនឹងឈ្មោះ។ ការផ្លាស់ប្តូរចុះឡើងនេះ ដុតបំផ្លាញថាមពលខួរក្បាលលើការស្វែងរក — នេះហៅថា 'ផលប៉ះពាល់នៃការបំបែកការយកចិត្តទុកដាក់' (Split-Attention Effect) ដែលជាទម្រង់នៃ 'បន្ទុកក្រៅផ្លូវ'។
-
-ឥឡូវនេះ សូមមើលកំណែដែលបានរចនាឡើងវិញ។ នៅពេលដែលអ្នកដាក់ស្លាកសញ្ញា និងការពន្យល់ខ្លីៗនៅជាប់នឹងរូបភាពដោយផ្ទាល់ ការខិតខំប្រឹងប្រែងដែលខាតបង់នោះនឹងបាត់បង់។ អង្គចងចាំបណ្តោះអាសន្នទាំងមូលរបស់សិស្ស នឹងត្រូវយកទៅប្រើប្រាស់ដើម្បីយល់ពីមុខងាររបស់កោសិកាវិញ។">
-  <div class="scene-eyebrow"><div class="screen-num">៤</div><div class="eyebrow-label">Segment 4 · 3:00–4:00</div></div>
-  <div class="scene-title">អនុវត្តទ្រឹស្តីទៅលើការរចនាសន្លឹកកិច្ចការ</div>
-  <div class="scene-body">
     <div class="vs-col frag">
-      <span class="badge-tag" style="background:var(--red);">🚩 Split-Attention Effect</span>
-      <h3>ការរចនាមិនល្អ</h3>
-      <div style="display:flex; gap:10px; margin:12px 0;">
-        <div class="card" style="flex:1; padding:14px; text-align:center; background:#FCEBEA;">
-          <div style="font-size:11px; font-weight:800; color:var(--navy-soft);">ទំព័រ ១</div>
-          <div style="font-size:34px;">🔬①②③</div>
-        </div>
-        <div class="card" style="flex:1; padding:14px; text-align:center; background:#FCEBEA;">
-          <div style="font-size:11px; font-weight:800; color:var(--navy-soft);">ទំព័រ ២</div>
-          <div style="font-size:13px; margin-top:8px;">① ... ② ... ③ ...</div>
-        </div>
-      </div>
-      <p>សិស្សត្រូវត្រឡប់ចុះឡើងជានិច្ច ដើម្បីផ្គូផ្គងលេខ — ខាតបង់ថាមពលខួរក្បាលលើការស្វែងរក</p>
+      <span class="badge-tag" style="background:var(--red);">❌ សំណួរមិនសូវត្រូវ</span>
+      <h3>តើ AI អាចជួយសិស្សរៀនបានទេ?</h3>
+      <p>នេះជាកន្លែងចាប់ផ្តើមមិនត្រឹមត្រូវ — ព្រោះមិនទាន់ដឹងថាការរៀនសូត្រពិតប្រាកដកើតឡើងតាមរបៀបណា</p>
     </div>
     <div class="vs-col frag">
-      <span class="badge-tag" style="background:var(--green-dark);">✅ បន្ទុកក្រៅផ្លូវត្រូវបានលុប</span>
-      <h3>ការរចនាប្រសើរ</h3>
-      <div class="card" style="padding:14px; text-align:center; background:#E9F9EF; margin:12px 0;">
-        <div style="font-size:34px;">🔬</div>
-        <div style="font-size:12px; margin-top:6px;">① ស្លាកផ្ទាល់លើរូបភាព · ② ស្លាកផ្ទាល់ · ③ ស្លាកផ្ទាល់</div>
-      </div>
-      <p>ស្លាកសញ្ញា + ការពន្យល់ខ្លីនៅជាប់រូបភាព → អង្គចងចាំទាំងមូលផ្តោតលើការយល់ដឹងវិញ</p>
+      <span class="badge-tag" style="background:var(--green-dark);">✅ សំណួរត្រឹមត្រូវ</span>
+      <h3>តើសិស្សរៀនសូត្រតាមរបៀបណា ឱ្យពិតប្រាកដ?</h3>
+      <p>យល់ដឹងពីការចងចាំ + ការគិតរបស់មនុស្សសិន → បានរ៉ាដាវាយតម្លៃប្រកបដោយវិទ្យាសាស្ត្រ សម្រាប់ឧបករណ៍ណាមួយ រួមទាំង AI</p>
     </div>
   </div>
 </section>
 
-<!-- SCENE 5: Segment 5 Study Methods -->
-<section class="scene" data-notes="⏱️ 4:00–5:15 (1 នាទី 15 វិនាទី) — Segment 5: Effective vs. Ineffective Study Methods
-ទ្រឹស្តីបន្ទុកចំណេះដឹងមិនត្រឹមតែគ្រប់គ្រងរបៀបដែលយើងបង្ហាញមេរៀនប៉ុណ្ណោះទេ — វាក៏កំណត់របៀបដែលសិស្សគួរសិក្សាផងដែរ។
+<!-- SCENE 2 -->
+<section class="scene" data-notes="ព្រោះការរៀនសូត្រមិនមែនកើតឡើងតែក្នុងខួរក្បាលសិស្សដាច់ដោយឡែកនោះទេ វាកើតឡើងតាមរយៈទំនាក់ទំនងរវាងសិស្សនិងគ្រូផងដែរ។ ទំនាក់ទំនង ដើរតួជាមូលដ្ឋានគ្រឹះសម្រាប់ការរៀនសូត្រ។
 
-ការស្រាវជ្រាវផ្នែកចិត្តវិទ្យាខួរក្បាលបង្ហាញយ៉ាងច្បាស់ពីគម្លាតដ៏ធំរវាង វិធីសាស្ត្រសិក្សាដែលពេញនិយម និងវិធីសាស្ត្រដែលមានប្រសិទ្ធភាព។ ការអានសៀវភៅឡើងវិញ និងការគូសហាយឡាយលើទំព័រសៀវភៅ ធ្វើឱ្យមានអារម្មណ៍ថាទទួលបានផលច្រើន ប៉ុន្តែវាបង្កើតនូវ 'រូបភាពបោកបញ្ឆោតនៃសមត្ថភាព' (Illusion of Competence) ប៉ុណ្ណោះ។ ពួកវាត្រូវការការកែច្នៃផ្លូវចិត្តតិចតួចបំផុត។
+ការស្រាវជ្រាវផ្នែកសរីរវិទ្យាខួរក្បាល បង្ហាញថា ការលូតលាស់ខួរក្បាល និងសមត្ថភាពសិក្សារបស់កុមារ មិនអាចញែកចេញពីទំនាក់ទំនងសង្គម និងអារម្មណ៍បានឡើយ។ ទំនាក់ទំនងដែលមានសុវត្ថិភាព និងទំនុកចិត្ត រវាងគ្រូ និងសិស្ស គឺជា កត្តាមូលដ្ឋានសម្រាប់ការរៀនសូត្រ មិនមែនគ្រាន់តែជាកត្តាបន្ថែមនោះទេ។
 
-ផ្ទុយទៅវិញ យុទ្ធសាស្ត្រដែលមានប្រសិទ្ធភាពខ្ពស់ ដូចជា Active Recall (ការរំលឹកចំណេះដឹងដោយខ្លួនឯង ដោយមិនមើលសៀវភៅ) និង Spaced Repetition (ការរំលឹកឡើងវិញតាមចន្លោះពេល) ជួយពង្រឹងការចងចាំរយៈពេលវែងយ៉ាងខ្លាំង។ ក្នុងនាមជាគ្រូបង្រៀន តួនាទីរបស់យើងគឺតម្រង់ទិសសិស្សឱ្យចាកចេញពីទម្លាប់អកម្ម ហើយឆ្ពោះទៅរកការរំលឹកសកម្ម ដោយប្រើប្រាស់ AI ដើម្បីបង្កើតកម្រងសំណួរ និង Flashcards យ៉ាងឆាប់រហ័ស។">
-  <div class="scene-eyebrow"><div class="screen-num">៥</div><div class="eyebrow-label">Segment 5 · 4:00–5:15</div></div>
-  <div class="scene-title" style="font-size:30px;">វិធីសាស្ត្រសិក្សា៖ មានប្រសិទ្ធភាព vs គ្មានប្រសិទ្ធភាព</div>
-  <div class="scene-body col" style="gap:14px;">
-    <div class="bars">
-      <div class="bar-col">
-        <div class="frag bar" style="height:100px; background:linear-gradient(160deg,#F08A8A,var(--red)); width:100%;">ទាប</div>
-        <div class="bar-label">ការអានឡើងវិញ<br>ការគូសបន្ទាត់</div>
-        <div class="bar-tag">⚠️ រូបភាពបោកបញ្ឆោតនៃសមត្ថភាព</div>
-      </div>
-      <div class="bar-col">
-        <div class="frag bar" style="height:235px; background:linear-gradient(160deg,#8FD1AE,var(--green-dark)); width:100%;">ខ្ពស់</div>
-        <div class="bar-label">ការរំលឹកសកម្ម<br>ការឃ្លាតពេលរំលឹក</div>
-        <div class="bar-tag">✅ ការចងចាំរយៈពេលវែង</div>
-      </div>
-    </div>
-    <div class="frag card" style="font-size:14.5px; max-width:820px; text-align:center;">
-      💡 គ្រូជួយសិស្សបោះបង់ទម្លាប់អកម្ម ដោយប្រើ <b>AI បង្កើតកម្រងសំណួរ និង Flashcards</b> សម្រាប់ការរំលឹកសកម្ម
-    </div>
-  </div>
-</section>
+នៅពេលដែលសិស្សមានអារម្មណ៍ថាមិនមានសុវត្ថិភាព ភ័យខ្លាច ឬឯកោ ខួរក្បាលរបស់ពួកគេនឹងបែងចែកធនធានទៅរកការការពារខ្លួន ជាជាងការគិត និងចងចាំ។ នេះមានន័យថា ភាពតានតឹងផ្នែកអារម្មណ៍ គឺជាទម្រង់មួយនៃ «បន្ទុកមកពីខាងក្រៅ» (Extraneous Load) ដែលយើងនឹងសិក្សានៅស្លាយបន្ទាប់។
 
-<!-- SCENE 6: Segment 7 Conclusion -->
-<section class="scene" data-notes="⏱️ 6:15–7:00 (45 វិនាទី) — Segment 7: Conclusion & Immediate Application
-សរុបមក៖ បច្ចេកវិទ្យា AI មិនគួរបញ្ជ្រាបចូលដោយគ្រាន់តែចង់ប្រើប្រាស់វានោះឡើយ។ វាត្រូវតែបម្រើដល់ច្បាប់នៃការរៀនសូត្ររបស់មនុស្សដែលត្រូវបានស្រាវជ្រាវជ្រោមជ្រែងយ៉ាងច្បាស់លាស់។
-
-នៅពេលអ្នកឈានចូលទៅកាន់សកម្មភាពអនុវត្តបន្ទាប់ សូមចងចាំនូវស្តង់ដារទាំងបីនេះ៖
-១. តើធនធានរបស់អ្នកបានលុបបំបាត់ 'បន្ទុកក្រៅផ្លូវ' ឬទេ?
-២. តើវាជំរុញឱ្យមានការរំលឹកសកម្ម (Active Recall) ឬទេ?
-៣. តើវាការពារ 'កម្រិតលំបាកដែលមានប្រយោជន៍' ដើម្បីឱ្យសិស្សចូលរួមក្នុងការគិតពិតប្រាកដឬទេ?
-
-ឥឡូវនេះ សូមបើកសម្ភារៈសិក្ខាសាលារបស់អ្នក។ អ្នកត្រៀមខ្លួនរួចរាល់ហើយក្នុងការយកគោលការណ៍វិទ្យាសាស្ត្រនៃការរៀនសូត្រទាំងនេះ ទៅអនុវត្តក្នុងការរចនាសន្លឹកកិច្ចការឡើងវិញ និងកែលម្អកិច្ចតែងការបង្រៀនរបស់អ្នក។ សូមចាប់ផ្តើម!">
-  <div class="scene-eyebrow"><div class="screen-num">៦</div><div class="eyebrow-label">Segment 7 · 6:15–7:00</div></div>
-  <div class="scene-title">សរុបសេចក្តី និងជំហានបន្ទាប់</div>
-  <div class="scene-body col" style="gap:18px; max-width:760px; margin:0 auto; align-items:stretch;">
-    <div class="card frag">
-      <div class="list-row"><div class="icon-circle" style="background:#FCEBEA;">1️⃣</div><div class="lr-text">តើធនធានរបស់អ្នកបានលុបបំបាត់ <b>បន្ទុកក្រៅផ្លូវ</b> ឬទេ?</div></div>
-      <div class="list-row frag"><div class="icon-circle" style="background:#EAF4FF;">2️⃣</div><div class="lr-text">តើវាជំរុញឱ្យមាន <b>ការរំលឹកសកម្ម</b> (Active Recall) ឬទេ?</div></div>
-      <div class="list-row frag"><div class="icon-circle" style="background:#E9F9EF;">3️⃣</div><div class="lr-text">តើវាការពារ <b>កម្រិតលំបាកមានប្រយោជន៍</b> ដើម្បីឱ្យសិស្សគិតពិតប្រាកដឬទេ?</div></div>
-    </div>
-    <div class="frag cta-banner">
-      <div class="tag">សកម្មភាពបន្ទាប់</div>
-      <div class="main">🚀 រចនាសន្លឹកកិច្ចការឡើងវិញ & កែលម្អផែនការបង្រៀន</div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 7 (BONUS): Learning Science Principles Summary -->
-<section class="scene" data-notes="សេចក្តីសង្ខេប៖ វិទ្យាសាស្ត្រនៃការរៀនសូត្រ និងក្របខ័ណ្ឌវាយតម្លៃ AI (សម្ភារៈយោង)
-Cognitive Load Theory (Sweller) — ដែនកំណត់អង្គចងចាំបណ្ដោះអាសន្ន៖ បន្ទុកពីធម្មជាតិ · បន្ទុកក្រៅផ្លូវ · បន្ទុកមានប្រយោជន៍។ ប្រើ AI កាត់បន្ថយបន្ទុកក្រៅផ្លូវ ដើម្បីទុកថាមពលផ្លូវចិត្តសម្រាប់ការកសាងចំណេះដឹង។
-Study Strategy Efficacy (Dunlosky) — ការរំលឹកសកម្ម និងការឃ្លាតពេលរំលឹក មានប្រសិទ្ធភាពជាងការអានឡើងវិញ និងការគូសបន្ទាត់។ ប្រើ AI បង្កើតសំណួរអនុវត្ត Flashcards ជំនួសសេចក្តីសង្ខេប។
-Desirable Difficulty (Bjork) — ការលំបាកគិតត្រឹមត្រូវជួយពង្រឹងការចងចាំរយៈពេលវែង។ ជៀសវាងប្រើ AI សម្រួលខ្លឹមសារ ឬផ្តល់ចម្លើយភ្លាមៗ — ត្រូវរក្សាការតស៊ូគិតប្រកបដោយផលិតភាព។
-
-(សម្គាល់៖ គោលការណ៍ 'កម្រិតលំបាកមានប្រយោជន៍' នេះមិនមានក្នុងផ្នែកវីដេអូជាក់លាក់ណាមួយឡើយ ដូច្នេះទើបដាក់សង្ខេបនៅទីនេះ)">
-  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
-  <div class="scene-title" style="font-size:32px;">៣ គោលការណ៍វិទ្យាសាស្ត្រការរៀនសូត្រ</div>
-  <div class="scene-body col" style="align-items:stretch; max-width:900px; margin:0 auto;">
-    <div class="card frag">
-      <div class="principle-card">
-        <div class="icon-circle" style="background:#EAF4FF;">🧠</div>
-        <div class="lr-text">
-          <b style="font-size:16px;">ទ្រឹស្ដីបន្ទុកចំណេះដឹង <span style="font-weight:600; font-size:12px; color:var(--navy-soft);">(Sweller)</span></b>
-          <div class="lr-sub">ដែនកំណត់អង្គចងចាំបណ្ដោះអាសន្ន៖ បន្ទុកពីធម្មជាតិ · បន្ទុកក្រៅផ្លូវ · បន្ទុកមានប្រយោជន៍</div>
-          <div class="lr-sub" style="color:var(--teal-dark); font-weight:700; margin-top:3px;">→ ប្រើ AI កាត់បន្ថយបន្ទុកក្រៅផ្លូវ ដើម្បីទុកថាមពលសម្រាប់កសាងចំណេះដឹង</div>
-        </div>
-      </div>
-      <div class="principle-card frag">
-        <div class="icon-circle" style="background:#FDF1E3;">🔁</div>
-        <div class="lr-text">
-          <b style="font-size:16px;">ប្រសិទ្ធភាពវិធីសាស្ត្រសិក្សា <span style="font-weight:600; font-size:12px; color:var(--navy-soft);">(Dunlosky)</span></b>
-          <div class="lr-sub">ការរំលឹកសកម្ម និងការឃ្លាតពេលរំលឹក > ការអានឡើងវិញ និងការគូសបន្ទាត់</div>
-          <div class="lr-sub" style="color:var(--orange-dark); font-weight:700; margin-top:3px;">→ ប្រើ AI បង្កើតសំណួរអនុវត្ត និង Flashcards ជំនួសសេចក្តីសង្ខេប</div>
-        </div>
-      </div>
-      <div class="principle-card frag">
-        <div class="icon-circle" style="background:#E9F9EF;">💪</div>
-        <div class="lr-text">
-          <b style="font-size:16px;">កម្រិតលំបាកមានប្រយោជន៍ <span style="font-weight:600; font-size:12px; color:var(--navy-soft);">(Bjork)</span></b>
-          <div class="lr-sub">ការលំបាកគិតត្រឹមត្រូវ ជួយពង្រឹងការចងចាំរយៈពេលវែង</div>
-          <div class="lr-sub" style="color:var(--green-dark); font-weight:700; margin-top:3px;">→ ជៀសវាង AI សម្រួល ឬឆ្លើយភ្លាមៗ — រក្សាការតស៊ូគិតប្រកបដោយផលិតភាព</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 8 (BONUS): Rubric Matrix -->
-<section class="scene" data-notes="រ៉ូប្រិកអនុវត្ត៖ ម៉ាទ្រីសវាយតម្លៃ AI តាមវិទ្យាសាស្ត្រការរៀនសូត្រ (សម្រាប់សិក្ខាសាលារចនាសន្លឹកកិច្ចការ)
-១. ការគ្រប់គ្រងបន្ទុកចំណេះដឹង — សញ្ញាអាក្រក់៖ AI បង្កើតសន្លឹកកិច្ចការច្របូកច្របល់ ឬអត្ថបទវែងពេក។ ការអនុវត្តល្អ៖ AI រៀបចំខ្លឹមសារស្អាត មានស្លាកសញ្ញារួមបញ្ចូល។ អនុវត្ត៖ ដាក់ស្លាកសញ្ញាផ្ទាល់លើដ្យាក្រាម។
-២. ការរំលឹកសកម្ម និងការឃ្លាតពេល — សញ្ញាអាក្រក់៖ AI ផ្តល់ចម្លើយពេញ លើកទឹកចិត្តអកម្ម។ ការអនុវត្តល្អ៖ AI ជាគ្រូឯកជន បង្កើតសំណួរ Flashcards។ អនុវត្ត៖ បំលែងកថាខណ្ឌជាសំណួរអនុវត្ត។
-៣. កម្រិតលំបាកមានប្រយោជន៍ — សញ្ញាអាក្រក់៖ AI ធ្វើកិច្ចការជំនួសទាំងស្រុង។ ការអនុវត្តល្អ៖ AI ណែនាំបន្តិចម្តងៗ ជំរុញការគិត។ អនុវត្ត៖ លៃតម្រូវកម្រិតលំបាកតាមកម្រិតសិស្ស។">
-  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
-  <div class="scene-title" style="font-size:28px;">រ៉ូប្រិកវាយតម្លៃ AI តាមវិទ្យាសាស្ត្រការរៀនសូត្រ</div>
+ដូច្នេះ មុនពេលនិយាយពីបច្ចេកទេសបង្រៀនណាមួយ ក្របខ័ណ្ឌនេះរំលឹកយើងថា ទំនាក់ទំនងរវាងគ្រូ និងសិស្សគឺជាលក្ខខណ្ឌគ្រឹះ ដែលធ្វើឱ្យការរៀនសូត្រកើតឡើងបាន។">
+  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">មូលដ្ឋានទី១</div></div>
+  <div class="scene-title" style="font-size:36px;">ទំនាក់ទំនង ជាមូលដ្ឋានគ្រឹះនៃការរៀនសូត្រ</div>
   <div class="scene-body">
-    <table class="rubric-table frag">
-      <thead>
-        <tr>
-          <th class="pr"></th>
-          <th class="rf">🚩 សញ្ញាអាក្រក់</th>
-          <th class="op">✅ ការអនុវត្តល្អ</th>
-          <th class="ap">🎯 អនុវត្តក្នុងថ្នាក់</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="frag">
-          <td class="pr">ការគ្រប់គ្រង<br>បន្ទុកចំណេះដឹង</td>
-          <td class="rf">AI បង្កើតសន្លឹកកិច្ចការច្របូកច្របល់ ឬអត្ថបទវែងពេក បង្កើនបន្ទុកក្រៅផ្លូវ</td>
-          <td class="op">AI រៀបចំខ្លឹមសារស្អាត មានស្លាកសញ្ញារួមបញ្ចូល និងជំហានតូចៗ</td>
-          <td class="ap">ដាក់ស្លាកសញ្ញាផ្ទាល់លើដ្យាក្រាម លុបរូបភាពតុបតែងមិនចាំបាច់</td>
-        </tr>
-        <tr class="frag">
-          <td class="pr">ការរំលឹកសកម្ម<br>និងការឃ្លាតពេល</td>
-          <td class="rf">AI ផ្តល់ចម្លើយពេញ ឬសង្ខេប លើកទឹកចិត្តការអានឡើងវិញដោយអកម្ម</td>
-          <td class="op">AI ជាគ្រូឯកជន បង្កើតសំណួរសាកល្បងខ្លួនឯង និង Flashcards</td>
-          <td class="ap">បំលែងកថាខណ្ឌសៀវភៅជាសំណួរអនុវត្ត និងលំហាត់បំពេញចន្លោះ</td>
-        </tr>
-        <tr class="frag">
-          <td class="pr">កម្រិតលំបាក<br>មានប្រយោជន៍</td>
-          <td class="rf">AI ធ្វើកិច្ចការជំនួសសិស្សទាំងស្រុង លុបបំបាត់ការគិត និងការតស៊ូ</td>
-          <td class="op">AI ណែនាំបន្តិចម្តងៗ ជំនួយភារកិច្ចស្មុគស្មាញ ជំរុញការគិតវិភាគ</td>
-          <td class="ap">លៃតម្រូវកម្រិតលំបាកតាមកម្រិតសិស្ស មិនលុបជំហានដោះស្រាយបញ្ហា</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="vs-col frag">
+      <span class="badge-tag" style="background:var(--green-dark);">🛡️ សុវត្ថិភាព + ទំនុកចិត្ត</span>
+      <h3>ខួរក្បាលផ្តោតលើការគិត</h3>
+      <p>នៅពេលទំនាក់ទំនងគ្រូ-សិស្សមានសុវត្ថិភាព ខួរក្បាលសិស្សអាចប្រើប្រាស់ធនធានពេញលេញលើការគិត និងការចងចាំ</p>
+    </div>
+    <div class="vs-col frag">
+      <span class="badge-tag" style="background:var(--red);">⚠️ ភ័យខ្លាច / ឯកោ</span>
+      <h3>ខួរក្បាលការពារខ្លួន</h3>
+      <p>ខួរក្បាលបែងចែកធនធានទៅរកការការពារខ្លួន — ជា «បន្ទុកមកពីខាងក្រៅ» (Extraneous Load) ដែលរារាំងការរៀនសូត្រ</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 3 -->
+<section class="scene" data-notes="បន្ទាប់ពីបានយល់ដឹងអំពីតួនាទីនៃទំនាក់ទំនងអន្តរបុគ្គលចំពោះការរៀនសូត្ររបស់សិស្សរួចហើយ យើងនឹងមើលទៅលើមូលដ្ឋានទីពីរ ដែលពាក់ព័ន្ធនឹងរបៀបដែលខួរក្បាលដំណើរការព័ត៌មាន។ ទ្រឹស្តីបន្ទុកការយល់ដឹង (Cognitive Load Theory) ដែលអភិវឌ្ឍដោយលោក ចន ស្វែឡឺ (John Sweller)។ ទ្រឹស្តីនេះពន្យល់ថា អង្គចងចាំបណ្តោះអាសន្ន (Working Memory) របស់មនុស្សយើងមានកម្រិតកំណត់។
+
+រាល់កិច្ចការដែលត្រូវការប្រើការយល់ដឹង ទាំងអស់អាចមានបន្ទុកទៅលើការយល់ដឹង៣យ៉ាង៖
+
+បន្ទុកផ្ទាល់ (Intrinsic Load)៖ សំដៅដល់ភាពស្មុគស្មាញនៃខ្លឹមសារ ដូចជាមេរៀនរូបវិទ្យាកង់ទិច ឬមេរៀនប្រភាគសម្រាប់ក្មេងថ្នាក់ទី៣។
+
+បន្ទុកក្រៅ (Extraneous Load)៖ សំដៅដល់ភាពស្មុគស្មាញដែលកើតឡើងដោយរបៀបដែលខ្លឹមសារត្រូវបានបង្ហាញ ឧទាហរណ៍ ការសរសេរអក្សរខ្វៀកលើក្តាខៀនធ្វើអោយពិបាកមើលយល់ ឬការណែនាំមិនច្បាស់លាស់។
+
+បន្ទុកមានប្រយោជន៍ (Germane Load)៖ សំដៅលើការខិតខំប្រឹងប្រែងរបស់ខួរក្បាល ក្នុងការស្វែងយល់ និងបង្កើតរចនាសម្ព័ន្ធចំណេះដឹងប្រទាក់ក្រឡាគ្នា។
+
+ការបង្រៀនដែលមានប្រសិទ្ធភាព និងការប្រើប្រាស់ AI ដើម្បីការរៀននិងបង្រៀនដែលមានប្រសិទ្ធភាព ចាំបាច់ត្រូវលុបបំបាត់ «បន្ទុកក្រៅ» ដើម្បីរំដោះអង្គចងចាំបណ្តោះអាសន្ន ឱ្យទៅផ្តោតលើ «បន្ទុកមានប្រយោជន៍» វិញ។">
+  <div class="scene-eyebrow"><div class="screen-num">៣</div><div class="eyebrow-label">មូលដ្ឋានទី២</div></div>
+  <div class="scene-title" style="font-size:34px;">ទ្រឹស្តីបន្ទុកការយល់ដឹង (Cognitive Load Theory)</div>
+  <div class="scene-body col">
+    <div class="load-grid">
+      <div class="load-card frag" style="--lc:var(--teal); --lc-soft:#EAF4FF;">
+        <div class="load-icon">🧩</div>
+        <div class="load-name">បន្ទុកផ្ទាល់<span>(Intrinsic Load)</span></div>
+        <div class="load-desc">ភាពស្មុគស្មាញពីកំណើតនៃខ្លឹមសារ — ដូចជារូបវិទ្យាកង់ទិច ឬប្រភាគសម្រាប់ថ្នាក់ទី៣</div>
+      </div>
+      <div class="load-card frag" style="--lc:var(--red); --lc-soft:#FDECEC;">
+        <div class="load-icon">🌀</div>
+        <div class="load-name">បន្ទុកក្រៅ<span>(Extraneous Load)</span></div>
+        <div class="load-desc">ការលំបាកមិនចាំបាច់ពីរបៀបបង្ហាញខ្លឹមសារ — អក្សរខ្វៀក ការណែនាំមិនច្បាស់</div>
+      </div>
+      <div class="load-card frag" style="--lc:var(--green-dark); --lc-soft:#E9F9EF;">
+        <div class="load-icon">🧠</div>
+        <div class="load-name">បន្ទុកមានប្រយោជន៍<span>(Germane Load)</span></div>
+        <div class="load-desc">ការខិតខំរបស់ខួរក្បាល ក្នុងការស្វែងយល់ និងកសាងចំណេះដឹងភ្ជាប់គ្នា</div>
+      </div>
+    </div>
+    <div class="card frag" style="margin-top:26px; font-size:20px; text-align:center; max-width:820px;">
+      💡 ការបង្រៀន + AI ដែលមានប្រសិទ្ធភាព៖ <b>លុបបំបាត់បន្ទុកក្រៅ</b> ដើម្បីរំដោះអង្គចងចាំបណ្តោះអាសន្ន ឱ្យផ្តោតលើ <b>បន្ទុកមានប្រយោជន៍</b>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 4 -->
+<section class="scene" data-notes="ឧទាហរណ៍មួយដែលពាក់ព័ន្ធនឹងទ្រឹស្តីខាងលើ គឺការបង្កើតចំណោទគណិតវិទ្យា។
+
+ស្រមៃមើលចំណោទមួយ ដែលទាមទារឱ្យសិស្សគិតពីរជំហាន៖ គុណលេខមុន រួចទើបដក។ ជំហានទាំងពីរនេះ ជា «បន្ទុកផ្ទាល់» (Intrinsic Load) របស់មេរៀននេះ ដែលមិនអាចលុបបំបាត់បានទេ ព្រោះជាចំណេះដឹងស្នូលដែលកំពុងបង្រៀន។ ប៉ុន្តែប្រសិនបើចំណោទនោះសរសេរដោយប្រើពាក្យពេចន៍កម្រិតខ្ពស់ជាងកម្រិតអានរបស់សិស្ស ឬឃ្លាស្មុគស្មាញពេក សិស្សនឹងចំណាយអង្គចងចាំបណ្តោះអាសន្នភាគច្រើន ដើម្បីយល់ពាក្យជាមុនសិន មុននឹងចាប់ផ្តើមគិតគណិតវិទ្យាផ្ទាល់ខ្លួន។ នេះជាទម្រង់មួយនៃ«បន្ទុកក្រៅ» (Extraneous Load) ព្រោះការលំបាកភាសា មិនមែនជាចំណេះដឹងគណិតវិទ្យាដែលកំពុងវាយតម្លៃនោះទេ។
+
+ឥឡូវនេះ សូមមើលកំណែដែលបានរចនាឡើងវិញ។ នៅពេលអ្នកសរសេរចំណោទឡើងវិញដោយប្រើពាក្យសាមញ្ញ សមស្របនឹងកម្រិតថ្នាក់របស់សិស្ស ការលំបាកគណិតវិទ្យានៅតែដដែល ប៉ុន្តែការខិតខំប្រឹងប្រែងលើភាសាបានបាត់ទៅវិញ។ អង្គចងចាំបណ្តោះអាសន្នទាំងមូលរបស់សិស្ស ឥឡូវនេះអាចយកទៅប្រើប្រាស់ដើម្បីដោះស្រាយជំហានទាំងពីរនៃចំណោទ ដែលជា «បន្ទុកមានប្រយោជន៍» (Germane Load) ពិតប្រាកដ។ នេះក៏ជាកន្លែងដែល AI អាចជួយបានយ៉ាងឆាប់រហ័ស៖ ឧទាហរណ៍ ពាក្យបញ្ជា (prompt): សរសេរចំណោទឡើងវិញឱ្យសមស្របនឹងកម្រិតអាន ខណៈពេលរក្សាកម្រិតលំបាកគណិតវិទ្យាដដែល។">
+  <div class="scene-eyebrow"><div class="screen-num">៤</div><div class="eyebrow-label">អនុវត្តទ្រឹស្តី</div></div>
+  <div class="scene-title" style="font-size:34px;">ឧទាហរណ៍៖ ការសរសេរចំណោទគណិតវិទ្យាឡើងវិញ</div>
+  <div class="scene-body col" style="gap:18px;">
+    <div style="display:flex; gap:24px; width:100%; max-width:1100px; margin:0 auto;">
+      <div class="vs-col frag">
+        <span class="badge-tag" style="background:var(--red);">🌀 បន្ទុកក្រៅបន្ថែម</span>
+        <h3>ចំណោទដើម</h3>
+        <p>ពាក្យពេចន៍លើសកម្រិតអានរបស់សិស្ស — សិស្សខាតបង់អង្គចងចាំលើការស្វែងយល់ពាក្យ មុននឹងចាប់ផ្តើមគិតគណិតវិទ្យា</p>
+      </div>
+      <div class="vs-col frag">
+        <span class="badge-tag" style="background:var(--green-dark);">🧠 បន្ទុកមានប្រយោជន៍</span>
+        <h3>ចំណោទបានកែសម្រួល</h3>
+        <p>ពាក្យសាមញ្ញ សមស្របនឹងកម្រិតថ្នាក់ — កម្រិតលំបាកគណិតវិទ្យាដដែល (គុណមុន ដកក្រោយ) ប៉ុន្តែសិស្សផ្តោតការគិតលើគណិតវិទ្យាពេញលេញ</p>
+      </div>
+    </div>
+    <div class="prompt-box frag">
+      <span style="font-size:22px;">🤖</span>
+      <div><b>ពាក្យបញ្ជា AI (Prompt):</b> សរសេរចំណោទឡើងវិញឱ្យសមស្របនឹងកម្រិតអាន ខណៈពេលរក្សាកម្រិតលំបាកគណិតវិទ្យាដដែល។</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 5 -->
+<section class="scene" data-notes="ទ្រឹស្តីបន្ទុកការយល់ដឹងមិនត្រឹមតែគ្រប់គ្រងរបៀបដែលយើងបង្ហាញមេរៀនប៉ុណ្ណោះទេ វាក៏កំណត់របៀបដែលសិស្សគួររៀនផងដែរ។
+
+ការស្រាវជ្រាវផ្នែកចិត្តវិទ្យាអប់រំបានរកឃើញគម្លាតឆ្ងាយគ្នារវាងវិធីសាស្ត្ររៀនដែលពេញនិយម និងវិធីសាស្ត្រដែលមានប្រសិទ្ធភាព។ ការអានសៀវភៅឡើងវិញ និងការគូសហាយឡាយលើទំព័រសៀវភៅ ធ្វើឱ្យមានអារម្មណ៍ថាទទួលបានផលច្រើន ប៉ុន្តែវាបង្កើតនូវ រូបភាពបោកបញ្ឆោតនៃសមត្ថភាព (Illusion of Competence) ប៉ុណ្ណោះ។
+
+ផ្ទុយទៅវិញ យុទ្ធសាស្ត្រដែលមានប្រសិទ្ធភាពខ្ពស់ ដូចជា រំលឹកសកម្ម ឬ Active Recall (ការរំលឹកមេរៀនដោយព្យាមនឹកដោយខ្លួនឯង ដោយមិនមើលសៀវភៅ) និង ការរំលឹកឡើងវិញដោយរំលងថ្ងៃ (Spaced Repetition) ជួយពង្រឹងការចងចាំរយៈពេលវែងយ៉ាងខ្លាំង។ ក្នុងនាមជាគ្រូបង្រៀន យើងអាចតម្រង់ទិសសិស្សឱ្យចាកចេញពីទម្លាប់អកម្ម ហើយឆ្ពោះទៅរកការរំលឹកសកម្ម ដោយប្រើប្រាស់ AI ដើម្បីបង្កើតកម្រងសំណួរ និង Flashcards យ៉ាងឆាប់រហ័ស។">
+  <div class="scene-eyebrow"><div class="screen-num">៥</div><div class="eyebrow-label">វិធីសាស្ត្រសិក្សា</div></div>
+  <div class="scene-title" style="font-size:32px;">វិធីសាស្ត្ររៀនមានប្រសិទ្ធភាព vs គ្មានប្រសិទ្ធភាព</div>
+  <div class="scene-body col" style="gap:22px;">
+    <div style="display:flex; gap:24px; width:100%; max-width:1100px; margin:0 auto;">
+      <div class="vs-col frag">
+        <span class="badge-tag" style="background:var(--red);">↓ ប្រសិទ្ធភាពទាប</span>
+        <h3>អានឡើងវិញ + គូសបន្ទាត់</h3>
+        <p>ធ្វើឱ្យមានអារម្មណ៍ថាទទួលបានផលច្រើន ប៉ុន្តែគ្រាន់តែជា ⚠️ «រូបភាពបោកបញ្ឆោតនៃសមត្ថភាព» (Illusion of Competence)</p>
+      </div>
+      <div class="vs-col frag">
+        <span class="badge-tag" style="background:var(--green-dark);">↑ ប្រសិទ្ធភាពខ្ពស់</span>
+        <h3>ការរំលឹកសកម្ម + ការឃ្លាតពេលរំលឹក</h3>
+        <p>Active Recall + Spaced Repetition — ✅ ពង្រឹងការចងចាំរយៈពេលវែងយ៉ាងខ្លាំង</p>
+      </div>
+    </div>
+    <div class="card frag" style="font-size:20px; text-align:center; max-width:820px;">
+      💡 គ្រូអាចជួយសិស្សបោះបង់ទម្លាប់អកម្ម ដោយប្រើ <b>AI បង្កើតកម្រងសំណួរ និង Flashcards</b> សម្រាប់ការរំលឹកសកម្មយ៉ាងឆាប់រហ័ស
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 6 -->
+<section class="scene" data-notes="គោលការណ៍ទាំងអស់ខាងលើ បង្ហាញថា AI មានប្រយោជន៍ខ្លាំង ក្នុងការជួយគ្រូរៀបចំខ្លឹមសារ សំណួរអនុវត្ត និងសម្ភារៈសិក្សា ស្របតាមទ្រឹស្តីនៃការរៀនសូត្រ យ៉ាងឆាប់រហ័ស។ ប៉ុន្តែសំណួរសំខាន់មួយទៀត គឺ ធនធានពេលវេលា ដែលសន្សំបានពីការប្រើប្រាស់ AI (ការរៀបចំសន្លឹកកិច្ចការ ការធ្វើតេស្ត ការស្វែងរកឯកសារ) គួរប្រើប្រាស់ទៅធ្វើអ្វី?
+
+ចម្លើយស្របតាមក្របខ័ណ្ឌវិទ្យាសាស្រ្តនៃការរៀននិងការអភិវឌ្ឍ៖ ពេលវេលានេះគួរតែត្រូវបានវិនិយោគឡើងវិញទៅលើអ្វីដែល AI មិនអាចធ្វើបាន គឺទំនាក់ទំនងមនុស្សនឹងមនុស្ស៖ ការសន្ទនាមួយទល់មួយ ការផ្តល់មតិត្រឡប់ដោយចិត្តទុកដាក់ ការសម្គាល់សិស្សដែលកំពុងព្យាយាម និងការកសាងទំនុកចិត្តរបស់សិស្ស។">
+  <div class="scene-eyebrow"><div class="screen-num">៦</div><div class="eyebrow-label">តើពេលវេលាទៅណា?</div></div>
+  <div class="scene-title" style="font-size:32px;">AI ជាអ្នកផ្តល់ពេលវេលា មិនមែនអ្នកជំនួសទំនាក់ទំនងមនុស្ស</div>
+  <div class="scene-body">
+    <div class="frag" style="flex:none; width:280px;">
+      <div class="card" style="text-align:center; font-size:20px; line-height:1.6;">
+        ⏱️ AI សន្សំពេលវេលា ពីការរៀបចំសន្លឹកកិច្ចការ ការធ្វើតេស្ត និងការស្វែងរកឯកសារ<br><br>
+        <b>ពេលវេលានេះគួរប្រើទៅធ្វើអ្វី?</b>
+      </div>
+    </div>
+    <div class="card frag" style="flex:1;">
+      <div class="list-row">
+        <div class="icon-circle" style="background:#EAF4FF;">🗣️</div>
+        <div class="lr-text">ការសន្ទនាមួយទល់មួយ</div>
+      </div>
+      <div class="list-row">
+        <div class="icon-circle" style="background:#FFF3E4;">💬</div>
+        <div class="lr-text">ការផ្តល់មតិត្រឡប់ដោយចិត្តទុកដាក់</div>
+      </div>
+      <div class="list-row">
+        <div class="icon-circle" style="background:#E9F9EF;">👀</div>
+        <div class="lr-text">ការសម្គាល់សិស្សដែលកំពុងព្យាយាម</div>
+      </div>
+      <div class="list-row">
+        <div class="icon-circle" style="background:#F1EAFB;">🤝</div>
+        <div class="lr-text">ការកសាងទំនុកចិត្តរបស់សិស្ស</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 7 -->
+<section class="scene" data-notes="និយាយឱ្យខ្លី៖ AI មិនត្រូវជំនួសគ្រូឡើយ។ AI ត្រូវជួយបន្ធូរបន្ថយបន្ទុកការងារបច្ចេកទេស ដើម្បីរំដោះពេលវេលា និងថាមពលផ្លូវចិត្តរបស់គ្រូ ឱ្យអាចយកទៅវិនិយោគលើទំនាក់ទំនងជាមួយសិស្សវិញ ដែលជាកត្តាកំណត់ការរៀនសូត្រដ៏សំខាន់បំផុត។
+
+គ្រូដែលប្រើ AI ដោយឈ្លាសវៃ គឺជាគ្រូដែលបានធ្វើបច្ចុប្បន្នភាពផ្នែកគរុកោសល្យផ្ទាល់ខ្លួន ហើយក្នុងពេលជាមួយគ្នានេះ មានពេលវេលាកាន់តែច្រើន សម្រាប់ការនៅជិតសិស្សរបស់ខ្លួន។">
+  <div class="scene-eyebrow"><div class="screen-num">៧</div><div class="eyebrow-label">សរុប</div></div>
+  <div class="scene-title center" style="font-size:34px; text-align:center;">AI មិនត្រូវជំនួសគ្រូឡើយ</div>
+  <div class="scene-body" style="justify-content:center;">
+    <div class="speech-bubble frag" style="max-width:760px; text-align:center; font-size:24px;">
+      AI ត្រូវជួយបន្ធូរបន្ថយ <b>បន្ទុកការងារបច្ចេកទេស</b> ដើម្បីរំដោះពេលវេលា និងថាមពលផ្លូវចិត្តរបស់គ្រូ ឱ្យវិនិយោគទៅលើ <b>ទំនាក់ទំនងជាមួយសិស្ស</b> — កត្តាកំណត់ការរៀនសូត្រដ៏សំខាន់បំផុត
+      <br><br>
+      <span style="font-size:19px; font-weight:600; color:var(--navy-soft);">💡 គ្រូដែលប្រើ AI ដោយឈ្លាសវៃ = គរុកោសល្យទាន់សម័យ + ពេលវេលាកាន់តែច្រើនសម្រាប់នៅជិតសិស្ស</span>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 8 -->
+<section class="scene" data-notes="សរុបមក៖ ការប្រើបច្ចេកវិទ្យា AI ត្រូវតែបម្រើដល់ការរៀនសូត្ររបស់មនុស្ស ទាំងផ្នែកនៃការយល់ដឹង (cognitive) និងផ្នែកទំនាក់ទំនង (relational) ស្របតាមការរកឃើញរបស់ការស្រាវជ្រាវវិទ្យាសាស្រ្ត។">
+  <div class="scene-eyebrow"><div class="screen-num">៨</div><div class="eyebrow-label">សេចក្តីសង្ខេប</div></div>
+  <div class="scene-title" style="font-size:32px;">៣ គោលការណ៍មូលដ្ឋាននៃវិទ្យាសាស្ត្រការរៀនសូត្រ</div>
+  <div class="scene-body col" style="gap:24px;">
+    <div class="load-grid">
+      <div class="load-card frag" style="--lc:var(--purple); --lc-soft:#F1EAFB;">
+        <div class="load-icon">🤝</div>
+        <div class="load-name">ទំនាក់ទំនងជាមូលដ្ឋានគ្រឹះ</div>
+        <div class="load-desc">សុវត្ថិភាព និងទំនុកចិត្ត រវាងគ្រូ-សិស្ស</div>
+      </div>
+      <div class="load-card frag" style="--lc:var(--teal); --lc-soft:#EAF4FF;">
+        <div class="load-icon">🧠</div>
+        <div class="load-name">ទ្រឹស្តីបន្ទុកការយល់ដឹង</div>
+        <div class="load-desc">កាត់បន្ថយបន្ទុកក្រៅ ជំរុញបន្ទុកមានប្រយោជន៍</div>
+      </div>
+      <div class="load-card frag" style="--lc:var(--green-dark); --lc-soft:#E9F9EF;">
+        <div class="load-icon">🔁</div>
+        <div class="load-name">វិធីសាស្ត្ររៀនមានប្រសិទ្ធភាព</div>
+        <div class="load-desc">ការរំលឹកសកម្ម > ការអានឡើងវិញ</div>
+      </div>
+    </div>
+    <div class="card frag" style="font-size:21px; text-align:center; max-width:820px;">
+      ✦ បច្ចេកវិទ្យា <b>AI ត្រូវតែបម្រើដល់ការរៀនសូត្ររបស់មនុស្ស</b> ទាំងផ្នែកយល់ដឹង (cognitive) និងផ្នែកទំនាក់ទំនង (relational)
+    </div>
   </div>
 </section>
 
@@ -478,8 +495,13 @@ scenes.forEach((s,i)=>{
 const dots = Array.from(dotsWrap.children);
 
 function fragsIn(scene){ return Array.from(scene.querySelectorAll('.frag')); }
-function resetFrags(scene){ fragsIn(scene).forEach(f=>f.classList.remove('shown')); }
-function showAllFrags(scene){ fragsIn(scene).forEach(f=>f.classList.add('shown')); }
+
+function resetFrags(scene){
+  fragsIn(scene).forEach(f=>f.classList.remove('shown'));
+}
+function showAllFrags(scene){
+  fragsIn(scene).forEach(f=>f.classList.add('shown'));
+}
 function revealNextFrag(scene){
   const frags = fragsIn(scene);
   const next = frags.find(f=>!f.classList.contains('shown'));
