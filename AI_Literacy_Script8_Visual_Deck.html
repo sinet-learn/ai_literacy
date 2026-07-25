@@ -129,6 +129,10 @@ body{
 .orbit-wrap{position:relative; width:280px; height:280px; flex:none;}
 .orbit-center{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:90px; height:90px; border-radius:50%; background:var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; text-align:center; font-size:12px; font-weight:800; box-shadow:0 10px 24px rgba(45,49,66,.3); z-index:2;}
 .orbit-item{position:absolute; width:64px; height:64px; border-radius:50%; background:#fff; box-shadow:0 8px 18px rgba(45,49,66,.12); display:flex; align-items:center; justify-content:center; font-size:26px;}
+.orbit-ring{position:absolute; inset:0; animation:orbit-spin 18s linear infinite;}
+.orbit-item span{display:inline-block; animation:orbit-counter-spin 18s linear infinite;}
+@keyframes orbit-spin{from{transform:rotate(0deg);} to{transform:rotate(360deg);}}
+@keyframes orbit-counter-spin{from{transform:rotate(0deg);} to{transform:rotate(-360deg);}}
 
 .dim-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; width:100%; max-width:880px;}
 .dim-card{background:#fff; border-radius:20px; padding:18px 20px; box-shadow:0 10px 22px rgba(45,49,66,.1); border-left:6px solid var(--teal);}
@@ -151,7 +155,7 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
 <body>
 
 <div class="progress" id="progress"></div>
-<div class="counter" id="counter">01 / 06</div>
+<div class="counter" id="counter">01 / 05</div>
 
 <div class="topbar">
   <button class="iconbtn" id="notesBtn">📝 ស្គ្រីប (N)</button>
@@ -171,13 +175,15 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
   <div class="scene-title" style="font-size:30px;">AI ស្ថិតជុំវិញកុមារ មុនពេលពួកគេយល់ដឹង</div>
   <div class="scene-body">
     <div class="orbit-wrap frag">
-      <div class="orbit-center">សិស្ស<br>បឋមសិក្សា</div>
-      <div class="orbit-item" style="top:0; left:108px;">🗣️</div>
-      <div class="orbit-item" style="top:70px; left:210px;">🌐</div>
-      <div class="orbit-item" style="top:190px; left:210px;">📹</div>
-      <div class="orbit-item" style="top:216px; left:108px;">📱</div>
-      <div class="orbit-item" style="top:190px; left:6px;">🔤</div>
-      <div class="orbit-item" style="top:70px; left:6px;">🎵</div>
+      <div class="orbit-center"><img src="Assets/child_around.png" alt="សិស្សបឋមសិក្សា" style="width:100%; height:100%; object-fit:contain; border-radius:50%;"></div>
+      <div class="orbit-ring">
+        <div class="orbit-item" style="top:0; left:108px;"><span>🗣️</span></div>
+        <div class="orbit-item" style="top:70px; left:210px;"><span>🌐</span></div>
+        <div class="orbit-item" style="top:190px; left:210px;"><span>📹</span></div>
+        <div class="orbit-item" style="top:216px; left:108px;"><span>📱</span></div>
+        <div class="orbit-item" style="top:190px; left:6px;"><span>🔤</span></div>
+        <div class="orbit-item" style="top:70px; left:6px;"><span>🎵</span></div>
+      </div>
     </div>
     <div class="frag card" style="flex:1; font-size:14.5px; line-height:1.75;">
       សិស្សជួបប្រទះ AI (ដូចជា <b>Siri</b> លើទូរស័ព្ទឪពុកម្តាយ ឧបករណ៍បកប្រែ និងក្បួនណែនាំវីដេអូលើ <b>យូធូប</b>) <b>យូរមុនពេលពួកគេយល់ដឹង</b>ពីដំណើរការរបស់វា
@@ -188,33 +194,7 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
   </div>
 </section>
 
-<!-- SCENE 2: UNESCO 4 Dimensions -->
-<section class="scene" data-notes="Segment 2: ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស
-ក្របខ័ណ្ឌសមត្ថភាព AI របស់ UNESCO សម្រាប់សិស្ស បានរៀបចំការរៀនសូត្រជាបួនវិមាត្រគ្រឹះ៖
-
-• ទីមួយ៖ គំនិតផ្តោតលើមនុស្សជាមជ្ឈមណ្ឌល (Human-Centred Mindset)
-• ទីពីរ៖ ចរិយាធម៌នៃ AI (Ethics of AI)
-• ទីបី៖ បច្ចេកទេស និងការអនុវត្ត AI (AI Techniques & Applications)
-• ទីបួន៖ ការរចនាប្រព័ន្ធ AI (AI System Design)
-
-នៅតាមវិមាត្រទាំងបួននេះ មានសមត្ថភាពជាក់លាក់សរុបចំនួន ១២។ ក្នុងការអប់រំបឋមសិក្សា ការផ្តោតអារម្មណ៍របស់យើងគឺស្ថិតនៅកម្រិត 'យល់ដឹង (Understand)' គឺការកសាងការយល់ដឹងជាមូលដ្ឋាន មុនពេលសិស្សឈានទៅដល់ការអនុវត្ត ឬការវាយតម្លៃ AI នៅថ្នាក់ជាន់ខ្ពស់។">
-  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">Segment 2</div></div>
-  <div class="scene-title" style="font-size:28px;">ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស៖ ៤ វិមាត្រ</div>
-  <div class="scene-body col">
-    <div class="dim-grid">
-      <div class="dim-card frag" style="border-color:var(--teal);">👨‍👩‍👧‍👦 <b style="font-size:14.5px;">គំនិតផ្តោតលើមនុស្ស</b><div style="font-size:12px; color:var(--navy-soft); margin-top:4px;">Human-Centred Mindset</div></div>
-      <div class="dim-card frag" style="border-color:var(--red);">⚖️ <b style="font-size:14.5px;">ចរិយាធម៌នៃ AI</b><div style="font-size:12px; color:var(--navy-soft); margin-top:4px;">Ethics of AI</div></div>
-      <div class="dim-card frag" style="border-color:var(--orange);">⚙️ <b style="font-size:14.5px;">បច្ចេកទេស និងការអនុវត្ត</b><div style="font-size:12px; color:var(--navy-soft); margin-top:4px;">AI Techniques & Applications</div></div>
-      <div class="dim-card frag" style="border-color:var(--purple);">🧩 <b style="font-size:14.5px;">ការរចនាប្រព័ន្ធ AI</b><div style="font-size:12px; color:var(--navy-soft); margin-top:4px;">AI System Design</div></div>
-    </div>
-    <div class="frag" style="margin-top:16px; display:flex; gap:12px;">
-      <div class="pill" style="background:var(--navy); color:#fff;">🔢 សរុប ១២ សមត្ថភាព</div>
-      <div class="pill" style="background:var(--green-dark); color:#fff;">🎯 បឋមសិក្សា → កម្រិត "យល់ដឹង"</div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 3: Druga 3 Misconceptions -->
+<!-- SCENE: Druga 3 Misconceptions -->
 <section class="scene" data-notes="Segment 3: ការយល់ច្រឡំរបស់កុមារ ៣ (Druga et al.)
 តើហេតុអ្វីបានជាអក្ខរកម្ម AI សម្រាប់សិស្សមានសារៈសំខាន់ខ្លាំង? អ្នកស្រាវជ្រាវអប់រំ ដូចជាលោកស្រី Stefania Druga និងសហការី បានសិក្សាពីការប្រាស្រ័យទាក់ទងរបស់កុមារជាមួយប្រព័ន្ធ AI ហើយបានរកឃើញការយល់ច្រឡំធំៗចំនួនបី៖
 
@@ -230,19 +210,19 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
   <div class="scene-body">
     <div class="miscon-row">
       <div class="miscon-card frag">
-        <div style="font-size:32px;">🤗</div>
-        <b style="font-size:14.5px;">Anthropomorphism</b>
-        <div style="font-size:12px; color:var(--navy-soft); margin-top:6px;">គិតថា AI មានអារម្មណ៍ ភាពជាមិត្ត និងវិញ្ញាណដូចមនុស្ស</div>
+        <img src="Assets/robotfriend.png" alt="Anthropomorphism" style="width:40px; height:40px; object-fit:contain;">
+        <b style="font-size:18.85px;">Anthropomorphism</b>
+        <div style="font-size:15.6px; color:var(--navy-soft); margin-top:6px;">គិតថា AI មានអារម្មណ៍ ភាពជាមិត្ត និងវិញ្ញាណដូចមនុស្ស</div>
       </div>
       <div class="miscon-card frag">
-        <div style="font-size:32px;">🏆</div>
-        <b style="font-size:14.5px;">ការវាយតម្លៃខ្ពស់ហួសហេតុ</b>
-        <div style="font-size:12px; color:var(--navy-soft); margin-top:6px;">គិតថា AI "ឆ្លាតជាងគ្រូ" ហើយមិនដែលធ្វើខុស</div>
+        <img src="Assets/overestimate.png" alt="ការវាយតម្លៃខ្ពស់ហួសហេតុ" style="width:40px; height:40px; object-fit:contain;">
+        <b style="font-size:18.85px;">ការវាយតម្លៃខ្ពស់ហួសហេតុ</b>
+        <div style="font-size:15.6px; color:var(--navy-soft); margin-top:6px;">គិតថា AI "ឆ្លាតជាងគ្រូ" ហើយមិនដែលធ្វើខុស</div>
       </div>
       <div class="miscon-card frag">
-        <div style="font-size:32px;">🌀</div>
-        <b style="font-size:14.5px;">ការច្រឡំរវាង AI និងភាវរស់</b>
-        <div style="font-size:12px; color:var(--navy-soft); margin-top:6px;">ពិបាកបែងចែករវាងកម្មវិធីកុំព្យូទ័រ និងជីវិតពិត</div>
+        <img src="Assets/confused.png" alt="ការច្រឡំរវាង AI និងភាវរស់" style="width:40px; height:40px; object-fit:contain;">
+        <b style="font-size:18.85px;">ការច្រឡំរវាង AI និងភាវរស់</b>
+        <div style="font-size:15.6px; color:var(--navy-soft); margin-top:6px;">ពិបាកបែងចែករវាងកម្មវិធីកុំព្យូទ័រ និងជីវិតពិត</div>
       </div>
     </div>
   </div>
@@ -274,88 +254,37 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
   </div>
 </section>
 
-<!-- SCENE 5 (BONUS): 4 Dimensions Reference -->
-<section class="scene" data-notes="សេចក្តីសង្ខេប៖ ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស ៤ វិមាត្រ (សម្ភារៈយោង)
-Human-Centred Mindset៖ ការទទួលស្គាល់សិទ្ធិស្វ័យសម្រេច និងព្រំដែនសមស្របសម្រាប់ AI។ បរិបទកម្ពុជា៖ សិស្សរៀនថា AI ជាឧបករណ៍បង្កើតដោយមនុស្ស មិនមែនភាវរស់ ឬមិត្តភក្តិទេ។
-Ethics of AI៖ ការយល់ដឹងពីភាពយុត្តិធម៌ ភាពលម្អៀង ឯកជនភាព និងការប្រើប្រាស់ប្រកបដោយការទទួលខុសត្រូវ។ បរិបទកម្ពុជា៖ កុមារយល់ថាហេតុអ្វីមិនគួរចែករំលែករូបថត ឬព័ត៌មានគ្រួសារទៅកម្មវិធីសំឡេង/ស្វែងរក។
-AI Techniques & Apps៖ ការយល់ដឹងពីការសម្គាល់លំនាំ និងគំនិតប្រូបាបជាមូលដ្ឋាន។ បរិបទកម្ពុជា៖ ពន្យល់ AI ជា "ការទាយលំនាំឆ្លាតវៃ" តាមរយៈល្បែងដើរតួ ឬល្បែងទស្សន៍ទាយសាមញ្ញ។
-AI System Design៖ ការកសាងការយល់ដឹងគ្រឹះអំពីរបៀបដែលក្បួនដោះស្រាយដំណើរការទិន្នន័យចូល។ បរិបទកម្ពុជា៖ ណែនាំល្បែងតម្រៀប និងវិធានឥតភ្ជាប់អេឡិចត្រូនិច ដោយមិនត្រូវការកុំព្យូទ័រ។">
-  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
-  <div class="scene-title" style="font-size:27px;">ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស៖ លម្អិត ៤ វិមាត្រ</div>
-  <div class="scene-body col" style="align-items:stretch; max-width:920px; margin:0 auto;">
-    <div class="card frag">
-      <div class="principle-card">
-        <div class="icon-circle" style="background:#EAF4FF;">👨‍👩‍👧‍👦</div>
-        <div class="lr-text"><b style="font-size:16px;">Human-Centred Mindset</b>
-          <div class="lr-sub">ការទទួលស្គាល់សិទ្ធិស្វ័យសម្រេច និងព្រំដែនសមស្របសម្រាប់ AI</div>
-          <div class="lr-sub" style="color:var(--teal-dark); font-weight:700; margin-top:3px;">→ សិស្សរៀនថា AI ជាឧបករណ៍បង្កើតដោយមនុស្ស មិនមែនភាវរស់ ឬមិត្តភក្តិទេ</div>
-        </div>
+<!-- SCENE (moved to last): UNESCO 4 Dimensions -->
+<section class="scene" data-notes="Segment 2: ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស
+ក្របខ័ណ្ឌសមត្ថភាព AI របស់ UNESCO សម្រាប់សិស្ស បានរៀបចំការរៀនសូត្រជាបួនវិមាត្រគ្រឹះ៖
+
+• ទីមួយ៖ គំនិតផ្តោតលើមនុស្សជាមជ្ឈមណ្ឌល (Human-Centred Mindset)
+• ទីពីរ៖ ក្រមសីលធម៌នៃ AI (Ethics of AI)
+• ទីបី៖ បច្ចេកទេស និងការអនុវត្ត AI (AI Techniques & Applications)
+• ទីបួន៖ ការរចនាប្រព័ន្ធ AI (AI System Design)
+
+នៅតាមវិមាត្រទាំងបួននេះ មានសមត្ថភាពជាក់លាក់សរុបចំនួន ១២។ ក្នុងការអប់រំបឋមសិក្សា ការផ្តោតអារម្មណ៍របស់យើងគឺស្ថិតនៅកម្រិត 'យល់ដឹង (Understand)' គឺការកសាងការយល់ដឹងជាមូលដ្ឋាន មុនពេលសិស្សឈានទៅដល់ការអនុវត្ត ឬការវាយតម្លៃ AI នៅថ្នាក់ជាន់ខ្ពស់។">
+  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">Segment 2</div></div>
+  <div class="scene-title" style="font-size:28px;">ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស៖</div>
+  <div class="scene-body col">
+    <div class="dim-grid" style="grid-template-columns:repeat(4,1fr); max-width:1040px; gap:19px; margin:0 auto;">
+      <div class="dim-card frag" style="border-color:var(--teal); display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center;">
+        <img src="Assets/human.png" alt="Human-Centred Mindset" style="width:58px; height:58px; object-fit:contain; flex:none;">
+        <div><b style="font-size:17.4px;">គំនិតផ្តោតលើមនុស្ស</b><div style="font-size:14.4px; color:var(--navy-soft); margin-top:4px;">Human-Centred Mindset</div></div>
       </div>
-      <div class="principle-card frag">
-        <div class="icon-circle" style="background:#FCEBEA;">⚖️</div>
-        <div class="lr-text"><b style="font-size:16px;">Ethics of AI</b>
-          <div class="lr-sub">ការយល់ដឹងពីភាពយុត្តិធម៌ ភាពលម្អៀង ឯកជនភាព និងការទទួលខុសត្រូវ</div>
-          <div class="lr-sub" style="color:var(--red); font-weight:700; margin-top:3px;">→ កុមារយល់ថាហេតុអ្វីមិនគួរចែករំលែករូបថត/ព័ត៌មានគ្រួសារ</div>
-        </div>
+      <div class="dim-card frag" style="border-color:var(--red); display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center;">
+        <img src="Assets/ethics.png" alt="Ethics of AI" style="width:58px; height:58px; object-fit:contain; flex:none;">
+        <div><b style="font-size:17.4px;">ក្រមសីលធម៌នៃ AI</b><div style="font-size:14.4px; color:var(--navy-soft); margin-top:4px;">Ethics of AI</div></div>
       </div>
-      <div class="principle-card frag">
-        <div class="icon-circle" style="background:#FDF1E3;">⚙️</div>
-        <div class="lr-text"><b style="font-size:16px;">AI Techniques & Applications</b>
-          <div class="lr-sub">ការយល់ដឹងពីការសម្គាល់លំនាំ និងគំនិតប្រូបាបជាមូលដ្ឋាន</div>
-          <div class="lr-sub" style="color:var(--orange-dark); font-weight:700; margin-top:3px;">→ ពន្យល់ AI ជា "ការទាយលំនាំឆ្លាតវៃ" តាមល្បែងដើរតួ</div>
-        </div>
+      <div class="dim-card frag" style="border-color:var(--orange); display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center;">
+        <img src="Assets/app.png" alt="AI Techniques & Applications" style="width:58px; height:58px; object-fit:contain; flex:none;">
+        <div><b style="font-size:17.4px;">បច្ចេកទេស និងការអនុវត្ត</b><div style="font-size:14.4px; color:var(--navy-soft); margin-top:4px;">AI Techniques & Applications</div></div>
       </div>
-      <div class="principle-card frag">
-        <div class="icon-circle" style="background:#F1EEFE;">🧩</div>
-        <div class="lr-text"><b style="font-size:16px;">AI System Design</b>
-          <div class="lr-sub">ការកសាងការយល់ដឹងគ្រឹះអំពីរបៀបដែលក្បួនដោះស្រាយដំណើរការទិន្នន័យ</div>
-          <div class="lr-sub" style="color:var(--purple); font-weight:700; margin-top:3px;">→ ល្បែងតម្រៀប និងវិធានឥតភ្ជាប់អេឡិចត្រូនិច</div>
-        </div>
+      <div class="dim-card frag" style="border-color:var(--purple); display:flex; flex-direction:column; align-items:center; gap:12px; text-align:center;">
+        <img src="Assets/aisystem.png" alt="AI System Design" style="width:58px; height:58px; object-fit:contain; flex:none;">
+        <div><b style="font-size:17.4px;">ការរចនាប្រព័ន្ធ AI</b><div style="font-size:14.4px; color:var(--navy-soft); margin-top:4px;">AI System Design</div></div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- SCENE 6 (BONUS): Capstone Planning Template -->
-<section class="scene" data-notes="ការណែនាំអនុវត្ត៖ គំរូគម្រោង Capstone អក្ខរកម្ម AI សិស្ស (សម្រាប់ភារកិច្ចចុងក្រោយ)
-១. គោលបំណង & សមត្ថភាព៖ សំណួរ៖ តើសមត្ថភាពសិស្ស UNESCO មួយណា (កម្រិត 'យល់ដឹង') ដែលសកម្មភាពនេះឆ្លើយតប? ឧទាហរណ៍៖ Human-Centred Mindset៖ ទទួលស្គាល់ថា AI ជាក្បួនដោះស្រាយបង្កើតដោយមនុស្ស មិនមែនភាវរស់ទេ។
-២. សម្ភារៈ & ការរៀបចំ៖ សំណួរ៖ តើសម្ភារៈក្រៅបណ្តាញ ឬបច្ចេកវិទ្យាទាបអ្វីខ្លះដែលអ្នកនឹងប្រើ? ឧទាហរណ៍៖ ក្តារឈ្នួន ដីស និងបណ្ណបញ្ជាក់រូបភាពលំនាំ (ឧ. តម្រៀបផ្លែឈើ vs មិនមែនផ្លែឈើ)។
-៣. ជំហានបង្រៀន៖ សំណួរ៖ តើលំដាប់នៃការបង្ហាញរបស់គ្រូ និងសកម្មភាពសិស្សនឹងកើតឡើងយ៉ាងណា (១៥-២០ នាទី)? ឧទាហរណ៍៖ ល្បែងដើរតួ 'Robot Search' សិស្សម្នាក់ដើរតាមកាតវិធានតឹងរ៉ឹង គ្រូពន្យល់ថាហេតុអ្វី 'រ៉ូបូត' គ្មានអារម្មណ៍ ឬការយល់ដឹងពិត។
-៤. ត្រួតពិនិត្យការយល់ដឹង៖ សំណួរ៖ តើអ្នកនឹងផ្ទៀងផ្ទាត់ដោយរបៀបណាថាសិស្សបានកែតម្រូវការយល់ច្រឡំគោលដៅ? ឧទាហរណ៍៖ ការឆ្លុះបញ្ចាំងផ្ទាល់មាត់៖ សួរសំណួរត្រួតពិនិត្យ៣ (ឧ. 'ប្រសិនបើទូរស័ព្ទបិទ តើវាសោកសៅ ឬដេកទេ? ហេតុអ្វី?')។">
-  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
-  <div class="scene-title" style="font-size:27px;">គំរូគម្រោង Capstone អក្ខរកម្ម AI សិស្ស</div>
-  <div class="scene-body">
-    <table class="rubric-table frag">
-      <thead>
-        <tr>
-          <th class="pr"></th>
-          <th class="c1">❓ សំណួរគោលនៃការរៀបចំ</th>
-          <th class="c2">🏫 ឧទាហរណ៍បច្ចេកវិទ្យាទាប (កម្ពុជា)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="frag">
-          <td class="pr">១. គោលបំណង<br>& សមត្ថភាព</td>
-          <td class="c1">តើសមត្ថភាព UNESCO មួយណា (កម្រិត "យល់ដឹង") ដែលសកម្មភាពនេះឆ្លើយតប?</td>
-          <td class="c2">Human-Centred Mindset៖ AI ជាក្បួនដោះស្រាយបង្កើតដោយមនុស្ស មិនមែនភាវរស់</td>
-        </tr>
-        <tr class="frag">
-          <td class="pr">២. សម្ភារៈ<br>& ការរៀបចំ</td>
-          <td class="c1">តើសម្ភារៈក្រៅបណ្តាញ ឬបច្ចេកវិទ្យាទាបអ្វីខ្លះដែលអ្នកនឹងប្រើ?</td>
-          <td class="c2">ក្តារឈ្នួន ដីស និងបណ្ណរូបភាពលំនាំ (តម្រៀបផ្លែឈើ vs មិនមែនផ្លែឈើ)</td>
-        </tr>
-        <tr class="frag">
-          <td class="pr">៣. ជំហាន<br>បង្រៀន</td>
-          <td class="c1">តើលំដាប់នៃការបង្ហាញរបស់គ្រូ និងសកម្មភាពសិស្សនឹងកើតឡើងយ៉ាងណា (១៥-២០ នាទី)?</td>
-          <td class="c2">ល្បែងដើរតួ "Robot Search" ដើរតាមកាតវិធានតឹងរ៉ឹង គ្រូពន្យល់ហេតុអ្វី "រ៉ូបូត" គ្មានអារម្មណ៍</td>
-        </tr>
-        <tr class="frag">
-          <td class="pr">៤. ត្រួតពិនិត្យ<br>ការយល់ដឹង</td>
-          <td class="c1">តើអ្នកនឹងផ្ទៀងផ្ទាត់ដោយរបៀបណាថាសិស្សបានកែតម្រូវការយល់ច្រឡំគោលដៅ?</td>
-          <td class="c2">ការឆ្លុះបញ្ចាំងផ្ទាល់មាត់៖ "ប្រសិនបើទូរស័ព្ទបិទ តើវាសោកសៅទេ? ហេតុអ្វី?"</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </section>
 
