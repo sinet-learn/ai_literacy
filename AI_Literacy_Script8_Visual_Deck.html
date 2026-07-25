@@ -79,9 +79,6 @@ body{
 .card{background:var(--white); border-radius:var(--card-radius); box-shadow:0 14px 34px rgba(45,49,66,.10); padding:26px 30px;}
 .pill{display:inline-flex; align-items:center; gap:10px; background:var(--white); border-radius:999px; padding:9px 18px; box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:15px;}
 
-.mascot{position:absolute; right:40px; bottom:34px; width:72px; height:72px; animation:bob 2.6s ease-in-out infinite; z-index:5;}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-9px) rotate(2deg);}}
-
 .chrome{ display:none; }
 .navbtn{width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(45,49,66,.25);}
 .dots{display:flex; gap:9px; align-items:center;}
@@ -154,7 +151,7 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
 <body>
 
 <div class="progress" id="progress"></div>
-<div class="counter" id="counter">01 / 09</div>
+<div class="counter" id="counter">01 / 08</div>
 
 <div class="topbar">
   <button class="iconbtn" id="notesBtn">📝 ស្គ្រីប (N)</button>
@@ -163,68 +160,36 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
 
 <div class="deck" id="deck">
 
-<!-- SCENE 1: Cold Open -->
-<section class="scene" data-notes="Segment 1: Cold Open
-'តើអ្នកមានជីវិតទេ? តើអ្នកមានវិញ្ញាណ និងអារម្មណ៍ដែរឬទេ?'
+<!-- SCENE 1: AI Everywhere -->
+<section class="scene" data-notes="Segment 1: AI Woven into Daily Life
+សិស្សរបស់អ្នកកំពុងធំដឹងក្តីក្នុងពិភពលោកមួយដែល AI បានជ្រៀតចូលយ៉ាងទូលំទូលាយក្នុងជីវភាពប្រចាំថ្ងៃ — រាប់តាំងពីភ្នាក់ងារជំនួយដោយសម្លេងដូចជា Siri នៅលើទូរស័ព្ទដៃរបស់អាណាព្យាបាល ឧបករណ៍បកប្រែភាសា រហូតដល់អាល្កូរីសឹមណែនាំវីដេអូតាមចំណូលចិត្តរបស់អ្នកនៅលើយូធូប។
 
-កុមារតែងតែសួរសំណួរប្រភេទទាំងនេះទៅកាន់ឧបករណ៍ឆ្លាតវៃ និងកម្មវិធីជំនួយសំឡេង AI ជាញឹកញាប់ — ហើយរបៀបដែលយើង ក្នុងនាមជាគ្រូបង្រៀន ឆ្លើយតបទៅកាន់ពួកគេ នឹងកំណត់នូវរបៀបដែលកុមារជំនាន់ក្រោយយល់ដឹងអំពីបច្ចេកវិទ្យា។
+កុមារនាពេលបច្ចុប្បន្នមានអន្តរកម្មជាមួយ AI ទាំងនេះ មុនពេលពួកគេមានសមត្ថភាពគិតគូរដើម្បីយល់ពីដំណើរការរបស់វាទៅទៀត។
 
-សូមស្វាគមន៍មកកាន់វីដេអូម៉ូឌុលចុងក្រោយនៃវគ្គសិក្សានេះ។ ថ្ងៃនេះ យើងនឹងផ្តោតលើការជួយសិស្សបឋមសិក្សារបស់អ្នក ឱ្យកសាងអក្ខរកម្ម AI ដែលត្រឹមត្រូវ សមស្របតាមវ័យ និងប្រកបដោយសុខុមាលភាព។">
+ដើម្បីតម្រង់ទិសអ្នកអប់រំ អង្គការ UNESCO បានបង្កើតក្របខ័ណ្ឌអន្តរជាតិមួយ សម្រាប់សមត្ថភាពរបស់សិស្សទាក់ទង AI។">
   <div class="scene-eyebrow"><div class="screen-num">១</div><div class="eyebrow-label">Segment 1</div></div>
-  <div class="scene-title">"តើអ្នកមានជីវិតទេ?"</div>
-  <div class="scene-body">
-    <div class="illus-wrap frag" style="flex:1; justify-content:flex-start;">
-      <svg width="240" height="270" viewBox="0 0 240 270">
-        <ellipse cx="120" cy="255" rx="80" ry="12" fill="#000" opacity=".06"/>
-        <rect x="90" y="140" width="60" height="100" rx="24" fill="var(--yellow)"/>
-        <circle cx="120" cy="100" r="52" fill="#F2C29B"/>
-        <path d="M74 95a46 46 0 0 1 92 0v-5q-46-27-92 0z" fill="#2D2A26"/>
-        <circle cx="105" cy="102" r="5" fill="#2D3142"/>
-        <circle cx="135" cy="102" r="5" fill="#2D3142"/>
-        <path d="M107 116q13 10 26 0" stroke="#2D3142" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <rect x="165" y="165" width="46" height="70" rx="10" fill="var(--navy)"/>
-        <rect x="171" y="176" width="34" height="46" rx="4" fill="var(--teal)"/>
-      </svg>
-    </div>
-    <div class="frag" style="flex:1;">
-      <div class="speech-bubble">តើអ្នកមានជីវិតទេ?<br>តើអ្នកមានវិញ្ញាណ និងអារម្មណ៍ដែរឬទេ?</div>
-      <div class="frag card" style="margin-top:14px; font-size:14.5px; line-height:1.7;">
-        ការឆ្លើយតបរបស់យើងចំពោះសំណួរទាំងនេះ នឹងកំណត់ថាកុមារជំនាន់ក្រោយ <b>យល់ដឹងអំពីបច្ចេកវិទ្យា</b> យ៉ាងណា — ម៉ូឌុលចុងក្រោយនៃវគ្គសិក្សា!
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 2: AI Everywhere -->
-<section class="scene" data-notes="Segment 2: AI Woven into Daily Life
-សិស្សរបស់អ្នកកំពុងធំដឹងក្តីក្នុងពិភពលោកមួយដែល AI ត្រូវបានបញ្ជ្រាបចូលយ៉ាងស្ងៀមស្ងាត់ក្នុងជីវភាពប្រចាំថ្ងៃ — ចាប់តាំងពីការស្វែងរកដោយសំឡេងលើទូរស័ព្ទដៃរបស់អាណាព្យាបាល ឧបករណ៍បកប្រែភាសា រហូតដល់ក្បួនដោះស្រាយណែនាំវីដេអូ។
-
-ពួកគេបានជួបប្រទះឧបករណ៍ទាំងនេះ យូរមុនពេលពួកគេមានសមត្ថភាពគិតគូរដើម្បីយល់ពីដំណើរការរបស់វា។ ដូចដែលអ្នកបានកសាងអក្ខរកម្ម AI វិជ្ជាជីវៈផ្ទាល់ខ្លួនពេញមួយវគ្គសិក្សានេះ សិស្សរបស់អ្នកក៏ត្រូវការគ្រឹះសមស្របតាមវ័យដូចគ្នាដែរ។
-
-ដើម្បីតម្រង់ទិសយើង អង្គការ UNESCO បានបង្កើតក្របខ័ណ្ឌអន្តរជាតិមួយ ជាក់លាក់សម្រាប់សមត្ថភាព AI របស់សិស្ស។">
-  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">Segment 2</div></div>
   <div class="scene-title" style="font-size:30px;">AI ស្ថិតជុំវិញកុមារ មុនពេលពួកគេយល់ដឹង</div>
   <div class="scene-body">
     <div class="orbit-wrap frag">
       <div class="orbit-center">សិស្ស<br>បឋមសិក្សា</div>
-      <div class="orbit-item" style="top:0; left:108px;">🔍</div>
+      <div class="orbit-item" style="top:0; left:108px;">🗣️</div>
       <div class="orbit-item" style="top:70px; left:210px;">🌐</div>
       <div class="orbit-item" style="top:190px; left:210px;">📹</div>
       <div class="orbit-item" style="top:216px; left:108px;">📱</div>
-      <div class="orbit-item" style="top:190px; left:6px;">🗣️</div>
+      <div class="orbit-item" style="top:190px; left:6px;">🔤</div>
       <div class="orbit-item" style="top:70px; left:6px;">🎵</div>
     </div>
-    <div class="frag card" style="flex:1; font-size:15px; line-height:1.75;">
-      សិស្សជួបប្រទះ AI (ការស្វែងរកសំឡេង ការបកប្រែ ការណែនាំវីដេអូ) <b>យូរមុនពេលពួកគេយល់ដឹង</b>ពីដំណើរការរបស់វា
+    <div class="frag card" style="flex:1; font-size:14.5px; line-height:1.75;">
+      សិស្សជួបប្រទះ AI (ដូចជា <b>Siri</b> លើទូរស័ព្ទឪពុកម្តាយ ឧបករណ៍បកប្រែ និងក្បួនណែនាំវីដេអូលើ <b>យូធូប</b>) <b>យូរមុនពេលពួកគេយល់ដឹង</b>ពីដំណើរការរបស់វា
       <div style="margin-top:12px; padding-top:12px; border-top:2px dashed #E4E8F0;">
-        📘 UNESCO បង្កើតក្របខ័ណ្ឌអន្តរជាតិ ជាក់លាក់សម្រាប់ <b>សមត្ថភាព AI របស់សិស្ស</b>
+        📘 UNESCO បង្កើតក្របខ័ណ្ឌអន្តរជាតិ សម្រាប់ <b>សមត្ថភាព AI របស់សិស្ស</b>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SCENE 3: UNESCO 4 Dimensions -->
-<section class="scene" data-notes="Segment 3: ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស
+<!-- SCENE 2: UNESCO 4 Dimensions -->
+<section class="scene" data-notes="Segment 2: ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស
 ក្របខ័ណ្ឌសមត្ថភាព AI របស់ UNESCO សម្រាប់សិស្ស បានរៀបចំការរៀនសូត្រជាបួនវិមាត្រគ្រឹះ៖
 
 • ទីមួយ៖ គំនិតផ្តោតលើមនុស្សជាមជ្ឈមណ្ឌល (Human-Centred Mindset)
@@ -233,8 +198,8 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
 • ទីបួន៖ ការរចនាប្រព័ន្ធ AI (AI System Design)
 
 នៅតាមវិមាត្រទាំងបួននេះ មានសមត្ថភាពជាក់លាក់សរុបចំនួន ១២។ ក្នុងការអប់រំបឋមសិក្សា ការផ្តោតអារម្មណ៍របស់យើងគឺស្ថិតនៅកម្រិត 'យល់ដឹង (Understand)' — គឺការកសាងការយល់ដឹងជាមូលដ្ឋាន មុនពេលសិស្សឈានទៅដល់ការអនុវត្ត ឬការវាយតម្លៃ AI នៅថ្នាក់ជាន់ខ្ពស់។">
-  <div class="scene-eyebrow"><div class="screen-num">៣</div><div class="eyebrow-label">Segment 3</div></div>
-  <div class="scene-title" style="font-size:28px;">ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស — ៤ វិមាត្រ</div>
+  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">Segment 2</div></div>
+  <div class="scene-title" style="font-size:28px;">ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស៖ ៤ វិមាត្រ</div>
   <div class="scene-body col">
     <div class="dim-grid">
       <div class="dim-card frag" style="border-color:var(--teal);">👨‍👩‍👧‍👦 <b style="font-size:14.5px;">គំនិតផ្តោតលើមនុស្ស</b><div style="font-size:12px; color:var(--navy-soft); margin-top:4px;">Human-Centred Mindset</div></div>
@@ -249,18 +214,18 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
   </div>
 </section>
 
-<!-- SCENE 4: Druga 3 Misconceptions -->
-<section class="scene" data-notes="Segment 4: ការយល់ច្រឡំរបស់កុមារ ៣ (Druga et al.)
+<!-- SCENE 3: Druga 3 Misconceptions -->
+<section class="scene" data-notes="Segment 3: ការយល់ច្រឡំរបស់កុមារ ៣ (Druga et al.)
 តើហេតុអ្វីបានជាអក្ខរកម្ម AI សម្រាប់សិស្សមានសារៈសំខាន់ខ្លាំង? អ្នកស្រាវជ្រាវអប់រំ ដូចជាលោកស្រី Stefania Druga និងសហការី បានសិក្សាពីការប្រាស្រ័យទាក់ទងរបស់កុមារជាមួយប្រព័ន្ធ AI ហើយបានរកឃើញការយល់ច្រឡំធំៗចំនួនបី៖
 
 ទីមួយ ការប្រៀបធៀប AI ទៅនឹងមនុស្ស (Anthropomorphism)៖ កុមារតែងតែគិតថា កម្មវិធីជំនួយសំឡេងមានអារម្មណ៍ ភាពជាមិត្ត និងវិញ្ញាណដូចមនុស្ស។
 
-ទីពីរ ការវាយតម្លៃខ្ពស់ហួសហេតុ៖ កុមារច្រើនតែគិតថា ឧបករណ៍ AI 'ឆ្លាតជាងគ្រូបង្រៀន' ហើយមិនដែលធ្វើខុសឡើយ។
+ទីពីរ ការវាយតម្លៃខ្ពស់ហួសហេតុ៖ កុមារច្រើនតែគិតថា ឧបករណ៍ AI 'ឆ្លាតជាងគ្រូបង្រៀន' ហើយមិនដែលធ្វើខុសឡើយ។ ការកែតម្រូវ៖ សូមប្រាប់សិស្សថា 'AI អាចខុសបាន ដូចមនុស្សដែរ ព្រោះវារៀនចេះពីអ្វីដែលមនុស្សសរសេរទុក ហើយមនុស្សខ្លះក៏សរសេរខុសដែរ។ នេះហើយជាមូលហេតុដែលយើងត្រូវពិនិត្យឡើងវិញជានិច្ច។'
 
 ទីបី ការច្រឡំរវាង AI និងភាវរស់៖ កុមារតូចៗពិបាកបែងចែករវាងកម្មវិធីកុំព្យូទ័រ និងភាវរស់ដែលមានជីវិតពិតប្រាកដ។
 
 ការយល់ច្រឡំទាំងនេះមិនមែនជាកំហុសតូចតាចទេ — វាជាកត្តាកំណត់ថា តើកុមារជឿជាក់លើចម្លើយ AI ដោយមិនបានពិចារណាកម្រិតណា។">
-  <div class="scene-eyebrow"><div class="screen-num">៤</div><div class="eyebrow-label">Segment 4</div></div>
+  <div class="scene-eyebrow"><div class="screen-num">៣</div><div class="eyebrow-label">Segment 3</div></div>
   <div class="scene-title" style="font-size:28px;">ការយល់ច្រឡំធំៗ ៣ របស់កុមារ (Druga et al.)</div>
   <div class="scene-body">
     <div class="miscon-row">
@@ -281,37 +246,42 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
       </div>
     </div>
   </div>
+  <div class="frag card" style="margin-top:10px; max-width:760px; margin-left:auto; margin-right:auto; background:#EAFBF1; border:2px solid var(--green); font-size:13px; line-height:1.7;">
+    💬 <b>ការកែតម្រូវ សម្រាប់ការវាយតម្លៃខ្ពស់ហួសហេតុ៖</b> "AI អាចខុសបាន ដូចមនុស្សដែរ ព្រោះវារៀនចេះពីអ្វីដែលមនុស្សសរសេរទុក ហើយមនុស្សខ្លះក៏សរសេរខុសដែរ។ នេះហើយជាមូលហេតុដែលយើងត្រូវពិនិត្យឡើងវិញជានិច្ច។"
+  </div>
   <div class="frag card" style="margin-top:8px; text-align:center; font-size:14px; max-width:760px; margin-left:auto; margin-right:auto;">
     ⚠️ ការយល់ច្រឡំទាំងនេះមិនតូចតាចទេ — កំណត់ថាកុមារ <b>ជឿចម្លើយ AI ដោយមិនពិចារណា</b> កម្រិតណា
   </div>
 </section>
 
-<!-- SCENE 5: Reframing -->
-<section class="scene" data-notes="Segment 5: កែតម្រូវការយល់ច្រឡំដោយទន់ភ្លន់
-ក្នុងនាមជាគ្រូបង្រៀនថ្នាក់បឋមសិក្សា អ្នកអាចកែតម្រូវការយល់ច្រឡំទាំងនេះដោយទន់ភ្លន់ ដោយប្រើប្រាស់ភាសាច្បាស់លាស់ និងត្រឹមត្រូវ — ដូចដែលអ្នកបានកែតម្រូវការយល់ដឹងផ្ទាល់ខ្លួនក្នុងម៉ូឌុលទី ១ ដែរ។
+<!-- SCENE 4: Model Answer -->
+<section class="scene" data-notes="Segment 4: កែតម្រូវការយល់ច្រឡំដោយទន់ភ្លន់ + ចម្លើយគំរូ
+ក្នុងនាមជាគ្រូបង្រៀនថ្នាក់បឋមសិក្សា អ្នកអាចកែតម្រូវការយល់ច្រឡំទាំងនេះដោយទន់ភ្លន់ ដោយប្រើប្រាស់ភាសាច្បាស់លាស់ និងត្រឹមត្រូវ ដូចដែលអ្នកបានរៀនរួចមកហើយ។
 
-ជំនួសឱ្យការហៅកម្មវិធីជំនួយសំឡេងថាជា 'មិត្តភក្តិឆ្លាតវៃដែលមានខួរក្បាល' សូមពន្យល់ដោយសាមញ្ញថា៖ 'វាគឺជាឧបករណ៍កុំព្យូទ័រ ដែលពូកែខាងទស្សន៍ទាយគំរូភាសា ដោយផ្អែកលើព័ត៌មានដែលមនុស្សបានបញ្ចូលទៅក្នុងវា'។
+ដូច្នេះ ប្រសិនបើសិស្សសួរអ្នកថា 'តើ AI មានជីវិត វិញ្ញាណ ឬអារម្មណ៍ដែរឬទេ?' អ្នកអាចឆ្លើយបានថា៖ 'ទេ AI មិនមានជីវិត និងអារម្មណ៍ដូចមនុស្ស ឬសត្វទេ។ វាគ្រាន់តែជាកម្មវិធីកុំព្យូទ័រឆ្លាតវៃដែលមនុស្សបង្កើត ដើម្បីជួយទស្សន៍ទាយពាក្យបន្ទាប់ដែលទំនងជាងគេ។ សំណួររបស់កូនល្អណាស់! ពួកយើងសាកល្បងស្វែងយល់បន្ថែមអំពីរបៀបដែលវាដំណើរការជាមួយគ្នា!'
 
-នៅពេលយើងបង្កើតការយល់ដឹងថា AI គឺជាឧបករណ៍ទស្សន៍ទាយគំរូដែលបង្កើតដោយមនុស្ស មិនមែនជាវិញ្ញាណដែលមានគំនិតនោះទេ សិស្សនឹងរៀនចេះចោទសួរ ផ្ទៀងផ្ទាត់ និងរក្សាព្រំដែនប្រកបដោយសុវត្ថិភាពដោយធម្មជាតិ។">
-  <div class="scene-eyebrow"><div class="screen-num">៥</div><div class="eyebrow-label">Segment 5</div></div>
-  <div class="scene-title">ពន្យល់ដោយភាសាសាមញ្ញ និងត្រឹមត្រូវ</div>
-  <div class="scene-body col" style="max-width:700px; margin:0 auto; align-items:stretch; gap:14px;">
-    <div class="frag speech-bubble" style="text-decoration:line-through; opacity:.55; color:var(--navy-soft); background:#F1F2F5; box-shadow:none; max-width:100%;">❌ "មិត្តភក្តិឆ្លាតវៃដែលមានខួរក្បាល"</div>
-    <div class="frag speech-bubble" style="background:var(--teal); color:#fff; max-width:100%;">✅ "ឧបករណ៍កុំព្យូទ័រ ដែលពូកែទស្សន៍ទាយគំរូភាសា ដោយផ្អែកលើព័ត៌មានដែលមនុស្សបញ្ចូល"</div>
-    <div class="frag card" style="font-size:14.5px; line-height:1.7; text-align:center;">
-      AI = <b>ឧបករណ៍ទស្សន៍ទាយគំរូបង្កើតដោយមនុស្ស</b> មិនមែនវិញ្ញាណដែលមានគំនិតទេ → សិស្សរៀនចេះ <b>ចោទសួរ ផ្ទៀងផ្ទាត់ និងរក្សាព្រំដែន</b>
+ដើម្បីឱ្យសិស្សរីកចម្រើនក្នុងពិភពដែលមាន AI ពួកគេត្រូវការជំនាញគិតត្រិះរិះ វិភាគ ភាពចង់ចេះចង់ដឹង និងជំនាញទំនាក់ទំនងជាមួយមនុស្សពិត ដែល AI មិនអាចជំនួសបាន។">
+  <div class="scene-eyebrow"><div class="screen-num">៤</div><div class="eyebrow-label">Segment 4</div></div>
+  <div class="scene-title" style="font-size:29px;">ចម្លើយគំរូ៖ "តើ AI មានជីវិតទេ?"</div>
+  <div class="scene-body col" style="max-width:780px; margin:0 auto; align-items:stretch; gap:14px;">
+    <div class="frag speech-bubble" style="max-width:100%;">👧 សិស្ស៖ "តើ AI មានជីវិត វិញ្ញាណ ឬអារម្មណ៍ដែរឬទេ?"</div>
+    <div class="frag card" style="font-size:14px; line-height:1.75; background:var(--teal); color:#fff;">
+      👩‍🏫 គ្រូ៖ "ទេ AI មិនមានជីវិត និងអារម្មណ៍ដូចមនុស្ស ឬសត្វទេ។ វាគ្រាន់តែជាកម្មវិធីកុំព្យូទ័រឆ្លាតវៃដែលមនុស្សបង្កើត ដើម្បីជួយទស្សន៍ទាយពាក្យបន្ទាប់ដែលទំនងជាងគេ។ សំណួររបស់កូនល្អណាស់! ពួកយើងសាកល្បងស្វែងយល់បន្ថែមអំពីរបៀបដែលវាដំណើរការជាមួយគ្នា!"
+    </div>
+    <div class="frag card" style="font-size:13.5px; line-height:1.7; text-align:center;">
+      ដើម្បីរីកចម្រើនក្នុងពិភពដែលមាន AI សិស្សត្រូវការ <b>ជំនាញគិតត្រិះរិះ វិភាគ ភាពចង់ចេះចង់ដឹង</b> និងជំនាញទំនាក់ទំនងជាមួយមនុស្សពិត ដែល <b>AI មិនអាចជំនួសបាន</b>
     </div>
   </div>
 </section>
 
-<!-- SCENE 6: Capstone Task -->
-<section class="scene" data-notes="Segment 6: ភារកិច្ចបញ្ចប់វគ្គ (Capstone)
+<!-- SCENE 5: Capstone Task -->
+<section class="scene" data-notes="Segment 5: ភារកិច្ចបញ្ចប់វគ្គ (Capstone)
 ដើម្បីបញ្ចប់វគ្គសិក្សានេះ អ្នកនឹងរចនាសកម្មភាពថ្នាក់រៀនដ៏សាមញ្ញ និងជាក់ស្តែងមួយ ដែលជួយសិស្សរបស់អ្នកកសាងអក្ខរកម្ម AI ស្របតាមក្របខ័ណ្ឌ UNESCO។
 
 ភារកិច្ចបញ្ចប់វគ្គ (Capstone) នេះ មិនតម្រូវឱ្យមានកុំព្យូទ័រ ឬអ៊ីនធឺណិតក្នុងថ្នាក់រៀនរបស់អ្នកឡើយ។ វាអាចជាការពិភាក្សាសាច់រឿង ១៥ នាទី ល្បែងផ្គូផ្គងគំរូលើក្ដារឈ្នួន ឬសកម្មភាពដើរតួដែលសិស្សធ្វើពុតជាកុំព្យូទ័រដើរតាមវិធាន។
 
 អ្វីដែលសំខាន់ គឺសកម្មភាពនោះមានភាពប្រាកដនិយម គួរឱ្យចាប់អារម្មណ៍ និងអាចយកទៅអនុវត្តបានដោយផ្ទាល់ក្នុងបរិបទបង្រៀនប្រចាំថ្ងៃរបស់អ្នក។">
-  <div class="scene-eyebrow"><div class="screen-num">៦</div><div class="eyebrow-label">Segment 6</div></div>
+  <div class="scene-eyebrow"><div class="screen-num">៥</div><div class="eyebrow-label">Segment 5</div></div>
   <div class="scene-title">ភារកិច្ចបញ្ចប់វគ្គ — មិនត្រូវការកុំព្យូទ័រ</div>
   <div class="scene-body">
     <div class="activity-row">
@@ -337,14 +307,14 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
   </div>
 </section>
 
-<!-- SCENE 7: Course Conclusion -->
-<section class="scene" data-notes="Segment 7: សេចក្តីសន្និដ្ឋានវគ្គសិក្សា
+<!-- SCENE 6: Course Conclusion -->
+<section class="scene" data-notes="Segment 6: សេចក្តីសន្និដ្ឋានវគ្គសិក្សា
 អ្នកបានធ្វើដំណើរយ៉ាងវែងឆ្ងាយពេញមួយវគ្គសិក្សានេះ — ចាប់តាំងពីការយល់ដឹងថាអ្វីជា AI ការវាយតម្លៃបន្ទុកចំណេះដឹង ការប្រើប្រាស់រូបមន្ត PARTS ការស្ទាត់ជំនាញចរិយាធម៌ ការការពារកុមារ និងពេលនេះគឺការបង្កើនសមត្ថភាពដល់សិស្សតូចៗ។
 
 ឥឡូវនេះ អ្នកទទួលបាននូវសមត្ថភាពពេញលេញ ក្នុងការដឹកនាំសាលារៀន និងសិស្សរបស់អ្នកដោយទំនុកចិត្ត ឆ្ពោះទៅកាន់អនាគតដែលត្រៀមរួចរាល់សម្រាប់ AI។
 
 សូមបើកសៀវភៅលំហាត់សកម្មភាពរបស់អ្នក ជ្រើសរើសសមត្ថភាពសិស្សមួយ និងរចនាសកម្មភាពមេរៀន Capstone របស់អ្នក។ សូមអបអរសាទរ ហើយខ្ញុំទន្ទឹងរង់ចាំមើលការរចនា Capstone របស់អ្នកទាំងអស់គ្នា!">
-  <div class="scene-eyebrow"><div class="screen-num">៧</div><div class="eyebrow-label">Segment 7</div></div>
+  <div class="scene-eyebrow"><div class="screen-num">៦</div><div class="eyebrow-label">Segment 6</div></div>
   <div class="scene-title" style="font-size:28px; text-align:center;">ដំណើររបស់អ្នកពេញមួយវគ្គសិក្សា</div>
   <div class="scene-body col" style="gap:22px;">
     <div class="journey">
@@ -367,7 +337,7 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
   </div>
 </section>
 
-<!-- SCENE 8 (BONUS): 4 Dimensions Reference -->
+<!-- SCENE 7 (BONUS): 4 Dimensions Reference -->
 <section class="scene" data-notes="សេចក្តីសង្ខេប៖ ក្របខ័ណ្ឌ UNESCO សម្រាប់សិស្ស ៤ វិមាត្រ (សម្ភារៈយោង)
 Human-Centred Mindset — ការទទួលស្គាល់សិទ្ធិស្វ័យសម្រេច និងព្រំដែនសមស្របសម្រាប់ AI។ បរិបទកម្ពុជា៖ សិស្សរៀនថា AI ជាឧបករណ៍បង្កើតដោយមនុស្ស មិនមែនភាវរស់ ឬមិត្តភក្តិទេ។
 Ethics of AI — ការយល់ដឹងពីភាពយុត្តិធម៌ ភាពលម្អៀង ឯកជនភាព និងការប្រើប្រាស់ប្រកបដោយការទទួលខុសត្រូវ។ បរិបទកម្ពុជា៖ កុមារយល់ថាហេតុអ្វីមិនគួរចែករំលែករូបថត ឬព័ត៌មានគ្រួសារទៅកម្មវិធីសំឡេង/ស្វែងរក។
@@ -409,7 +379,7 @@ AI System Design — ការកសាងការយល់ដឹងគ្រ�
   </div>
 </section>
 
-<!-- SCENE 9 (BONUS): Capstone Planning Template -->
+<!-- SCENE 8 (BONUS): Capstone Planning Template -->
 <section class="scene" data-notes="ការណែនាំអនុវត្ត៖ គំរូគម្រោង Capstone អក្ខរកម្ម AI សិស្ស (សម្រាប់ភារកិច្ចចុងក្រោយ)
 ១. គោលបំណង & សមត្ថភាព — សំណួរ៖ តើសមត្ថភាពសិស្ស UNESCO មួយណា (កម្រិត 'យល់ដឹង') ដែលសកម្មភាពនេះឆ្លើយតប? ឧទាហរណ៍៖ Human-Centred Mindset — ទទួលស្គាល់ថា AI ជាក្បួនដោះស្រាយបង្កើតដោយមនុស្ស មិនមែនភាវរស់ទេ។
 ២. សម្ភារៈ & ការរៀបចំ — សំណួរ៖ តើសម្ភារៈក្រៅបណ្តាញ ឬបច្ចេកវិទ្យាទាបអ្វីខ្លះដែលអ្នកនឹងប្រើ? ឧទាហរណ៍៖ ក្តារឈ្នួន ដីស និងបណ្ណបញ្ជាក់រូបភាពលំនាំ (ឧ. តម្រៀបផ្លែឈើ vs មិនមែនផ្លែឈើ)។
@@ -453,19 +423,6 @@ AI System Design — ការកសាងការយល់ដឹងគ្រ�
 </section>
 
 </div><!-- /deck -->
-
-<div class="mascot" id="mascotWrap">
-  <svg width="76" height="76" viewBox="0 0 76 76">
-    <rect x="6" y="6" width="64" height="64" rx="22" fill="var(--teal)"/>
-    <rect x="34" y="0" width="8" height="12" rx="4" fill="var(--teal)"/>
-    <circle cx="38" cy="4" r="6" fill="var(--yellow)"/>
-    <circle cx="26" cy="38" r="8" fill="#fff"/>
-    <circle cx="50" cy="38" r="8" fill="#fff"/>
-    <circle cx="26" cy="38" r="3.6" fill="#2D3142"/>
-    <circle cx="50" cy="38" r="3.6" fill="#2D3142"/>
-    <rect x="28" y="52" width="20" height="6" rx="3" fill="#fff"/>
-  </svg>
-</div>
 
 <div class="notes-drawer" id="notesDrawer">
   <div class="notes-inner">

@@ -132,24 +132,6 @@ body{
   box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:17px;
 }
 
-/* mascot */
-.mascot-container{
-  position:absolute; right:40px; bottom:34px; width:76px; height:76px;
-  z-index:5;
-}
-.mascot{
-  width: 100%; height: 100%;
-  animation:bob 3s ease-in-out infinite; 
-}
-.mascot-shadow{
-  position: absolute;
-  bottom: -12px; left: 10px; right: 10px; height: 10px;
-  background: rgba(45, 49, 66, 0.12);
-  border-radius: 50%;
-  filter: blur(4px);
-}
-@keyframes bob{
-  0%,100%{transform:translateY(0) rotate(-2deg);}
   50%{transform:translateY(-14px) rotate(3deg);}
 }
 
@@ -624,11 +606,6 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
   .topbar {
     display: none !important;
   }
-
-  /* Mascot */
-  .mascot-container {
-    display: none;
-  }
 }
 </style>
 </head>
@@ -839,7 +816,7 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
 <!-- SCENE 9 -->
 <section class="scene" data-notes="ដំណើរការដែល AI រៀនសូត្រនេះ ត្រូវបានគេហៅថា Machine Learning (ការរៀនរបស់ម៉ាស៊ីន)។ វាមានដំណាក់កាលសំខាន់ៗ ៣៖ ១. ការបញ្ចូលទិន្នន័យ (Data Input)៖ AI ត្រូវការទិន្នន័យជាចាំបាច់ ដូចក្មេងត្រូវការអានសៀវភៅដើម្បីរៀនដែរ។ ២. ការហ្វឹកហាត់ (Training)៖ កុំព្យូទ័រពិនិត្យមើលទិន្នន័យទាំងនោះរាប់លានដងដើម្បីស្វែងរកទំនាក់ទំនង និងលំនាំ។ ៣. ការសាកល្បង និងកែតម្រូវ (Testing & Feedback)៖ ប្រសិនបើ AI ទស្សន៍ទាយខុស អ្នកបង្វឹកAI នឹងប្រាប់វាថាខុសហើយ ហើយ AI នឹងកែតម្រូវការគណនារបស់វាឡើងវិញ។">
   <div class="scene-eyebrow"><div class="screen-num">០៩</div><div class="eyebrow-label">Machine Learning</div></div>
-  <div class="scene-title">ការរៀនរបស់ម៉ាស៊ីន — ៣ ដំណាក់កាល</div>
+  <div class="scene-title">ការរៀនរបស់ម៉ាស៊ីន៖ ៣ ដំណាក់កាល</div>
   <div class="scene-body" style="position:relative; display:flex; align-items:center; justify-content:flex-end; gap:40px; height:100%; min-height:0;">
     
     <!-- Left-side spacer area to reserve visual layout on desktop -->
@@ -895,8 +872,8 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
     <div class="frag" style="flex:1; display:flex; flex-direction:column; align-items:stretch; gap:20px;">
       <div class="card" style="flex:1; display:flex; flex-direction:column; justify-content:center; min-height:220px; box-shadow:0 8px 30px rgba(0,0,0,0.02); border:1px solid rgba(228,232,240,0.8);">
         <span class="badge-tag" style="background:var(--teal); align-self:flex-start;">មាននៅលើពិភពលោកសព្វថ្ងៃ</span>
-        <h3 style="margin:14px 0 10px; font-family:'Baloo 2'; font-weight:800; font-size:24px; color:var(--navy);">Narrow AI — AI កម្រិតចង្អៀត</h3>
-        <p style="margin:0; color:var(--navy-soft); line-height:1.6; font-size:17px;">ធ្វើការងារជំនាញជាក់លាក់មួយប៉ុណ្ណោះ — ដូចជា ChatGPT, Gemini៖ សរសេរអត្ថបទ · បង្កើតរូបភាព · បង្កើតវីដេអូ</p>
+        <h3 style="margin:14px 0 10px; font-family:'Baloo 2'; font-weight:800; font-size:24px; color:var(--navy);">Narrow AI៖ AI កម្រិតចង្អៀត</h3>
+        <p style="margin:0; color:var(--navy-soft); line-height:1.6; font-size:17px;">ធ្វើការងារជំនាញជាក់លាក់មួយប៉ុណ្ណោះ ដូចជា ChatGPT, Gemini៖ សរសេរអត្ថបទ · បង្កើតរូបភាព · បង្កើតវីដេអូ</p>
       </div>
       <!-- Logos outside the text box -->
       <div style="display:flex; gap:40px; align-items:center; justify-content:center; height:110px; flex:none;">
@@ -909,8 +886,8 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
     <div class="frag" style="flex:1; display:flex; flex-direction:column; align-items:stretch; gap:20px;">
       <div class="card" style="flex:1; display:flex; flex-direction:column; justify-content:center; min-height:220px; box-shadow:0 8px 30px rgba(0,0,0,0.02); border:1px solid rgba(228,232,240,0.8);">
         <span class="badge-tag" style="background:var(--red); align-self:flex-start;">មិនទាន់មាននៅឡើយទេ</span>
-        <h3 style="margin:14px 0 10px; font-family:'Baloo 2'; font-weight:800; font-size:24px; color:var(--navy);">General AI (AGI) — AI កម្រិតទូទៅ</h3>
-        <p style="margin:0; color:var(--navy-soft); line-height:1.6; font-size:17px;">សំដៅដល់ AI ដែលចេះគិត និងយល់ដឹងគ្រប់វិស័យ ដូចខួរក្បាលមនុស្ស — សព្វថ្ងៃនៅតែជា <b>ទ្រឹស្តី</b> ប៉ុណ្ណោះ</p>
+        <h3 style="margin:14px 0 10px; font-family:'Baloo 2'; font-weight:800; font-size:24px; color:var(--navy);">General AI (AGI)៖ AI កម្រិតទូទៅ</h3>
+        <p style="margin:0; color:var(--navy-soft); line-height:1.6; font-size:17px;">សំដៅដល់ AI ដែលចេះគិត និងយល់ដឹងគ្រប់វិស័យ ដូចខួរក្បាលមនុស្ស សព្វថ្ងៃនៅតែជា <b>ទ្រឹស្តី</b> ប៉ុណ្ណោះ</p>
       </div>
       <!-- Image outside the text box -->
       <div style="display:flex; justify-content:center; align-items:center; height:230px; flex:none;">
@@ -932,7 +909,7 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
     </div>
     <div class="card frag">
       <div class="myth-row"><div class="x">✕</div><div class="myth-text"><b>AI តែងតែនិយាយត្រូវជានិច្ច</b></div></div>
-      <div class="myth-row"><div class="ok">✓</div><div class="myth-text">AI អាចបង្កើតព័ត៌មានមិនពិត (Hallucination) — ត្រូវការមនុស្សត្រួតពិនិត្យជានិច្ច</div></div>
+      <div class="myth-row"><div class="ok">✓</div><div class="myth-text">AI អាចបង្កើតព័ត៌មានមិនពិត (Hallucination) ត្រូវការមនុស្សត្រួតពិនិត្យជានិច្ច</div></div>
     </div>
     <div class="card frag">
       <div class="myth-row"><div class="x">✕</div><div class="myth-text"><b>AI នឹងជំនួសតួនាទីជាគ្រូបង្រៀន</b></div></div>
@@ -992,22 +969,6 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
 </section>
 
 </div><!-- /deck -->
-
-<div class="mascot-container" id="mascotWrap">
-  <div class="mascot-shadow"></div>
-  <div class="mascot">
-    <svg width="76" height="76" viewBox="0 0 76 76">
-      <rect x="6" y="6" width="64" height="64" rx="22" fill="var(--teal)"/>
-      <rect x="34" y="0" width="8" height="12" rx="4" fill="var(--teal)"/>
-      <circle cx="38" cy="4" r="6" fill="var(--yellow)"/>
-      <circle cx="26" cy="38" r="8" fill="#fff"/>
-      <circle cx="50" cy="38" r="8" fill="#fff"/>
-      <circle cx="26" cy="38" r="3.6" fill="#2D3142"/>
-      <circle cx="50" cy="38" r="3.6" fill="#2D3142"/>
-      <rect x="28" y="52" width="20" height="6" rx="3" fill="#fff"/>
-    </svg>
-  </div>
-</div>
 
 <div class="notes-drawer" id="notesDrawer">
   <div class="notes-inner">

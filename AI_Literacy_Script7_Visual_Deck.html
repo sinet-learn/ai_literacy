@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ការការពារកុមារក្នុងពិភពលោក AI — Visual Deck</title>
+<title>សុវត្ថិភាពកុមារនៅក្នុងយុគបញ្ញាសិប្បនិម្មិត៖ Visual Deck</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -39,7 +39,7 @@
   --yellow:#F7C948;
   --purple:#9B87F5;
   --white:#FFFFFF;
-  --card-radius:26px;
+  --card-radius:34px;
 }
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;height:100%;}
@@ -51,121 +51,136 @@ body{
   width:100vw;height:100vh;
   position:relative;
 }
-.deck{position:relative; width:100vw; height:100vh;}
+
+/* ---- ambient background blobs ---- */
+.bg-decor{position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;}
+.blob{position:absolute; border-radius:50%; filter:blur(60px); opacity:.28;}
+.blob1{width:380px; height:380px; background:var(--orange); top:-90px; left:-90px; animation:bgDrift1 17s ease-in-out infinite;}
+.blob2{width:340px; height:340px; background:var(--teal); bottom:-100px; right:-60px; animation:bgDrift2 20s ease-in-out infinite;}
+.blob3{width:300px; height:300px; background:var(--purple); bottom:12%; left:40%; animation:bgDrift3 23s ease-in-out infinite;}
+@keyframes bgDrift1{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(50px,40px) scale(1.12);}}
+@keyframes bgDrift2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-46px,-30px) scale(1.08);}}
+@keyframes bgDrift3{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(34px,-38px) scale(1.1);}}
+
+.deck{position:relative; width:100vw; height:100vh; z-index:1;}
 .scene{
   position:absolute; inset:0;
   display:flex; flex-direction:column;
-  padding:46px 84px 36px;
+  padding:52px 88px 40px;
   opacity:0; pointer-events:none;
-  transform:translateY(14px);
-  transition:opacity .45s ease, transform .45s ease;
+  transform:translateY(14px) scale(.99);
+  transition:opacity .5s ease, transform .5s ease;
+  cursor:pointer;
 }
-.scene.active{opacity:1; pointer-events:auto; transform:translateY(0);}
-.scene-eyebrow{ display:none; }
-.screen-num{
-  width:44px;height:44px;border-radius:50%;
-  background:var(--navy); color:#fff; font-weight:800; font-family:'Baloo 2';
-  display:flex; align-items:center; justify-content:center; font-size:18px; flex:none;
-}
-.eyebrow-label{font-size:15px; font-weight:600; color:var(--navy-soft); letter-spacing:.3px;}
-.scene-title{font-size:34px; font-weight:800; color:var(--navy); margin:4px 0 16px; line-height:1.3;}
+.scene.active{opacity:1; pointer-events:auto; transform:translateY(0) scale(1);}
+.scene-title{font-size:41px; font-weight:800; color:var(--navy); margin:4px 0 20px; line-height:1.3;}
 .scene-title.center{text-align:center;}
-.scene-sub{font-size:18px; color:var(--navy-soft); font-weight:500; margin-bottom:8px;}
-.scene-body{flex:1; display:flex; align-items:center; gap:44px; min-height:0;}
+.scene-sub{font-size:21px; color:var(--navy-soft); font-weight:600; margin-bottom:6px;}
+.scene-body{flex:1; display:flex; align-items:center; gap:40px; min-height:0;}
 .scene-body.col{flex-direction:column; justify-content:center;}
 .frag{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
 .frag.shown{ opacity:1; transform:translateY(0); }
 
-.card{background:var(--white); border-radius:var(--card-radius); box-shadow:0 14px 34px rgba(45,49,66,.10); padding:26px 30px;}
-.pill{display:inline-flex; align-items:center; gap:10px; background:var(--white); border-radius:999px; padding:9px 18px; box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:15px;}
+.card{background:var(--white); border-radius:var(--card-radius); box-shadow:0 14px 34px rgba(45,49,66,.10); padding:31px 36px;}
+.pill{display:inline-flex; align-items:center; gap:10px; background:var(--white); border-radius:999px; padding:12px 23px; box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:20px;}
 
-.mascot{position:absolute; right:40px; bottom:34px; width:72px; height:72px; animation:bob 2.6s ease-in-out infinite; z-index:5;}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-9px) rotate(2deg);}}
 
-.chrome{ display:none; }
+/* ---- nav (hidden on desktop, keyboard/click driven) ---- */
+.chrome{display:none;}
 .navbtn{width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(45,49,66,.25);}
 .dots{display:flex; gap:9px; align-items:center;}
 .dot{width:11px; height:11px; border-radius:50%; background:#D9DEE8; cursor:pointer; border:none; padding:0; transition:all .2s ease;}
 .dot.on{background:var(--orange); width:26px; border-radius:6px;}
-.topbar{ display:none; }
-.iconbtn{background:var(--white); border:none; border-radius:14px; padding:10px 16px; font-family:inherit; font-weight:700; font-size:14px; color:var(--navy); box-shadow:0 6px 16px rgba(45,49,66,.12); cursor:pointer; display:flex; gap:8px; align-items:center;}
-.counter{ display:none; }
 
-.notes-drawer{position:absolute; left:0; right:0; bottom:0; height:0; overflow:hidden; background:var(--navy); color:#fff; z-index:40; transition:height .3s ease; border-radius:24px 24px 0 0;}
+/* ---- notes drawer (toggle with 'n') ---- */
+.notes-drawer{position:absolute; left:0; right:0; bottom:0; height:0; overflow:hidden; background:var(--navy); color:#fff; z-index:45; transition:height .3s ease; border-radius:26px 26px 0 0;}
 .notes-drawer.open{height:34%;}
-.notes-inner{padding:24px 56px; height:100%; overflow-y:auto;}
-.notes-inner h4{margin:0 0 8px; color:var(--yellow); font-size:14px; letter-spacing:.5px;}
-.notes-inner p{font-size:17px; line-height:1.7; margin:0; font-weight:400; white-space:pre-line;}
+.notes-inner{padding:26px 60px; height:100%; overflow-y:auto;}
+.notes-inner h4{margin:0 0 8px; color:var(--yellow); font-size:15px; letter-spacing:.5px;}
+.notes-inner p{font-size:19px; line-height:1.75; margin:0; font-weight:400; white-space:pre-line;}
 
 .progress{position:absolute; top:0; left:0; height:6px; background:var(--orange); z-index:50; transition:width .3s ease;}
 
 .illus-wrap{flex:none; display:flex; align-items:center; justify-content:center;}
-.list-row{display:flex; align-items:center; gap:18px; font-size:19px; font-weight:600; padding:13px 0; border-bottom:2px dashed #E4E8F0;}
+.list-row{display:flex; align-items:center; gap:21px; font-size:22px; font-weight:600; padding:16px 0; border-bottom:2px dashed #E4E8F0;}
 .list-row:last-child{border-bottom:none;}
 .list-row .lr-text{flex:1;}
-.list-row .lr-sub{display:block; font-size:13.5px; font-weight:500; color:var(--navy-soft); margin-top:3px;}
-.num-badge{width:38px;height:38px;border-radius:11px; flex:none; display:flex; align-items:center; justify-content:center; font-family:'Baloo 2'; font-weight:800; color:#fff; font-size:16px;}
-.icon-circle{width:64px;height:64px;border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:28px;}
-.vs-col{flex:1; background:var(--white); border-radius:var(--card-radius); padding:26px; box-shadow:0 14px 34px rgba(45,49,66,.10);}
-.vs-col h3{margin:0 0 8px; font-size:19px;}
-.vs-col p{font-size:14.5px; line-height:1.6; color:var(--navy-soft); margin:0;}
-.badge-tag{display:inline-block; font-size:12px; font-weight:800; padding:4px 12px; border-radius:999px; color:#fff; margin-bottom:9px;}
-.principle-card{display:flex; gap:18px; align-items:flex-start; padding:14px 0; border-bottom:2px dashed #E4E8F0;}
-.principle-card:last-child{border-bottom:none;}
+.list-row .lr-sub{display:block; font-size:17px; font-weight:500; color:var(--navy-soft); margin-top:3px;}
+.num-badge{width:47px;height:47px;border-radius:14px; flex:none; display:flex; align-items:center; justify-content:center; font-family:'Baloo 2'; font-weight:800; color:#fff; font-size:20px;}
+.icon-circle{width:78px;height:78px;border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:34px;}
 
-.cta-banner{background:var(--navy); color:#fff; border-radius:var(--card-radius); padding:22px 30px; text-align:center; box-shadow:0 14px 30px rgba(45,49,66,.25);}
-.cta-banner .tag{color:var(--yellow); font-size:13px; font-weight:800; letter-spacing:.4px; margin-bottom:6px;}
-.cta-banner .main{font-size:20px; font-weight:800;}
+.cta-banner{background:var(--navy); color:#fff; border-radius:var(--card-radius); padding:26px 36px; text-align:center; box-shadow:0 14px 30px rgba(45,49,66,.25);}
+.cta-banner .tag{color:var(--yellow); font-size:16px; font-weight:800; letter-spacing:.4px; margin-bottom:6px;}
+.cta-banner .main{font-size:23px; font-weight:800;}
 
 /* ---- Script 7 specific ---- */
-.reason-grid{display:flex; gap:18px; justify-content:center; width:100%;}
-.reason-card{flex:1; max-width:250px; background:#fff; border-radius:20px; padding:22px 18px; text-align:center; box-shadow:0 10px 22px rgba(45,49,66,.1);}
-.reason-card .ri{font-size:34px;}
-.reason-card .rt{font-weight:800; font-size:15px; margin-top:8px;}
-.reason-card .rd{font-size:12.5px; color:var(--navy-soft); margin-top:6px; line-height:1.5;}
+.reason-grid{display:flex; gap:29px; justify-content:center; width:100%; max-width:1066px;}
+.reason-card{flex:1; perspective:1200px; height:273px;}
+.reason-inner{position:relative; width:100%; height:100%; transition:transform .6s cubic-bezier(.4,.2,.2,1); transform-style:preserve-3d;}
+.reason-card.flipped .reason-inner{transform:rotateY(180deg);}
+.reason-face{position:absolute; inset:0; border-radius:26px; padding:29px 23px; text-align:center; backface-visibility:hidden; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 10px 22px rgba(45,49,66,.1);}
+.reason-face.back{transform:rotateY(180deg); background:var(--navy); color:#fff;}
+.reason-face.front{background:#fff;}
+.reason-face .ri{font-size:47px;}
+.reason-face .rt{font-weight:800; font-size:20px; margin-top:8px;}
+.reason-face .rd{font-size:16px; margin-top:8px; line-height:1.55;}
+.reason-face.front .rd{color:var(--navy-soft);}
+.reason-hint{font-size:14px; margin-top:10px; opacity:.6; font-weight:600;}
 
-.risk-chip{background:#fff; border-radius:16px; padding:14px 18px; box-shadow:0 8px 20px rgba(45,49,66,.08); display:flex; align-items:center; gap:12px; min-width:220px;}
-.risk-chip .amp{font-size:11px; font-weight:800; color:var(--red); background:#FCEBEA; border-radius:999px; padding:2px 9px; margin-left:auto;}
+.risk-chip{background:#fff; border-radius:21px; padding:18px 23px; box-shadow:0 8px 20px rgba(45,49,66,.08); display:flex; align-items:center; gap:16px; min-width:273px; font-size:20px;}
+.risk-chip .amp{font-size:14px; font-weight:800; color:var(--red); background:#FCEBEA; border-radius:999px; padding:3px 12px; margin-left:auto;}
 
-.cluster-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; width:100%; max-width:900px;}
-.cluster-card{background:#fff; border-radius:20px; padding:18px 20px; box-shadow:0 10px 22px rgba(45,49,66,.1); border-left:6px solid var(--teal);}
+.cluster-grid{display:grid; grid-template-columns:1fr 1fr; gap:21px; width:100%; max-width:1196px;}
+.cluster-card{background:#fff; border-radius:26px; padding:23px 26px; box-shadow:0 10px 22px rgba(45,49,66,.1); border-left:8px solid var(--teal); transition:transform .2s ease, box-shadow .2s ease; cursor:pointer;}
+.cluster-card:hover{transform:translateY(-5px) scale(1.015); box-shadow:0 16px 30px rgba(45,49,66,.16);}
+.cluster-card .cc-num{font-size:14px; font-weight:800; color:var(--navy-soft); letter-spacing:.3px;}
 
-.donot-photo{width:130px; height:130px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:52px; position:relative; box-shadow:0 10px 22px rgba(45,49,66,.12);}
-.donot-badge{position:absolute; top:-12px; right:-12px; width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-family:'Baloo 2'; font-size:18px; box-shadow:0 6px 14px rgba(0,0,0,.2);}
+.donot-photo{width:156px; height:156px; border-radius:21px; display:flex; align-items:center; justify-content:center; font-size:62px; position:relative; box-shadow:0 10px 22px rgba(45,49,66,.12);}
+.donot-badge{position:absolute; top:-14px; right:-14px; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:800; font-family:'Baloo 2'; font-size:21px; box-shadow:0 6px 14px rgba(0,0,0,.2);}
 
-.principle-mini-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:100%; max-width:960px;}
-.pm-card{background:#fff; border-radius:16px; padding:14px 16px; box-shadow:0 8px 18px rgba(45,49,66,.08);}
-.pm-card .pn{display:flex; align-items:center; gap:8px; font-weight:800; font-size:13.5px; margin-bottom:6px;}
-.pm-card .pnum{width:24px;height:24px;border-radius:7px; background:var(--teal); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Baloo 2'; font-weight:800; font-size:12px; flex:none;}
-.pm-card .pd{font-size:11.5px; color:var(--navy-soft); line-height:1.5;}
+.check-item{display:flex; align-items:center; gap:16px; padding:10px 5px; border-bottom:2px dashed #E4E8F0; cursor:pointer;}
+.check-item:last-child{border-bottom:none;}
+.check-box{width:39px; height:39px; border-radius:12px; border:3px solid #D9DEE8; flex:none; display:flex; align-items:center; justify-content:center; font-size:20px; color:transparent; font-weight:800; transition:all .2s ease;}
+.check-item.checked .check-box{background:var(--green-dark); border-color:var(--green-dark); color:#fff; transform:scale(1.05);}
+.check-item.checked .ck-text{color:var(--navy-soft); text-decoration:line-through; text-decoration-color:var(--green-dark);}
+.ck-text{font-size:20px; font-weight:600; transition:color .2s ease;}
 
 footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center; font-size:11px; color:#B7BCC9; z-index:1;}
+
+@media (max-width:900px){
+  .scene{padding:26px 22px 96px;}
+  .scene-title{font-size:29px;}
+  .cluster-grid{grid-template-columns:1fr;}
+  .reason-grid{flex-direction:column; align-items:stretch;}
+  .chrome{
+    display:flex !important; position:fixed; bottom:0; left:0; right:0;
+    background:rgba(255,255,255,.95); backdrop-filter:blur(10px);
+    border-top:1px solid rgba(0,0,0,.05); padding:12px 20px; justify-content:space-between; align-items:center; z-index:100;
+  }
+  .navbtn{width:40px; height:40px; font-size:18px;}
+  .dot{width:8px; height:8px;}
+  .dot.on{width:20px;}
+}
 </style>
 </head>
 <body>
 
-<div class="progress" id="progress"></div>
-<div class="counter" id="counter">01 / 08</div>
+<div class="bg-decor"><div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div></div>
 
-<div class="topbar">
-  <button class="iconbtn" id="notesBtn">📝 ស្គ្រីប (N)</button>
-  <button class="iconbtn" id="fsBtn">⛶ Fullscreen</button>
-</div>
+<div class="progress" id="progress"></div>
 
 <div class="deck" id="deck">
 
 <!-- SCENE 1: Cold Open -->
-<section class="scene" data-notes="Segment 1: Cold Open
-រាល់អ្វីដែលអ្នកបានសិក្សាកន្លងមកអំពីចរិយាធម៌ AI — ការលម្អៀងនៃក្បួនដោះស្រាយ ឯកជនភាពទិន្នន័យ និងការបង្កើតព័ត៌មានមិនពិត — គឺកាន់តែមានភាពបន្ទាន់ខ្លាំងឡើង នៅពេលដែលអ្នកប្រើប្រាស់នៅចុងម្ខាងទៀតគឺជាកុមារ។
+<section class="scene" data-notes="ហានិភ័យរបស់បញ្ញាសិប្បនិម្មិត ដូចជាការបង្កើតព័ត៌មានបំភាន់ ភាពលម្អៀង ការរំលោភឯកជនភាព និងការផ្ទេរការគិត ក្លាយជារឿងគួរឲ្យបារម្ភកាន់តែខ្លាំង នៅពេលការប្រើ AI ទាក់ទងជាមួយកុមារ។
 
-កុមារមិនមែនគ្រាន់តែជាមនុស្សពេញវ័យថ្នាក់តូចនោះទេ។ ការគិតគូររបស់ពួកគេកំពុងស្ថិតក្នុងដំណាក់កាលលូតលាស់ ហើយប្រព័ន្ធ AI ពាណិជ្ជកម្មមិនបានការពារពួកគេដោយស្វ័យប្រវត្តិនោះឡើយ។
+កុមារមិនមែនខុសពីមនុស្សពេញវ័យត្រឹមតែមាឌនោះទេ ពួកគេខុសពីមនុស្សពេញវ័យទាំងការគិត និងការអភិវឌ្ឍខួរក្បាល។ កុមារភាពគឺជាវ័យកំពុងលូតលាស់ទាំងផ្លូវកាយ និងបញ្ញាស្មារតី។ ប្រព័ន្ធ AI ដែលក្រុមហ៊ុននានាបង្កើតមក ពុំមានវិធានការការពារកុមារដោយស្វ័យប្រវត្តិនោះឡើយ។
 
-នៅក្នុងបរិបទប្រទេសកម្ពុជាយើង នៅពេលដែលបច្ចេកវិទ្យាកំពុងចូលមកយ៉ាងលឿនក្នុងសាលារៀន និងផ្ទះសម្បែង ការធានាសុវត្ថិភាពកុមារក្នុងពិភពឌីជីថលគឺជាអាទិភាពចម្បង។ ម៉ូឌុលនេះគឺដើម្បីលុបបំបាត់គម្លាតនៃហានិភ័យទាំងនេះ។">
-  <div class="scene-eyebrow"><div class="screen-num">១</div><div class="eyebrow-label">Segment 1</div></div>
-  <div class="scene-title">កុមារត្រូវការការការពារបន្ថែម</div>
+ស្របពេលដែលបច្ចេកវិទ្យាកំពុងចូលមកយ៉ាងលឿនក្នុងសាលារៀន និងផ្ទះសម្បែងនានា ការធានាសុវត្ថិភាពកុមារក្នុងពិភពឌីជីថលគឺជាអាទិភាពចម្បង។">
+  <div class="scene-title">សុវត្ថិភាពកុមារនៅក្នុងយុគបញ្ញាសិប្បនិម្មិត</div>
   <div class="scene-body">
     <div class="illus-wrap frag" style="flex:none;">
-      <svg width="240" height="260" viewBox="0 0 240 260">
+      <svg width="230" height="250" viewBox="0 0 240 260">
         <ellipse cx="120" cy="245" rx="80" ry="12" fill="#000" opacity=".06"/>
         <path d="M120 30 L190 55 V120 C190 175 160 210 120 230 C80 210 50 175 50 120 V55 Z" fill="#EAF4FF" stroke="var(--teal)" stroke-width="4"/>
         <circle cx="120" cy="115" r="30" fill="#F2C29B"/>
@@ -177,247 +192,176 @@ footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center;
       </svg>
     </div>
     <div style="flex:1; display:flex; flex-direction:column; gap:14px;">
-      <div class="frag card" style="font-size:14.5px; line-height:1.7;">
-        គ្រប់ចំណុចដែលបានសិក្សា — <b>ការលម្អៀង · ឯកជនភាព · ព័ត៌មានមិនពិត</b> — កាន់តែបន្ទាន់ខ្លាំងឡើង នៅពេលអ្នកប្រើប្រាស់ជាកុមារ
+      <div class="frag card" style="font-size:19px; line-height:1.7;">
+        ហានិភ័យ AI ដូចជា <b>ព័ត៌មានបំភាន់ ភាពលម្អៀង ការរំលោភឯកជនភាព និងការផ្ទេរការគិត</b> កាន់តែគួរឲ្យបារម្ភខ្លាំង នៅពេលអ្នកប្រើប្រាស់ជាកុមារ
       </div>
-      <div class="frag card" style="background:var(--teal); color:#fff; font-weight:700; font-size:15px;">
-        កុមារមិនមែនជា "មនុស្សពេញវ័យថ្នាក់តូច" ទេ — ការគិតគូររបស់ពួកគេកំពុងលូតលាស់ ហើយ AI ពាណិជ្ជកម្មមិនការពារពួកគេដោយស្វ័យប្រវត្តិឡើយ
+      <div class="frag card" style="background:var(--teal); color:#fff; font-weight:700; font-size:20px;">
+        កុមារមិនខុសពីមនុស្សពេញវ័យត្រឹមតែមាឌនោះទេ ពួកគេខុសគ្នាទាំងការគិត និងការអភិវឌ្ឍខួរក្បាល ហើយ AI ពាណិជ្ជកម្មពុំមានវិធានការការពារពួកគេដោយស្វ័យប្រវត្តិឡើយ
       </div>
+      <div class="frag pill" style="align-self:flex-start;">🇰🇭 បច្ចេកវិទ្យាកំពុងចូលមកយ៉ាងលឿនក្នុងសាលា និងផ្ទះសម្បែងកម្ពុជា</div>
     </div>
   </div>
 </section>
 
-<!-- SCENE 2: Three Reasons -->
-<section class="scene" data-notes="Segment 2: មូលហេតុគ្រឹះ ៣
-តើហេតុអ្វីបានជាកុមារត្រូវការការការពារជាពិសេស នៅពេលប្រាស្រ័យទាក់ទងជាមួយប្រព័ន្ធ AI? មានមូលហេតុគ្រឹះចំនួនបី៖
+<!-- SCENE 2: 2 Reasons -->
+<section class="scene" data-notes="តើហេតុអ្វីបានជាកុមារត្រូវការការការពារជាពិសេស នៅពេលប្រាស្រ័យទាក់ទងជាមួយប្រព័ន្ធ AI? មានមូលហេតុមូលដ្ឋានចំនួន២៖
 
-ទីមួយ ការវិនិច្ឆ័យផ្នែកបញ្ញារបស់ពួកគេទាក់ទងនឹងហានិភ័យតាមអនឡាញ ឯកជនភាព និងការលួងលោមតាមឌីជីថល គឺកំពុងស្ថិតក្នុងដំណាក់កាលលូតលាស់នៅឡើយ។ ពួកគេមិនអាចបែងចែកឱ្យបានងាយស្រួលរវាងការប្រាស្រ័យទាក់ទងជាមួយមនុស្ស និងចម្លើយស្វ័យប្រវត្តិនៃ AI Chatbot នោះទេ។
+ទីមួយ ការវិនិច្ឆ័យផ្នែកបញ្ញារបស់កុមារ ទាក់ទងនឹងហានិភ័យតាមអនឡាញ ឯកជនភាព និងការបោកបញ្ឆោតតាមប្រព័ន្ធឌីជីថល គឺកំពុងស្ថិតក្នុងដំណាក់កាលលូតលាស់នៅឡើយ។ ពួកគេមិនអាចបែងចែកបានដាច់ស្រឡះ រវាងការប្រាស្រ័យទាក់ទងជាមួយមនុស្ស និងចម្លើយស្វ័យប្រវត្តិនៃ AI Chatbot នោះទេ ដែលអាចនាំឲ្យពួកគេទុកចិត្តលើ AI ដូចជាមនុស្សពិត ជាពិសេសនៅពេលប្រើប្រាស់ AI ជជែក ឬដៃគូនិម្មិត។ បន្ថែមលើសនេះ កុមារស្ថិតនៅក្នុងដំណាក់កាលកសាងចំណេះដឹង ហើយសមត្ថភាពក្នុងការសម្គាល់ព័ត៌មានបំភាន់ចេញពី AI នៅមានកម្រិត ធ្វើឲ្យគេងាយនឹងជឿព័ត៌មានក្លែងក្លាយ ហើយចាត់ទុកវាថាជាចំណេះដឹងថ្មី។
 
-ទីពីរ កុមារមានសិទ្ធិអំណាចផ្លូវច្បាប់ និងការអនុវត្តមានកម្រិត ក្នុងការផ្តល់ការយល់ព្រម ឬបដិសេធ នៅពេលដែលឧបករណ៍ AI ត្រូវបានយកមកប្រើប្រាស់ក្នុងថ្នាក់រៀន ឬកិច្ចការសាលារបស់ពួកគេ។
+ទីពីរ រាល់ដានជើងឌីជីថល ឬទិន្នន័យផ្ទាល់ខ្លួនដែលប្រមូលបានពីកុមារនៅថ្ងៃនេះ អាចតាមជាប់ខ្លួនពួកគេអស់មួយជីវិត ដែលអាចមានផលប៉ះពាល់អវិជ្ជមានដល់ឱកាសអប់រំ ហិរញ្ញវត្ថុ និងអាជីពនាពេលអនាគតរបស់ពួកគេ យូរអង្វែងជាងផលប៉ះពាល់លើមនុស្សពេញវ័យទៅទៀត។
 
-ទីបី រាល់ស្នាមជើងឌីជីថល ឬទិន្នន័យផ្ទាល់ខ្លួនដែលប្រមូលបានពីកុមារនៅថ្ងៃនេះ អាចតាមជាប់ខ្លួនពួកគេអស់មួយជីវិត — ដែលប៉ះពាល់ដល់ឱកាសអប់រំ ហិរញ្ញវត្ថុ និងអាជីពនាពេលអនាគត យូរអង្វែងជាងផលប៉ះពាល់លើមនុស្សពេញវ័យទៅទៀត។">
-  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">Segment 2</div></div>
-  <div class="scene-title" style="font-size:30px;">មូលហេតុគ្រឹះ ៣ ដែលកុមារត្រូវការការការពារ</div>
-  <div class="scene-body">
+ចុចលើកាតដើម្បីមើលពន្យល់លម្អិត។">
+  <div class="scene-title" style="font-size:38px;">ហេតុអ្វីកុមារត្រូវការការការពារពិសេស?</div>
+  <div class="scene-body col" style="gap:10px;">
     <div class="reason-grid">
-      <div class="reason-card frag">
-        <div class="ri">🧠</div>
-        <div class="rt">ការវិនិច្ឆ័យកំពុងលូតលាស់</div>
-        <div class="rd">មិនអាចបែងចែកបានងាយ រវាងមនុស្ស និងចម្លើយស្វ័យប្រវត្តិ AI</div>
+      <div class="reason-card frag" id="reasonCard1">
+        <div class="reason-inner">
+          <div class="reason-face front">
+            <div class="ri">🧠</div>
+            <div class="rt">ការវិនិច្ឆ័យកំពុងលូតលាស់</div>
+            <div class="rd">មិនអាចបែងចែកបានច្បាស់ រវាងមនុស្ស និងចម្លើយស្វ័យប្រវត្តិ AI</div>
+            <div class="rd reason-hint">➡️ ចុចប៊ូតុងទៅមុខ ដើម្បីមើលចម្លើយ</div>
+          </div>
+          <div class="reason-face back">
+            <div class="ri">💬</div>
+            <div class="rd">កុមារងាយទុកចិត្តលើ AI ជជែក ឬដៃគូនិម្មិត ដូចជាមនុស្សពិត ហើយងាយជឿព័ត៌មានក្លែងក្លាយថាជាចំណេះដឹងថ្មី</div>
+          </div>
+        </div>
       </div>
-      <div class="reason-card frag">
-        <div class="ri">✋</div>
-        <div class="rt">សិទ្ធិយល់ព្រមមានកម្រិត</div>
-        <div class="rd">អំណាចផ្លូវច្បាប់ក្នុងការយល់ព្រម ឬបដិសេធប្រើ AI មានកម្រិត</div>
+      <div class="frag" data-flip="#reasonCard1" style="display:none;"></div>
+      <div class="reason-card frag" id="reasonCard2">
+        <div class="reason-inner">
+          <div class="reason-face front">
+            <div class="ri">👣</div>
+            <div class="rt">ស្នាមជើងឌីជីថលអស់មួយជីវិត</div>
+            <div class="rd">ទិន្នន័យផ្ទាល់ខ្លួនប្រមូលថ្ងៃនេះ អាចតាមជាប់ពួកគេពេញមួយជីវិត</div>
+            <div class="rd reason-hint">➡️ ចុចប៊ូតុងទៅមុខ ដើម្បីមើលចម្លើយ</div>
+          </div>
+          <div class="reason-face back">
+            <div class="ri">🎓</div>
+            <div class="rd">ប៉ះពាល់ឱកាសអប់រំ ហិរញ្ញវត្ថុ និងអាជីពអនាគត យូរអង្វែងជាងផលប៉ះពាល់លើមនុស្សពេញវ័យ</div>
+          </div>
+        </div>
       </div>
-      <div class="reason-card frag">
-        <div class="ri">👣</div>
-        <div class="rt">ស្នាមជើងឌីជីថលអស់មួយជីវិត</div>
-        <div class="rd">ទិន្នន័យប្រមូលថ្ងៃនេះ ប៉ះពាល់ឱកាសអនាគតយូរអង្វែងជាងមនុស្សពេញវ័យ</div>
-      </div>
+      <div class="frag" data-flip="#reasonCard2" style="display:none;"></div>
     </div>
   </div>
 </section>
 
-<!-- SCENE 3: Higher Stakes for Children -->
-<section class="scene" data-notes="Segment 3: ផលវិបាកខ្ពស់ជាងចំពោះកុមារ
-សូមរំលឹកពីហានិភ័យគ្រឹះក្នុងម៉ូឌុលទី ៤៖ ការលម្អៀង ការរំលោភឯកជនភាព និងព័ត៌មានមិនពិត។ នៅពេលអនុវត្តលើកុមារ ផលវិបាកនឹងកាន់តែមានកម្រិតខ្ពស់ខ្លាំងណាស់។
+<!-- SCENE 3: 4 Risks Recap, Amplified -->
+<section class="scene" data-notes="សូមរំលឹកឡើងវិញអំពីនូវហានិភ័យទាំង៤ ដែលយើងបានឃើញនៅម៉ូឌុលមុន៖ ភាពលម្អៀង ការរំលោភឯកជនភាព ព័ត៌មានបំភាន់ និងការផ្ទេរការគិត។
 
-លំហាត់ដែលបង្កើតដោយ AI ដែលមានការលម្អៀងលើភេទទិសដៅ ឬជាតិពិន្ធុ អាចតម្រង់ទិសតម្លៃខ្លួនឯងរបស់សិស្សបឋមសិក្សាក្នុងវ័យកំពុងលូតលាស់។ នៅក្នុងប្រទេសកម្ពុជាយើង ដែលរូបថតសិស្ស និងព័ត៌មានបច្ចុប្បន្នភាពសាលារៀន ត្រូវបានចែករំលែកជាញឹកញាប់តាមក្រុមសារសាធារណៈ ដូចជា Telegram ឬ Facebook ការបែកធ្លាយឯកជនភាពនៃរូបថតផ្ទៃមុខ ឬអាសយដ្ឋានដ្ឋានរបស់កុមារ គឺស្ទើរតែមិនអាចកែប្រែឡើងវិញបានឡើយ។
-
-នេះគឺជាកញ្ចក់ការពារ ដែលយើងត្រូវរក្សាទុកជានិច្ច សម្រាប់ការវាយតម្លៃឧបករណ៍ AI នីមួយៗ។">
-  <div class="scene-eyebrow"><div class="screen-num">៣</div><div class="eyebrow-label">Segment 3</div></div>
-  <div class="scene-title" style="font-size:28px;">ហានិភ័យដដែល — ផលវិបាកខ្ពស់ជាងចំពោះកុមារ</div>
+លំហាត់ ឬខ្លឹមសារមេរៀនបង្កើតដោយ AI ដែលមានភាពលម្អៀងលើយែនឌ័រ ឬជាតិពន្ធុ អាចធ្វើឲ្យកុមារទទួលយកភាពលម្អៀង និងបាត់បង់ទំនុកចិត្តផ្ទាល់ខ្លួន។ ម្យ៉ាងវិញទៀត នៅពេលដែលកុមារអាចប្រើប្រាស់ AI ដើម្បីផ្ទេរការគិត ដោយមិនយល់ពីគុណវិបត្តិ ពួកគេនឹងបាត់បង់ឱកាសរៀនកសាងចំណេះដឹងផ្ទាល់ខ្លួន។">
+  <div class="scene-title" style="font-size:36px;">ហានិភ័យ៤ដដែល៖ ធ្ងន់ធ្ងរជាងចំពោះកុមារ</div>
   <div class="scene-body col" style="gap:16px;">
-    <div style="display:flex; gap:16px; justify-content:center;">
-      <div class="risk-chip frag">⚖️ ការលម្អៀង <span class="amp">↑ ប៉ះពាល់តម្លៃខ្លួនឯង</span></div>
-      <div class="risk-chip frag">🔒 ឯកជនភាព <span class="amp">↑ ស្ទើរតែកែមិនបាន</span></div>
-      <div class="risk-chip frag">🎭 ព័ត៌មានមិនពិត <span class="amp">↑ ជះឥទ្ធិពលការសិក្សា</span></div>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+      <div class="risk-chip frag">⚖️ ភាពលម្អៀង</div>
+      <div class="risk-chip frag">🔒 រំលោភឯកជនភាព</div>
+      <div class="risk-chip frag">🎭 ព័ត៌មានបំភាន់</div>
+      <div class="risk-chip frag">🔁 ការផ្ទេរការគិត</div>
     </div>
-    <div class="frag card" style="max-width:800px; text-align:center; font-size:14.5px; line-height:1.75; background:#FCEBEA;">
-      📱 នៅកម្ពុជា រូបថតសិស្ស និងព័ត៌មានសាលារៀន ត្រូវបានចែករំលែកញឹកញាប់តាម <b>Telegram/Facebook</b> — ការបែកធ្លាយរូបថតផ្ទៃមុខ ឬអាសយដ្ឋានកុមារ <b>ស្ទើរតែមិនអាចកែប្រែឡើងវិញបានឡើយ</b>
+    <div class="frag card" style="max-width:1066px; text-align:center; font-size:19px; line-height:1.75; background:#FCEBEA;">
+      📚 លំហាត់ដែល AI បង្កើត ដែលមានភាពលម្អៀងលើយែនឌ័រ ឬជាតិពន្ធុ អាចធ្វើឲ្យកុមារទទួលយកភាពលម្អៀង និង<b>បាត់បង់ទំនុកចិត្តលើខ្លួនឯង</b>
+    </div>
+    <div class="frag card" style="max-width:1066px; text-align:center; font-size:19px; line-height:1.75; background:#F1EEFE;">
+      🧩 កុមារប្រើ AI ដើម្បីផ្ទេរការគិត ដោយមិនយល់ពីគុណវិបត្តិ នឹង<b>បាត់បង់ឱកាសរៀនកសាងចំណេះដឹងផ្ទាល់ខ្លួន</b>
     </div>
   </div>
 </section>
 
-<!-- SCENE 4: UNICEF 9 Principles in 4 Clusters -->
-<section class="scene" data-notes="Segment 4: គោលការណ៍ UNICEF ៩ ក្នុង ៤ ចង្កោម
-ដើម្បីតម្រង់ទិសគ្រូបង្រៀន អ្នករៀបចំគោលនយោបាយ និងអ្នកអភិវឌ្ឍន៍ អង្គការ UNICEF បានបង្កើតគោលការណ៍ណែនាំចំនួនប្រាំបួន សម្រាប់ AI ដែលផ្តោតលើកុមារ។ គោលការណ៍ទាំងនេះបូកសរុបជាគំនិតគ្រឹះចំនួនបួន៖
+<!-- SCENE 4: UNICEF Guidance -> 4 Clusters -->
+<section class="scene" data-notes="ដើម្បីតម្រង់ទិសអ្នកអប់រំ អ្នករៀបចំគោលនយោបាយ និងអ្នកអភិវឌ្ឍបច្ចេកវិទ្យា អង្គការ UNICEF បានធ្វើបច្ចុប្បន្នភាពគោលការណ៍ណែនាំរបស់ខ្លួន (Guidance on AI and Children កំណែទី៣ ឆ្នាំ២០២៥) សម្រាប់ AI ដែលផ្តោតលើកុមារ ដែលមាន១០ចំណុច។ សម្រាប់បរិបទថ្នាក់រៀន គោលការណ៍សំខាន់ៗទាំង១០ អាចសង្ខេបជាបួនផ្នែកសំខាន់៖
 
-១. សុខុមាលភាព និងបរិយាបន្ន (Well-being & Inclusion)៖ AI ត្រូវតែគាំទ្រដល់ការអភិវឌ្ឍរាងកាយ បញ្ញា និងផ្លូវចិត្តរបស់កុមារ ដោយធានាភាពយុត្តិធម៌ និងគ្មានការរើសអើង។
-២. ឯកជនភាព និងសុវត្ថិភាព (Privacy & Safety)៖ ប្រព័ន្ធ AI ត្រូវតែការពារទិន្នន័យផ្ទាល់ខ្លួនរបស់កុមារ ការពារពួកគេពីគ្រោះថ្នាក់រាងកាយ ឬផ្លូវចិត្ត។
-៣. ភាពស្រមោល និងគណនេយ្យភាព (Transparency & Accountability)៖ លទ្ធផលរបស់ AI ត្រូវតែអាចពន្យល់បាន ហើយមនុស្សពេញវ័យនៅតែមានគណនេយ្យភាពពេញលេញ។
-៤. ការរៀបចំ និងការកសាងការគាំទ្រ (Preparation & Building Support)៖ ការអប់រំត្រូវតែរៀបចំកុមារសម្រាប់អនាគតដែលមាន AI ព្រមទាំងកសាងសមត្ថភាពគ្រូ និងអាណាព្យាបាល។
+១. សុខុមាលភាព និងបរិយាបន្ន៖ AI ត្រូវតែគាំទ្រដល់ការអភិវឌ្ឍរាងកាយ បញ្ញា និងផ្លូវចិត្តរបស់កុមារ ដោយធានាភាពយុត្តិធម៌ និងគ្មានការរើសអើងសម្រាប់សិស្សទាំងអស់ រួមទាំងកុមារពិការ ឬកុមារនៅតំបន់ដាច់ស្រយាល។
 
-អ្នកនឹងសិក្សាគោលការណ៍ទាំងប្រាំបួនលម្អិតនៅក្នុងសកម្មភាពទី ៣។">
-  <div class="scene-eyebrow"><div class="screen-num">៤</div><div class="eyebrow-label">Segment 4</div></div>
-  <div class="scene-title" style="font-size:28px;">គោលការណ៍ UNICEF ៩ — ៤ ចង្កោមគំនិត</div>
+២. ឯកជនភាព និងសុវត្ថិភាព៖ ប្រព័ន្ធ AI ត្រូវតែការពារទិន្នន័យផ្ទាល់ខ្លួនរបស់កុមារ ទប់ស្កាត់ការតាមដាន និងការពារពួកគេពីគ្រោះថ្នាក់ទាំងផ្លូវកាយនិងផ្លូវចិត្ត រួមទាំងហានិភ័យពី AI ជជែក ឬដៃគូនិម្មិត ការបោកបញ្ឆោត និងការធ្វើបាបគ្នាតាមអនឡាញ។
+
+៣. តម្លាភាព និងគណនេយ្យភាព៖ ធាតុចេញរបស់ AI ត្រូវតែអាចពន្យល់បាន។ កុមារត្រូវតែដឹងច្បាស់ជានិច្ចថា ពួកគេកំពុងជជែកជាមួយ AI មិនមែនមនុស្សទេ។ មនុស្សពេញវ័យជាគ្រូបង្រៀន និងថ្នាក់ដឹកនាំសាលា ត្រូវមានទំនួលខុសត្រូវពេញលេញនៅពេលមានកំហុសកើតឡើង។
+
+៤. ការរៀបចំ និងការកសាងការគាំទ្រ៖ ការអប់រំត្រូវតែរៀបចំកុមារសម្រាប់អនាគតដែលមាន AI ព្រមជាមួយគ្នានេះផងដែរ ត្រូវកសាងសមត្ថភាពឌីជីថលរបស់គ្រូបង្រៀន និងអាណាព្យាបាល។ AI ត្រូវប្រើដើម្បីគាំទ្រគ្រូបង្រៀន មិនមែនជំនួសគ្រូបង្រៀនឡើយ។
+
+ចុចលើកាតនីមួយៗដើម្បីមើលព័ត៌មានលម្អិត។">
+  <div class="scene-title" style="font-size:33px;">គោលការណ៍ណែនាំ UNICEF ស្តីពី AI និងកុមារ (កំណែទី៣ ២០២៥)៖ ១០ចំណុច សង្ខេបជា ៤ ចង្កោម</div>
   <div class="scene-body col">
     <div class="cluster-grid">
       <div class="cluster-card frag" style="border-color:var(--green-dark);">
-        <div style="font-size:26px;">🌱</div>
-        <b style="font-size:15px;">សុខុមាលភាព និងបរិយាបន្ន</b>
-        <div style="font-size:12.5px; color:var(--navy-soft); margin-top:6px;">គាំទ្រការអភិវឌ្ឍកុមារ — ភាពយុត្តិធម៌ គ្មានការរើសអើង</div>
+        <div class="cc-num">ចង្កោម ១</div>
+        <div style="font-size:31px;">🌱</div>
+        <b style="font-size:20px;">សុខុមាលភាព និងបរិយាបន្ន</b>
+        <div style="font-size:16px; color:var(--navy-soft); margin-top:6px;">គាំទ្រការអភិវឌ្ឍកុមារគ្រប់ជ្រុងជ្រោយ ភាពយុត្តិធម៌ គ្មានការរើសអើង រួមទាំងកុមារពិការ ឬនៅតំបន់ដាច់ស្រយាល</div>
       </div>
       <div class="cluster-card frag" style="border-color:var(--red);">
-        <div style="font-size:26px;">🔒</div>
-        <b style="font-size:15px;">ឯកជនភាព និងសុវត្ថិភាព</b>
-        <div style="font-size:12.5px; color:var(--navy-soft); margin-top:6px;">ការពារទិន្នន័យកុមារ និងគ្រោះថ្នាក់រាងកាយ/ផ្លូវចិត្ត</div>
+        <div class="cc-num">ចង្កោម ២</div>
+        <div style="font-size:31px;">🔒</div>
+        <b style="font-size:20px;">ឯកជនភាព និងសុវត្ថិភាព</b>
+        <div style="font-size:16px; color:var(--navy-soft); margin-top:6px;">ការពារទិន្នន័យផ្ទាល់ខ្លួន ទប់ស្កាត់ការតាមដាន ការពារពីការបោកបញ្ឆោត និងការធ្វើបាបគ្នាតាមអនឡាញ</div>
       </div>
       <div class="cluster-card frag" style="border-color:var(--purple);">
-        <div style="font-size:26px;">🔍</div>
-        <b style="font-size:15px;">ភាពស្រមោល និងគណនេយ្យភាព</b>
-        <div style="font-size:12.5px; color:var(--navy-soft); margin-top:6px;">លទ្ធផល AI អាចពន្យល់បាន — មនុស្សនៅតែទទួលខុសត្រូវ</div>
+        <div class="cc-num">ចង្កោម ៣</div>
+        <div style="font-size:31px;">🔍</div>
+        <b style="font-size:20px;">តម្លាភាព និងគណនេយ្យភាព</b>
+        <div style="font-size:16px; color:var(--navy-soft); margin-top:6px;">កុមារត្រូវដឹងច្បាស់ថាកំពុងជជែកជាមួយ AI មិនមែនមនុស្សទេ គ្រូនិងសាលានៅតែទទួលខុសត្រូវពេញលេញ</div>
       </div>
       <div class="cluster-card frag" style="border-color:var(--orange);">
-        <div style="font-size:26px;">🛠️</div>
-        <b style="font-size:15px;">ការរៀបចំ និងការគាំទ្រ</b>
-        <div style="font-size:12.5px; color:var(--navy-soft); margin-top:6px;">រៀបចំកុមារ គ្រូ និងអាណាព្យាបាល សម្រាប់អនាគត AI</div>
+        <div class="cc-num">ចង្កោម ៤</div>
+        <div style="font-size:31px;">🛠️</div>
+        <b style="font-size:20px;">ការរៀបចំ និងការកសាងការគាំទ្រ</b>
+        <div style="font-size:16px; color:var(--navy-soft); margin-top:6px;">រៀបចំកុមារ គ្រូ និងអាណាព្យាបាលសម្រាប់អនាគត AI ត្រូវប្រើដើម្បីគាំទ្រគ្រូ មិនមែនជំនួសគ្រូឡើយ</div>
       </div>
     </div>
-    <div class="frag" style="margin-top:14px; font-size:13px; color:var(--navy-soft); text-align:center;">📋 គោលការណ៍ទាំង ៩ លម្អិត — សិក្សានៅសកម្មភាពទី៣</div>
   </div>
 </section>
 
 <!-- SCENE 5: Photo Safety Checklist -->
-<section class="scene" data-notes="Segment 5: សុវត្ថិភាពរូបថតសិស្ស
-សូមពិនិត្យមើលសេនារីយ៉ូជាក់ស្តែងក្នុងថ្នាក់រៀន៖ ការប្រើប្រាស់រូបថតសិស្ស និងព័ត៌មានផ្ទាល់ខ្លួនក្នុងឧបករណ៍ AI។
+<section class="scene" data-notes="សូមពិនិត្យមើលសេណារីយ៉ូជាក់ស្តែងក្នុងថ្នាក់រៀន អំពីការប្រើប្រាស់រូបថតសិស្ស និងព័ត៌មានផ្ទាល់ខ្លួនក្នុងឧបករណ៍ AI។
 
-មុនពេលអ្នកបង្ហោះរូបថតសិស្ស — សម្រាប់ប័ណ្ណប្រកាស ស្លាយបង្ហាញ ឬសកម្មភាពបង្រៀន — សូមផ្អាក និងផ្ទៀងផ្ទាត់៖
-• តើកម្មវិធី AI នោះរក្សាទុក ឬយកបន្តរូបថតដែលបានបង្ហោះឬទេ?
-• តើសាលារៀនរបស់អ្នកមានការយល់ព្រមច្បាស់លាស់ពីអាណាព្យាបាល សម្រាប់ការប្រើយន្តការ AI លើរូបថតសិស្សដែរឬទេ?
-• តើរូបភាពគំនូរ AI ដែលមិនបង្ហាញអត្តសញ្ញាណ អាចបម្រើគោលបំណងអប់រំដូចគ្នាបានដែរឬទេ?
+មុនពេលអ្នកបង្ហោះរូបថតសិស្សក្នុង AI ដើម្បីបង្កើតផ្ទាំងប៉ុស្តើមួយ សូមផ្អាកបន្តិច និងផ្ទៀងផ្ទាត់៖
+តើកម្មវិធី AI នោះរក្សាទុក ឬយករូបភាពដែលបានបញ្ចូលដើម្បីបង្វឹក AI បន្តទៀតឬទេ?
+តើសាលារបស់អ្នកមានប្រមូលលិខិតយល់ព្រមពីឪពុកម្តាយសិស្ស ឲ្យប្រើរូបភាពរបស់កូនពួកគេបញ្ចូលក្នុងឧបករណ៍ AI ឬទេ?
+តើអ្នកអាចប្រើរូបកុមារអនាមិក ឬរូបរបៀបតុក្កតាជំនួសបានទេ?
 
-ក្នុងថ្នាក់រៀននៅកម្ពុជា វិធានការគឺដាច់ខាត៖ កុំបង្ហោះរូបថតផ្ទៃមុខសិស្សដែលមើលឃើញច្បាស់ ឬកំណត់ត្រាសាលារៀនសម្ងាត់ ទៅក្នុងកម្មវិធី AI សាធារណៈណាមួយឱ្យសោះ។ សូមការពារអត្តសញ្ញាណរបស់ពួកគេជាចម្បង។">
-  <div class="scene-eyebrow"><div class="screen-num">៥</div><div class="eyebrow-label">Segment 5</div></div>
-  <div class="scene-title" style="font-size:28px;">មុនបង្ហោះរូបថតសិស្ស — សូមផ្អាកសិន</div>
-  <div class="scene-body">
+សូមចាំថា មិនត្រូវបញ្ចូលរូបថតរបស់សិស្សដែលឃើញមុខច្បាស់ ឬព័ត៌មានឯកជនរបស់ពួកគេចូលក្នុងកម្មវិធី AI សាធារណៈណាមួយឡើយ។ ត្រូវការពារអត្តសញ្ញាណរបស់ពួកគេជានិច្ច។ ចុចលើប្រអប់ដើម្បីសម្គាល់ថាបានផ្ទៀងផ្ទាត់។">
+  <div class="scene-title" style="font-size:34px;">មុនបង្ហោះរូបថតសិស្សក្នុង AI៖ សូមផ្អាកសិន</div>
+  <div class="scene-body col" style="gap:14px;">
     <div style="display:flex; gap:26px; align-items:center;">
       <div class="frag" style="text-align:center;">
-        <div class="donot-photo" style="background:#FCEBEA;">🧑‍🎓<div class="donot-badge" style="background:var(--red);">✕</div></div>
-        <div style="font-size:12px; font-weight:800; color:var(--red); margin-top:8px;">រូបផ្ទៃមុខច្បាស់</div>
+        <div class="donot-photo" style="background:#FCEBEA; width:132px; height:132px; font-size:52px;">🧑‍🎓<div class="donot-badge" style="background:var(--red);">✕</div></div>
+        <div style="font-size:16px; font-weight:800; color:var(--red); margin-top:10px;">រូបផ្ទៃមុខច្បាស់</div>
       </div>
       <div class="frag" style="text-align:center;">
-        <div class="donot-photo" style="background:#E9F9EF;">🎨<div class="donot-badge" style="background:var(--green-dark);">✓</div></div>
-        <div style="font-size:12px; font-weight:800; color:var(--green-dark); margin-top:8px;">គំនូរ/រូបភាព AI</div>
+        <div class="donot-photo" style="background:#E9F9EF; width:132px; height:132px; font-size:52px;">🎨<div class="donot-badge" style="background:var(--green-dark);">✓</div></div>
+        <div style="font-size:16px; font-weight:800; color:var(--green-dark); margin-top:10px;">រូបអនាមិក / តុក្កតា</div>
+      </div>
+      <div class="frag card" style="padding:20px 30px; flex:1; max-width:520px;" id="checklistCard">
+        <div style="font-weight:800; margin-bottom:6px; font-size:20px;">✅ ចុចផ្ទៀងផ្ទាត់មុនបង្ហោះ៖</div>
+        <div class="check-item" data-check="1"><div class="check-box">✓</div><div class="ck-text">តើ AI រក្សាទុក ឬយកបន្តរូបភាពទៅបង្វឹកទេ?</div></div>
+        <div class="check-item" data-check="2"><div class="check-box">✓</div><div class="ck-text">តើសាលាមានលិខិតយល់ព្រមពីឪពុកម្តាយទេ?</div></div>
+        <div class="check-item" data-check="3"><div class="check-box">✓</div><div class="ck-text">តើអាចប្រើរូបអនាមិក ឬតុក្កតាជំនួសបានទេ?</div></div>
       </div>
     </div>
-    <div class="frag card" style="flex:1;">
-      <div style="font-weight:800; margin-bottom:10px; font-size:15px;">✅ ផ្ទៀងផ្ទាត់មុនបង្ហោះ៖</div>
-      <div class="list-row"><div class="icon-circle" style="background:#EAF4FF; width:44px; height:44px; font-size:18px;">1</div><div class="lr-text" style="font-size:15px;">តើ AI រក្សាទុក ឬយកបន្តរូបថតទេ?</div></div>
-      <div class="list-row frag"><div class="icon-circle" style="background:#FDF1E3; width:44px; height:44px; font-size:18px;">2</div><div class="lr-text" style="font-size:15px;">តើមានការយល់ព្រមពីអាណាព្យាបាលទេ?</div></div>
-      <div class="list-row frag"><div class="icon-circle" style="background:#E9F9EF; width:44px; height:44px; font-size:18px;">3</div><div class="lr-text" style="font-size:15px;">តើគំនូរ AI ជំនួសបានទេ?</div></div>
+    <div class="frag card" style="padding:12px 26px; background:var(--navy); color:#fff; text-align:center; font-size:16px; line-height:1.5; max-width:1066px;">
+      🚫 វិធានដាច់ខាត៖ កុំបញ្ចូលរូបថតឃើញមុខច្បាស់ ឬព័ត៌មានឯកជនរបស់សិស្ស ទៅក្នុងកម្មវិធី AI សាធារណៈណាមួយឡើយ ត្រូវការពារអត្តសញ្ញាណរបស់ពួកគេជានិច្ច
     </div>
-  </div>
-  <div class="frag card" style="margin-top:8px; background:var(--navy); color:#fff; text-align:center; font-size:14.5px; max-width:800px; margin-left:auto; margin-right:auto;">
-    🚫 វិធានដាច់ខាត៖ កុំបង្ហោះរូបផ្ទៃមុខសិស្ស ឬកំណត់ត្រាសម្ងាត់ ទៅ AI សាធារណៈណាមួយឱ្យសោះ
   </div>
 </section>
 
 <!-- SCENE 6: Conclusion -->
-<section class="scene" data-notes="Segment 6: សេចក្តីសន្និដ្ឋាន
-បច្ចេកវិទ្យាគួរតែបង្កើនឱកាសសម្រាប់កុមារ ដោយមិនត្រូវធ្វើឱ្យប៉ះពាល់ដល់សុវត្ថិភាព ឬសេចក្តីថ្លៃថ្នូររបស់ពួកគេឡើយ។
+<section class="scene" data-notes="ការប្រើបច្ចេកវិទ្យាត្រូវតែបម្រើដោយការបង្កើតឱកាសដល់កុមារ និងមិនត្រូវធ្វើឲ្យប៉ះពាល់ដល់សុវត្ថិភាព និងសេចក្តីថ្លៃថ្នូររបស់ពួកគេឡើយ។
 
-ក្នុងនាមជាគ្រូបង្រៀនវិជ្ជាជីវៈ យើងគឺជាអ្នកការពារសិទ្ធិឌីជីថលរបស់សិស្សជានិច្ច។ សូមចងចាំគោលការណ៍ទាំង ៩ របស់ UNICEF ឱ្យបានជាប់លាប់។ នៅក្នុងសកម្មភាពទី ៣ អ្នកនឹងវាយតម្លៃសេនារីយ៉ូថ្នាក់រៀនជាក់ស្តែង ដោយប្រើប្រាស់គោលការណ៍ទាំងនេះ ដើម្បីធានាសុវត្ថិភាពដែលផ្តោតលើកុមារក្នុងសាលារៀនរបស់អ្នក។
-
-សូមឈានទៅកាន់សកម្មភាពទី ៣ និងដាក់សុវត្ថិភាពកុមារជាអាទិភាពចម្បងទាំងអស់គ្នា!">
-  <div class="scene-eyebrow"><div class="screen-num">៦</div><div class="eyebrow-label">Segment 6</div></div>
+ក្នុងនាមជាគ្រូបង្រៀនប្រកបដោយវិជ្ជាជីវៈ យើងគឺជាអ្នកការពារសិទ្ធិឌីជីថលរបស់សិស្សជានិច្ច។ សូមចងចាំគោលការណ៍ណែនាំរបស់ UNICEF ឱ្យបានជាប់លាប់ និងប្រើប្រាស់គោលការណ៍ទាំងនេះ ដើម្បីធានាសុវត្ថិភាព និងសេចក្តីថ្លៃថ្នូររបស់កុមារ។">
   <div class="scene-title">គ្រូជាអ្នកការពារសិទ្ធិឌីជីថលរបស់សិស្ស</div>
-  <div class="scene-body col" style="gap:18px; max-width:760px; margin:0 auto;">
-    <div class="frag card" style="font-size:16px; line-height:1.75; text-align:center;">
-      បច្ចេកវិទ្យាគួរតែ <b>បង្កើនឱកាស</b> សម្រាប់កុមារ ដោយមិនប៉ះពាល់ដល់ <b>សុវត្ថិភាព ឬសេចក្តីថ្លៃថ្នូរ</b> របស់ពួកគេឡើយ
+  <div class="scene-body col" style="gap:20px; max-width:1014px; margin:0 auto;">
+    <div class="frag card" style="font-size:21px; line-height:1.75; text-align:center;">
+      ការប្រើបច្ចេកវិទ្យា ត្រូវតែ <b>បង្កើតឱកាស</b> ដល់កុមារ ដោយមិនប៉ះពាល់ដល់ <b>សុវត្ថិភាព ឬសេចក្តីថ្លៃថ្នូរ</b> របស់ពួកគេឡើយ
     </div>
     <div class="frag cta-banner">
-      <div class="tag">ជំហានបន្ទាប់</div>
-      <div class="main">🚀 សកម្មភាពទី៣៖ វាយតម្លៃសេនារីយ៉ូថ្នាក់រៀនតាមគោលការណ៍ UNICEF ៩</div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 7 (BONUS): 4 Cluster Reference -->
-<section class="scene" data-notes="សេចក្តីសង្ខេប៖ ចង្កោមគោលការណ៍ UNICEF ៤ (សម្ភារៈយោង)
-Well-being & Inclusion — គាំទ្រការអភិវឌ្ឍកុមារ ភាពយុត្តិធម៌ គ្មានការរើសអើង។ ការអនុវត្តកម្ពុជា៖ ធានាសម្ភារៈ AI គោរពអត្តសញ្ញាណវប្បធម៌ខ្មែរ ភាពចម្រុះខេត្ត និងឱកាសសិក្សាស្មើគ្នា។
-Privacy & Safety — ការពារទិន្នន័យកុមារ និងគ្រោះថ្នាក់រាងកាយ/ឌីជីថល។ ការអនុវត្តកម្ពុជា៖ កុំបង្ហោះមុខសិស្ស ឬកំណត់ត្រាឯកជនទៅកម្មវិធី AI ពាណិជ្ជកម្ម ឬជជែកសាធារណៈ។
-Transparency & Accountability — លទ្ធផល AI អាចពន្យល់បាន មនុស្សនៅតែទទួលខុសត្រូវ។ ការអនុវត្តកម្ពុជា៖ គ្រូនៅតែទទួលខុសត្រូវពេញលេញលើសម្ភារៈណាមួយប្រើដោយមាន AI ជំនួយ។
-Preparation & Support — កសាងអក្ខរកម្មឌីជីថល និងបរិយាកាសគាំទ្រ។ ការអនុវត្តកម្ពុជា៖ រៀបចំសិស្សសម្រាប់សេដ្ឋកិច្ចឌីជីថល ព្រមទាំងពាក់ព័ន្ធអាណាព្យាបាល និងថ្នាក់ដឹកនាំសាលា។">
-  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
-  <div class="scene-title" style="font-size:28px;">ចង្កោមគោលការណ៍ការពារកុមារ UNICEF</div>
-  <div class="scene-body col" style="align-items:stretch; max-width:920px; margin:0 auto;">
-    <div class="card frag">
-      <div class="principle-card">
-        <div class="icon-circle" style="background:#E9F9EF;">🌱</div>
-        <div class="lr-text"><b style="font-size:16px;">Well-being & Inclusion</b>
-          <div class="lr-sub">គាំទ្រការអភិវឌ្ឍកុមារ ភាពយុត្តិធម៌ គ្មានការរើសអើង</div>
-          <div class="lr-sub" style="color:var(--green-dark); font-weight:700; margin-top:3px;">→ ធានាសម្ភារៈ AI គោរពអត្តសញ្ញាណវប្បធម៌ខ្មែរ និងភាពចម្រុះខេត្ត</div>
-        </div>
-      </div>
-      <div class="principle-card frag">
-        <div class="icon-circle" style="background:#FCEBEA;">🔒</div>
-        <div class="lr-text"><b style="font-size:16px;">Privacy & Safety</b>
-          <div class="lr-sub">ការពារទិន្នន័យកុមារ និងគ្រោះថ្នាក់រាងកាយ/ឌីជីថល</div>
-          <div class="lr-sub" style="color:var(--red); font-weight:700; margin-top:3px;">→ កុំបង្ហោះមុខសិស្ស ឬកំណត់ត្រាឯកជនទៅ AI សាធារណៈ</div>
-        </div>
-      </div>
-      <div class="principle-card frag">
-        <div class="icon-circle" style="background:#F1EEFE;">🔍</div>
-        <div class="lr-text"><b style="font-size:16px;">Transparency & Accountability</b>
-          <div class="lr-sub">លទ្ធផល AI អាចពន្យល់បាន មនុស្សនៅតែទទួលខុសត្រូវ</div>
-          <div class="lr-sub" style="color:var(--purple); font-weight:700; margin-top:3px;">→ គ្រូទទួលខុសត្រូវពេញលេញលើសម្ភារៈណាមួយប្រើ AI ជំនួយ</div>
-        </div>
-      </div>
-      <div class="principle-card frag">
-        <div class="icon-circle" style="background:#FDF1E3;">🛠️</div>
-        <div class="lr-text"><b style="font-size:16px;">Preparation & Building Support</b>
-          <div class="lr-sub">កសាងអក្ខរកម្មឌីជីថល និងបរិយាកាសគាំទ្រ</div>
-          <div class="lr-sub" style="color:var(--orange-dark); font-weight:700; margin-top:3px;">→ ពាក់ព័ន្ធអាណាព្យាបាល និងថ្នាក់ដឹកនាំសាលា</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SCENE 8 (BONUS): Full 9 Principles Checklist -->
-<section class="scene" data-notes="រ៉ូប្រិកអនុវត្ត៖ បញ្ជីត្រួតពិនិត្យគោលការណ៍ UNICEF ៩ ពេញលេញ (សម្រាប់សកម្មភាពទី៣)
-១. Support Development — ជ្រើសរើសឧបករណ៍ AI ជំរុញការគិតវិភាគ មិនជំនួសការខិតខំរបស់សិស្ស
-២. Inclusion & Fairness — ធានាសំណើ AI ឆ្លុះបញ្ចាំងវប្បធម៌ខ្មែរ សមភាពយេនឌ័រ និងភាពចម្រុះខេត្ត
-៣. Protect Privacy & Data — កុំបញ្ចូលឈ្មោះ អត្តសញ្ញាណ ឬរូបថតផ្ទៃមុខច្បាស់ទៅ AI សាធារណៈ
-៤. Ensure Safety — ត្រួតពិនិត្យខ្លឹមសារ AI កុំឱ្យមានអាយុមិនសមស្រប ឬអនុសាសន៍គ្រោះថ្នាក់
-៥. Transparency — ជូនដំណឹងដល់អាណាព្យាបាល/សិស្ស នៅពេលប្រើ AI រៀបចំសម្ភារៈ
-៦. Explainability — កុំទទួលយកការដាក់ពិន្ទុ ឬសំណើ AI ដោយងងឹតងងុល ត្រូវផ្ទៀងផ្ទាត់តក្កវិជ្ជា
-៧. Human Oversight — គ្រូរក្សាសិទ្ធិសម្រេចចិត្តចុងក្រោយលើសម្ភារៈ និងការវាយតម្លៃទាំងអស់
-៨. Prepare Children — បង្រៀនសិស្សឱ្យចេះវាយតម្លៃខ្លឹមសារឌីជីថល និងសម្គាល់ព័ត៌មានក្លែងក្លាយ
-៩. Create Enabling Environment — សហការជាមួយថ្នាក់ដឹកនាំសាលា កំណត់គោលការណ៍ប្រើប្រាស់ Telegram/Facebook ដោយសុវត្ថិភាព">
-  <div class="scene-eyebrow"><div class="screen-num">✦</div><div class="eyebrow-label">សម្ភារៈយោង</div></div>
-  <div class="scene-title" style="font-size:26px;">បញ្ជីត្រួតពិនិត្យគោលការណ៍ UNICEF ៩</div>
-  <div class="scene-body">
-    <div class="principle-mini-grid">
-      <div class="pm-card frag"><div class="pn"><div class="pnum">1</div>Support Development</div><div class="pd">ជ្រើសរើសឧបករណ៍ AI ជំរុញការគិតវិភាគ មិនជំនួសការខិតខំសិស្ស</div></div>
-      <div class="pm-card frag"><div class="pn"><div class="pnum">2</div>Inclusion & Fairness</div><div class="pd">សំណើ AI ឆ្លុះបញ្ចាំងវប្បធម៌ខ្មែរ សមភាពយេនឌ័រ ភាពចម្រុះខេត្ត</div></div>
-      <div class="pm-card frag"><div class="pn"><div class="pnum">3</div>Protect Privacy & Data</div><div class="pd">កុំបញ្ចូលឈ្មោះ អត្តសញ្ញាណ ឬរូបថតផ្ទៃមុខច្បាស់ទៅ AI សាធារណៈ</div></div>
-      <div class="pm-card frag"><div class="pn"><div class="pnum">4</div>Ensure Safety</div><div class="pd">ត្រួតពិនិត្យខ្លឹមសារ AI កុំឱ្យអាយុមិនសមស្រប ឬគ្រោះថ្នាក់</div></div>
-      <div class="pm-card frag"><div class="pn"><div class="pnum">5</div>Transparency</div><div class="pd">ជូនដំណឹងអាណាព្យាបាល/សិស្ស នៅពេលប្រើ AI រៀបចំសម្ភារៈ</div></div>
-      <div class="pm-card frag"><div class="pn"><div class="pnum">6</div>Explainability</div><div class="pd">កុំទទួលយកលទ្ធផល AI ដោយងងឹតងងុល ត្រូវផ្ទៀងផ្ទាត់តក្កវិជ្ជា</div></div>
-      <div class="pm-card frag"><div class="pn"><div class="pnum">7</div>Human Oversight</div><div class="pd">គ្រូរក្សាសិទ្ធិសម្រេចចិត្តចុងក្រោយលើសម្ភារៈ និងការវាយតម្លៃ</div></div>
-      <div class="pm-card frag"><div class="pn"><div class="pnum">8</div>Prepare Children</div><div class="pd">បង្រៀនសិស្សវាយតម្លៃខ្លឹមសារឌីជីថល សម្គាល់ព័ត៌មានក្លែងក្លាយ</div></div>
-      <div class="pm-card frag"><div class="pn"><div class="pnum">9</div>Enabling Environment</div><div class="pd">សហការថ្នាក់ដឹកនាំសាលា កំណត់គោលការណ៍ Telegram/Facebook</div></div>
+      <div class="tag">ចាំចាំជានិច្ច</div>
+      <div class="main">🛡️ គ្រូគឺជាអ្នកការពារសិទ្ធិឌីជីថលរបស់សិស្សជានិច្ច ប្រើគោលការណ៍ណែនាំ UNICEF ដើម្បីធានាសុវត្ថិភាព និងសេចក្តីថ្លៃថ្នូររបស់កុមារ</div>
     </div>
   </div>
 </section>
 
 </div><!-- /deck -->
-
-<div class="mascot" id="mascotWrap">
-  <svg width="76" height="76" viewBox="0 0 76 76">
-    <rect x="6" y="6" width="64" height="64" rx="22" fill="var(--teal)"/>
-    <rect x="34" y="0" width="8" height="12" rx="4" fill="var(--teal)"/>
-    <circle cx="38" cy="4" r="6" fill="var(--yellow)"/>
-    <circle cx="26" cy="38" r="8" fill="#fff"/>
-    <circle cx="50" cy="38" r="8" fill="#fff"/>
-    <circle cx="26" cy="38" r="3.6" fill="#2D3142"/>
-    <circle cx="50" cy="38" r="3.6" fill="#2D3142"/>
-    <rect x="28" y="52" width="20" height="6" rx="3" fill="#fff"/>
-  </svg>
-</div>
 
 <div class="notes-drawer" id="notesDrawer">
   <div class="notes-inner">
@@ -435,7 +379,6 @@ Preparation & Support — កសាងអក្ខរកម្មឌីជីថ
 <script>
 const scenes = Array.from(document.querySelectorAll('.scene'));
 const dotsWrap = document.getElementById('dots');
-const counter = document.getElementById('counter');
 const progress = document.getElementById('progress');
 const notesText = document.getElementById('notesText');
 const notesDrawer = document.getElementById('notesDrawer');
@@ -450,19 +393,29 @@ scenes.forEach((s,i)=>{
 const dots = Array.from(dotsWrap.children);
 
 function fragsIn(scene){ return Array.from(scene.querySelectorAll('.frag')); }
-function resetFrags(scene){ fragsIn(scene).forEach(f=>f.classList.remove('shown')); }
-function showAllFrags(scene){ fragsIn(scene).forEach(f=>f.classList.add('shown')); }
+function applyFlip(scene, frag){
+  if(frag.dataset.flip){
+    const target = scene.querySelector(frag.dataset.flip);
+    if(target) target.classList.add('flipped');
+  }
+}
+function resetFrags(scene){
+  fragsIn(scene).forEach(f=>f.classList.remove('shown'));
+  scene.querySelectorAll('.flipped').forEach(el=>el.classList.remove('flipped'));
+}
+function showAllFrags(scene){
+  fragsIn(scene).forEach(f=>{ f.classList.add('shown'); applyFlip(scene, f); });
+}
 function revealNextFrag(scene){
   const frags = fragsIn(scene);
   const next = frags.find(f=>!f.classList.contains('shown'));
-  if(next){ next.classList.add('shown'); return true; }
+  if(next){ next.classList.add('shown'); applyFlip(scene, next); return true; }
   return false;
 }
 
 function render(){
   scenes.forEach((s,i)=> s.classList.toggle('active', i===current));
   dots.forEach((d,i)=> d.classList.toggle('on', i===current));
-  counter.textContent = String(current+1).padStart(2,'0') + ' / ' + scenes.length;
   progress.style.width = ((current+1)/scenes.length*100) + '%';
   notesText.textContent = scenes[current].dataset.notes || '';
 }
@@ -492,13 +445,30 @@ document.addEventListener('keydown', (e)=>{
   else if(e.key.toLowerCase() === 'n'){ notesDrawer.classList.toggle('open'); }
   else if(e.key.toLowerCase() === 'f'){ toggleFullscreen(); }
 });
-document.getElementById('notesBtn').addEventListener('click', ()=> notesDrawer.classList.toggle('open'));
 
 function toggleFullscreen(){
   if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); }
   else { document.exitFullscreen(); }
 }
-document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
+
+let touchStartX = 0;
+document.addEventListener('touchstart', (e)=>{ touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+document.addEventListener('touchend', (e)=>{
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  if(Math.abs(dx) > 50){ dx < 0 ? next() : prev(); }
+}, {passive:true});
+
+document.querySelectorAll('.cluster-card').forEach(el=>{
+  el.addEventListener('click', (e)=>{ e.stopPropagation(); el.classList.toggle('flipped'); });
+});
+document.querySelectorAll('.check-item').forEach(item=>{
+  item.addEventListener('click', (e)=>{ e.stopPropagation(); item.classList.toggle('checked'); });
+});
+
+document.addEventListener('click', (e)=>{
+  if(e.target.closest('.chrome, .notes-drawer')) return;
+  next();
+});
 
 resetFrags(scenes[0]);
 render();

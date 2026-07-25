@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ការវាយតម្លៃ និង មតិត្រឡប់ — Visual Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+@font-face{
+  font-family:'Google Sans Khmer';
+  font-style:normal;
+  font-display:swap;
+  font-weight:400 700;
+  src:url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/khmer-wght-normal.woff2') format('woff2-variations');
+}
+@font-face{
+  font-family:'Google Sans Khmer';
+  font-style:normal;
+  font-display:swap;
+  font-weight:400 700;
+  src:url('https://cdn.jsdelivr.net/fontsource/fonts/google-sans:vf@latest/latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+:root{
+  --cream:#FFF8EC;
+  --sky:#EAF4FF;
+  --orange:#F2994A;
+  --orange-dark:#D9761F;
+  --teal:#2D9CDB;
+  --teal-dark:#1D7FB8;
+  --green:#6FCF97;
+  --green-dark:#219653;
+  --red:#EB5757;
+  --navy:#2D3142;
+  --navy-soft:#5B5F73;
+  --yellow:#F7C948;
+  --purple:#9B87F5;
+  --white:#FFFFFF;
+  --card-radius:26px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  font-family:'Google Sans Khmer','Baloo 2',sans-serif;
+  background:linear-gradient(160deg,var(--cream) 0%, var(--sky) 100%);
+  color:var(--navy);
+  overflow:hidden;
+  width:100vw;height:100vh;
+  position:relative;
+}
+.deck{position:relative; width:100vw; height:100vh;}
+.scene{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  padding:50px 88px 40px;
+  opacity:0; pointer-events:none;
+  transform:translateY(14px);
+  transition:opacity .45s ease, transform .45s ease;
+}
+.scene.active{opacity:1; pointer-events:auto; transform:translateY(0);}
+.scene-eyebrow{ display:none; }
+.screen-num{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--navy); color:#fff; font-weight:800; font-family:'Baloo 2';
+  display:flex; align-items:center; justify-content:center; font-size:18px; flex:none;
+}
+.eyebrow-label{font-size:15px; font-weight:600; color:var(--navy-soft); letter-spacing:.3px;}
+.scene-title{font-size:38px; font-weight:800; color:var(--navy); margin:6px 0 18px; line-height:1.28;}
+.scene-title.center{text-align:center;}
+.scene-sub{font-size:19px; color:var(--navy-soft); font-weight:500; margin-bottom:10px;}
+.scene-body{flex:1; display:flex; align-items:center; gap:50px; min-height:0;}
+.scene-body.col{flex-direction:column; justify-content:center;}
+.frag{ opacity:0; transform:translateY(16px); transition:opacity .5s ease, transform .5s ease; }
+.frag.shown{ opacity:1; transform:translateY(0); }
+
+.card{background:var(--white); border-radius:var(--card-radius); box-shadow:0 14px 34px rgba(45,49,66,.10); padding:26px 30px;}
+.pill{display:inline-flex; align-items:center; gap:10px; background:var(--white); border-radius:999px; padding:10px 20px; box-shadow:0 8px 20px rgba(45,49,66,.08); font-weight:700; font-size:16px;}
+
+
+.chrome{ display:none; }
+.navbtn{width:52px; height:52px; border-radius:50%; border:none; background:var(--navy); color:#fff; font-size:22px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(45,49,66,.25);}
+.dots{display:flex; gap:9px; align-items:center;}
+.dot{width:11px; height:11px; border-radius:50%; background:#D9DEE8; cursor:pointer; border:none; padding:0; transition:all .2s ease;}
+.dot.on{background:var(--orange); width:26px; border-radius:6px;}
+.topbar{ display:none; }
+.iconbtn{background:var(--white); border:none; border-radius:14px; padding:10px 16px; font-family:inherit; font-weight:700; font-size:14px; color:var(--navy); box-shadow:0 6px 16px rgba(45,49,66,.12); cursor:pointer; display:flex; gap:8px; align-items:center;}
+.counter{ display:none; }
+
+.notes-drawer{position:absolute; left:0; right:0; bottom:0; height:0; overflow:hidden; background:var(--navy); color:#fff; z-index:40; transition:height .3s ease; border-radius:24px 24px 0 0;}
+.notes-drawer.open{height:34%;}
+.notes-inner{padding:26px 60px; height:100%; overflow-y:auto;}
+.notes-inner h4{margin:0 0 10px; color:var(--yellow); font-size:15px; letter-spacing:.5px;}
+.notes-inner p{font-size:18px; line-height:1.7; margin:0; font-weight:400; white-space:pre-line;}
+
+.progress{position:absolute; top:0; left:0; height:6px; background:var(--orange); z-index:50; transition:width .3s ease;}
+
+.illus-wrap{flex:none; display:flex; align-items:center; justify-content:center;}
+.speech-bubble{position:relative; background:var(--white); border-radius:24px; padding:22px 28px; box-shadow:0 10px 26px rgba(45,49,66,.12); font-size:21px; font-weight:700; max-width:480px; line-height:1.5;}
+.list-row{display:flex; align-items:center; gap:18px; font-size:20px; font-weight:600; padding:13px 0; border-bottom:2px dashed #E4E8F0;}
+.list-row:last-child{border-bottom:none;}
+.list-row .lr-text{flex:1;}
+.list-row .lr-sub{display:block; font-size:14.5px; font-weight:500; color:var(--navy-soft); margin-top:3px;}
+.num-badge{width:38px;height:38px;border-radius:11px; flex:none; display:flex; align-items:center; justify-content:center; font-family:'Baloo 2'; font-weight:800; color:#fff; font-size:16px;}
+.icon-circle{width:56px;height:56px;border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; font-size:28px;}
+.vs-col{flex:1; background:var(--white); border-radius:var(--card-radius); padding:26px; box-shadow:0 14px 34px rgba(45,49,66,.10);}
+.vs-col h3{margin:0 0 8px; font-size:22px;}
+.vs-col p{font-size:16px; line-height:1.6; color:var(--navy-soft); margin:0;}
+.badge-tag{display:inline-block; font-size:13px; font-weight:800; padding:4px 12px; border-radius:999px; color:#fff; margin-bottom:9px;}
+
+.cta-banner{background:var(--navy); color:#fff; border-radius:var(--card-radius); padding:22px 30px; text-align:center; box-shadow:0 14px 30px rgba(45,49,66,.25);}
+.cta-banner .tag{color:var(--yellow); font-size:13px; font-weight:800; letter-spacing:.4px; margin-bottom:6px;}
+.cta-banner .main{font-size:20px; font-weight:800;}
+
+/* ---------- pillar cards (5 strategies) ---------- */
+.pillars-wrap{display:flex; gap:20px; width:100%; max-width:1500px; margin:0 auto; align-items:stretch; justify-content:center;}
+.pillar-card{
+  flex:1; min-width:0; background:var(--white); border-radius:26px; padding:32px 16px 24px;
+  box-shadow:0 16px 34px rgba(45,49,66,.10); text-align:center; position:relative;
+  display:flex; flex-direction:column; align-items:center;
+  border-top:8px solid var(--pc);
+}
+.pillar-num{
+  position:absolute; top:-19px; left:50%; transform:translateX(-50%);
+  width:38px;height:38px;border-radius:50%; background:var(--pc); color:#fff;
+  font-family:'Baloo 2'; font-weight:800; font-size:17px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 5px 13px rgba(0,0,0,.18); flex:none;
+}
+.pillar-img{font-size:48px; width:88px; height:88px; margin:6px 0 14px; display:flex; align-items:center; justify-content:center; flex:none;}
+.pillar-title{font-size:16.5px; font-weight:800; color:var(--navy); line-height:1.35; margin-bottom:8px;}
+.pillar-desc{font-size:14px; line-height:1.55; color:var(--navy-soft); font-weight:500;}
+
+/* ---------- load-style 3-card grid (feed up/back/forward) ---------- */
+.load-grid{display:flex; gap:22px; width:100%; max-width:1200px; margin:0 auto;}
+.load-card{
+  flex:1; background:var(--white); border-radius:26px; padding:28px 24px 24px; text-align:left;
+  box-shadow:0 16px 34px rgba(45,49,66,.10); border-top:8px solid var(--lc);
+  display:flex; flex-direction:column;
+}
+.load-icon{
+  width:58px; height:58px; border-radius:50%; background:var(--lc-soft, #EAF4FF);
+  display:flex; align-items:center; justify-content:center; font-size:28px; margin-bottom:14px; flex:none;
+}
+.load-name{font-size:19px; font-weight:800; color:var(--navy); margin-bottom:4px;}
+.load-name span{display:block; font-size:13.5px; font-weight:600; color:var(--teal-dark); font-style:italic; margin-top:2px;}
+.load-desc{font-size:14.5px; line-height:1.6; color:var(--navy-soft); font-weight:500;}
+
+/* ---------- worked example: worksheet + feedback quote cards ---------- */
+.worksheet{
+  width:230px; flex:none; background:#fff; border-radius:16px; box-shadow:0 16px 34px rgba(45,49,66,.14);
+  padding:22px; position:relative; transform:rotate(-1.5deg); border:1px solid #EFEFEF;
+}
+.fb-card{background:var(--white); border-radius:18px; padding:16px 20px; box-shadow:0 10px 24px rgba(45,49,66,.08);}
+.fb-card .fb-en{font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--teal-dark);}
+.fb-card .fb-km{font-size:16.5px; font-weight:800; color:var(--navy); margin:4px 0 6px;}
+.fb-card .fb-text{font-size:13.5px; line-height:1.65; color:var(--navy-soft);}
+
+/* ---------- vague vs specific ---------- */
+.vs-wrap{display:flex; align-items:stretch; gap:20px; width:100%;}
+.vs-divider{flex:none; align-self:center; font-family:'Baloo 2'; font-weight:800; color:var(--red); font-size:16px; letter-spacing:.05em;}
+.vs-bad-phrase{text-decoration:line-through; text-decoration-color:var(--red); text-decoration-thickness:2px; opacity:.7; font-size:19px; font-weight:800; margin:6px 0;}
+.vs-good-phrase{font-size:19px; font-weight:800; margin:6px 0; color:var(--navy);}
+
+footer.credit{position:absolute; bottom:2px; left:0; right:0; text-align:center; font-size:11px; color:#B7BCC9; z-index:1;}
+
+/* ---------- mobile responsiveness ---------- */
+@media (max-width: 768px){
+  body{overflow:hidden;}
+  .scene{padding:22px 20px 92px !important; overflow-y:auto;}
+  .scene-title{font-size:23px !important; margin:4px 0 12px !important; text-align:center;}
+  .scene-body{flex-direction:column !important; gap:16px !important; justify-content:flex-start !important; align-items:stretch !important;}
+  .card{padding:18px 20px !important; font-size:15px !important;}
+  .vs-wrap{flex-direction:column !important;}
+  .vs-divider{padding:2px 0;}
+  .vs-col{padding:18px 20px !important;}
+  .vs-col h3{font-size:18px !important;}
+  .vs-col p{font-size:14px !important;}
+  .pillars-wrap{flex-direction:column !important; gap:26px !important;}
+  .pillar-card{padding:26px 18px 20px !important;}
+  .load-grid{flex-direction:column !important; gap:14px !important;}
+  .load-card{padding:18px 16px !important;}
+  .worksheet{width:180px !important; padding:16px !important;}
+  .list-row{font-size:16px !important; padding:9px 0 !important; gap:10px !important;}
+  .icon-circle{width:40px !important; height:40px !important; font-size:19px !important;}
+  .num-badge{width:32px !important; height:32px !important; font-size:16px !important;}
+  .badge-tag{font-size:11px !important;}
+  .illus-wrap svg{width:150px !important; height:auto !important;}
+
+  .chrome{
+    display:flex !important; position:fixed; bottom:0; left:0; right:0;
+    background:rgba(255,255,255,.95); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border-top:1px solid rgba(0,0,0,.05); padding:12px 20px; justify-content:space-between; align-items:center; z-index:100;
+  }
+  .navbtn{width:40px !important; height:40px !important; font-size:18px !important;}
+  .dot{width:8px !important; height:8px !important;}
+  .dot.on{width:20px !important;}
+  .topbar{display:none !important;}
+  .counter{display:none !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter">01 / 07</div>
+
+<div class="topbar">
+  <button class="iconbtn" id="notesBtn">📝 ស្គ្រីប (N)</button>
+  <button class="iconbtn" id="fsBtn">⛶ Fullscreen</button>
+</div>
+
+<div class="deck" id="deck">
+
+<!-- SCENE 1: Hook -->
+<section class="scene" data-notes="សំណួរដើម្បីបើកមេរៀន៖ តើការវាយតម្លៃមានន័យត្រឹមតែការធ្វើតេស្តទេឬ?
+
+ការវាយតម្លៃដ៏មានឥទ្ធិពលបំផុត មិនមែនតេស្តដាក់ពិន្ទុទេ — គឺជាការសង្កេតឃើញ ទឹកមុខឆ្ងល់ ភាពស្ទាក់ស្ទើរ និងកំហុសរបស់សិស្ស ក្នុងពេលកំពុងបង្រៀន។">
+  <div class="scene-eyebrow"><div class="screen-num">១</div><div class="eyebrow-label">មេរៀន៖ ការវាយតម្លៃក្នុងថ្នាក់រៀន</div></div>
+  <div class="scene-title">តើការវាយតម្លៃ ពិតជាមានន័យត្រឹមតែការធ្វើតេស្តទេឬ?</div>
+  <div class="scene-body">
+    <div class="illus-wrap frag" style="flex:1; justify-content:flex-start;">
+      <svg width="220" height="240" viewBox="0 0 220 240">
+        <ellipse cx="110" cy="225" rx="82" ry="11" fill="#000" opacity=".06"/>
+        <circle cx="110" cy="105" r="95" fill="#EAF4FF"/>
+        <text x="110" y="140" text-anchor="middle" font-size="120" font-weight="800" fill="var(--teal)" font-family="Baloo 2">?</text>
+      </svg>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:16px;">
+      <div class="frag speech-bubble" style="align-self:flex-start;">
+        <span style="font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--red); display:block; margin-bottom:6px;">គំនិតទូទៅ</span>
+        « ការវាយតម្លៃ = ការធ្វើតេស្តដាក់ពិន្ទុ? »
+      </div>
+      <div class="frag cta-banner" style="text-align:left;">
+        <div class="tag">តាមពិត</div>
+        <div class="main" style="font-size:17px; font-weight:600; line-height:1.6;">ការវាយតម្លៃដ៏មានឥទ្ធិពលបំផុត <b style="color:var(--yellow);">មិនមែនតេស្តដាក់ពិន្ទុនោះទេ</b> គឺជាការសង្កេតឃើញ ទឹកមុខឆ្ងល់ ភាពស្ទាក់ស្ទើរ និងកំហុសរបស់សិស្ស <b style="color:var(--yellow);">ក្នុងពេលកំពុងបង្រៀន</b>។</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 2: Two Types -->
+<section class="scene" data-notes="ការវាយតម្លៃមានពីរប្រភេទ៖
+
+ការវាយតម្លៃសរុប (Summative) កើតឡើងនៅចុងបញ្ចប់ ដូចជាតេស្តប្រចាំខែ ឬប្រចាំឆមាស — ប្រាប់ពីអ្វីដែលកុមារបានសម្រេចបាន។
+
+ការវាយតម្លៃតាមដំណាក់ (Formative) កើតឡើងកំឡុងពេលរៀន — ប្រាប់ពីអ្វីដែលត្រូវធ្វើបន្ទាប់។
+
+ឧទាហរណ៍៖ គ្រូឃើញសិស្សភាគច្រើននៅមិនទាន់ធ្វើកិច្ចការក្នុងថ្នាក់បាន គ្រូក៏សម្រេចចិត្តពន្យល់ខ្លឹមសារនោះឡើងវិញ — នេះហើយជាការវាយតម្លៃតាមដំណាក់ ដែលគ្រូជាច្រើនប្រើជាញឹកញាប់ ដោយពេលខ្លះមិនទាន់ដឹងខ្លួនផង។">
+  <div class="scene-eyebrow"><div class="screen-num">២</div><div class="eyebrow-label">ការវាយតម្លៃមាន ២ ប្រភេទ</div></div>
+  <div class="scene-title">សរុប និង តាមដំណាក់</div>
+  <div class="scene-body">
+    <div class="vs-col frag">
+      <span class="badge-tag" style="background:var(--orange-dark);">📅 Summative</span>
+      <h3>ការវាយតម្លៃសរុប</h3>
+      <p>កើតឡើងនៅចុងបញ្ចប់ ដូចជាការធ្វើតេស្តប្រចាំខែ ឬប្រចាំឆមាស។</p>
+      <p style="margin-top:12px; font-weight:800; color:var(--orange-dark); font-size:13px; text-transform:uppercase; letter-spacing:.04em;">វាប្រាប់អ្នកអំពី</p>
+      <p>អ្វីដែលកុមារបានសម្រេចបាន លទ្ធផលចុងក្រោយ សម្រាប់កត់ត្រា និងរាយការណ៍លទ្ធផលសិក្សា។</p>
+    </div>
+    <div class="vs-col frag" style="border:2px solid var(--teal);">
+      <span class="badge-tag" style="background:var(--teal);">🔍 Formative</span>
+      <h3>ការវាយតម្លៃតាមដំណាក់</h3>
+      <p>កើតឡើងកំឡុងពេលរៀន ខណៈពេលកំពុងបង្រៀន និងហាត់។</p>
+      <p style="margin-top:12px; font-weight:800; color:var(--teal-dark); font-size:13px; text-transform:uppercase; letter-spacing:.04em;">វាប្រាប់អ្នកអំពី</p>
+      <p>អ្វីដែលត្រូវធ្វើបន្ទាប់ គួរបន្តមេរៀន បង្រៀនចំណុចណាមួយឡើងវិញ ឬប្តូរវិធីសាស្ត្រ។</p>
+    </div>
+  </div>
+  <div class="frag card" style="margin-top:8px; font-size:14.5px; line-height:1.75; text-align:center; max-width:840px; margin-left:auto; margin-right:auto;">
+    💡 ឧទាហរណ៍៖ គ្រូឃើញសិស្សភាគច្រើននៅមិនទាន់ធ្វើកិច្ចការក្នុងថ្នាក់បាន គ្រូក៏សម្រេចចិត្តពន្យល់ខ្លឹមសារនោះឡើងវិញ នេះហើយជាការវាយតម្លៃតាមដំណាក់ ដែលគ្រូជាច្រើនប្រើជាញឹកញាប់ ដោយពេលខ្លះមិនទាន់ដឹងខ្លួនផង។
+  </div>
+</section>
+
+<!-- SCENE 3: Five Strategies -->
+<section class="scene" data-notes="យោងតាម Wiliam &amp; Thompson មានយុទ្ធសាស្ត្រប្រាំសម្រាប់ការវាយតម្លៃតាមដំណាក់៖
+
+១. ចែករំលែកវត្ថុបំណងសិក្សា និងលក្ខណៈវិនិច្ឆ័យជោគជ័យឱ្យច្បាស់លាស់ ដើម្បីឱ្យកុមារដឹងពីគោលដៅដែលពួកគេត្រូវសម្រេច។
+២. ប្រើសំណួរ និងការពិភាក្សាក្នុងថ្នាក់ ដើម្បីរកឱ្យឃើញពីរបៀបគិត និងការយល់ដឹងពិតប្រាកដរបស់សិស្ស។
+៣. ផ្តល់មតិកែលម្អដែលជួយជំរុញសិស្សឱ្យបន្តជំហានទៅមុខ។
+៤. ជួយសិស្សឱ្យទទួលខុសត្រូវលើការសិក្សារបស់ខ្លួនឯង។
+៥. អនុញ្ញាតឱ្យសិស្សបានរៀន និងត្រួតពិនិត្យការងាររបស់គ្នាទៅវិញទៅមក។">
+  <div class="scene-eyebrow"><div class="screen-num">៣</div><div class="eyebrow-label">Wiliam &amp; Thompson</div></div>
+  <div class="scene-title" style="font-size:32px;">យុទ្ធសាស្ត្រប្រាំ សម្រាប់ការវាយតម្លៃតាមដំណាក់</div>
+  <div class="scene-body" style="justify-content:center;">
+    <div class="pillars-wrap">
+      <div class="pillar-card frag" style="--pc:var(--teal);">
+        <div class="pillar-num">១</div>
+        <div class="pillar-img">🎯</div>
+        <div class="pillar-title">ចែករំលែក<br>វត្ថុបំណង</div>
+        <div class="pillar-desc">ចែករំលែកគោលដៅ និងលក្ខណៈវិនិច្ឆ័យជោគជ័យឱ្យច្បាស់លាស់</div>
+      </div>
+      <div class="pillar-card frag" style="--pc:var(--red);">
+        <div class="pillar-num">២</div>
+        <div class="pillar-img">💬</div>
+        <div class="pillar-title">សំណួរ &amp;<br>ការពិភាក្សា</div>
+        <div class="pillar-desc">រកឱ្យឃើញការយល់ដឹងពិតប្រាកដ មិនមែនគ្រាន់តែចម្លើយត្រឹមត្រូវ</div>
+      </div>
+      <div class="pillar-card frag" style="--pc:var(--orange);">
+        <div class="pillar-num">៣</div>
+        <div class="pillar-img">🚀</div>
+        <div class="pillar-title">មតិកែលម្អ<br>ជំរុញ</div>
+        <div class="pillar-desc">ជួយជំរុញសិស្សឱ្យបន្តជំហានទៅមុខ</div>
+      </div>
+      <div class="pillar-card frag" style="--pc:var(--purple);">
+        <div class="pillar-num">៤</div>
+        <div class="pillar-img">🙋</div>
+        <div class="pillar-title">ទទួលខុសត្រូវ<br>ខ្លួនឯង</div>
+        <div class="pillar-desc">ជួយសិស្សឱ្យទទួលខុសត្រូវលើការសិក្សារបស់ខ្លួនឯង</div>
+      </div>
+      <div class="pillar-card frag" style="--pc:var(--green-dark);">
+        <div class="pillar-num">៥</div>
+        <div class="pillar-img">🤝</div>
+        <div class="pillar-title">រៀន<br>ពីគ្នាទៅវិញទៅមក</div>
+        <div class="pillar-desc">ឱ្យសិស្សរៀន និងត្រួតពិនិត្យការងាររបស់គ្នាទៅវិញទៅមក</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 4: Three Questions -->
+<section class="scene" data-notes="យោងតាម Hattie &amp; Timperley មតិត្រឡប់ដ៏មានប្រយោជន៍ ត្រូវឆ្លើយសំណួរបី៖
+
+១. Feeding up — តើខ្ញុំកំពុងទៅណា? ប្រាប់សិស្សឱ្យច្បាស់ថាគោលដៅរបស់លំហាត់គឺអ្វី មុននឹងចាប់ផ្តើម។
+២. Feeding back — តើដំណើររបស់ខ្ញុំពេលនេះយ៉ាងណា? ប្រាប់ពីអ្វីដែលសិស្សបានធ្វើត្រឹមត្រូវរួចហើយ និងចំណុចដែលនៅខ្វះ។
+៣. Feeding forward — តើជំហានបន្ទាប់ខ្ញុំត្រូវធ្វើអ្វី? ណែនាំសកម្មភាពជាក់លាក់បន្ទាប់ ដើម្បីឱ្យសិស្សឈានទៅមុខ។
+
+បន្ទាប់ — សាកល្បងមើលក្របខ័ណ្ឌនេះ ដំណើរការជាមួយលំហាត់សិស្សពិតៗ។">
+  <div class="scene-eyebrow"><div class="screen-num">៤</div><div class="eyebrow-label">Hattie &amp; Timperley</div></div>
+  <div class="scene-title" style="font-size:32px;">មតិត្រឡប់ដ៏មានប្រយោជន៍ ឆ្លើយសំណួរបី</div>
+  <div class="scene-body">
+    <div class="load-grid">
+      <div class="load-card frag" style="--lc:var(--teal); --lc-soft:#EAF4FF;">
+        <div class="load-icon">🧭</div>
+        <div class="load-name">តើខ្ញុំកំពុងទៅណា?<span>Feeding up</span></div>
+        <div class="load-desc">ប្រាប់សិស្សឱ្យច្បាស់ថាគោលដៅរបស់លំហាត់គឺអ្វី មុននឹងចាប់ផ្តើម។</div>
+      </div>
+      <div class="load-card frag" style="--lc:var(--orange); --lc-soft:#FDF1E3;">
+        <div class="load-icon">📍</div>
+        <div class="load-name">តើដំណើររបស់ខ្ញុំពេលនេះយ៉ាងណា?<span>Feeding back</span></div>
+        <div class="load-desc">ប្រាប់ពីអ្វីដែលសិស្សបានធ្វើត្រឹមត្រូវរួចហើយ និងចំណុចដែលនៅខ្វះ។</div>
+      </div>
+      <div class="load-card frag" style="--lc:var(--green-dark); --lc-soft:#E9F9EF;">
+        <div class="load-icon">🪜</div>
+        <div class="load-name">តើជំហានបន្ទាប់ខ្ញុំត្រូវធ្វើអ្វី?<span>Feeding forward</span></div>
+        <div class="load-desc">ណែនាំសកម្មភាពជាក់លាក់បន្ទាប់ ដើម្បីឱ្យសិស្សឈានទៅមុខ។</div>
+      </div>
+    </div>
+  </div>
+  <div class="frag card" style="margin-top:20px; text-align:center; font-size:14.5px; max-width:760px; margin-left:auto; margin-right:auto;">
+    បន្ទាប់៖ សាកល្បងមើលក្របខ័ណ្ឌនេះ ដំណើរការជាមួយលំហាត់សិស្សពិតៗ →
+  </div>
+</section>
+
+<!-- SCENE 5: Worked Example -->
+<section class="scene" data-notes="ឧទាហរណ៍ជាក់ស្តែង៖ លំហាត់បូក ១៨ + ២៥
+
+Feed Up — គ្រូប្រាប់សិស្សជាក់ច្បាស់ថា គោលដៅរបស់លំហាត់នេះគឺ បូកលេខដែលមានការទុកត្រា (carry) ឱ្យបានត្រឹមត្រូវ។
+
+Feed Back — 'កូនយក៥បូក៨បាន១៣ត្រឹមត្រូវ ហើយកូនសរសេរលេខ៣នៅខ្ទង់រាយបានត្រឹមត្រូវ — តែកូនភ្លេចត្រាទុក១នៅខ្ទង់ដប់ ទើបលទ្ធផលកូនឃើញតែ៣៣។ ចម្លើយត្រឹមត្រូវគឺ៤៣។'
+
+Feed Forward — 'អ្វីដែលកូនត្រូវធ្វើ គឺសរសេរលេខ១តូចមួយ នៅខាងលើខ្ទង់ដប់ ហើយបូកលេខនេះជាមួយលេខផ្សេងទៀតក្នុងខ្ទង់ដប់ដែរ។'">
+  <div class="scene-eyebrow"><div class="screen-num">៥</div><div class="eyebrow-label">ឧទាហរណ៍ជាក់ស្តែង</div></div>
+  <div class="scene-title" style="font-size:32px;">លំហាត់បូក ១៨ + ២៥</div>
+  <div class="scene-body">
+    <div class="illus-wrap frag">
+      <div class="worksheet">
+        <div style="position:absolute; top:8px; left:26px; font-size:14px; color:var(--red); font-weight:800;">1</div>
+        <div style="font-family:'Baloo 2'; font-size:36px; color:var(--navy); text-align:right; line-height:1.3;">
+          <div>18</div>
+          <div>+ 25</div>
+          <div style="border-top:3px solid var(--navy); margin:2px 0;"></div>
+          <div style="color:var(--green-dark); font-weight:800;">43 ✓</div>
+        </div>
+        <div style="position:absolute; right:16px; bottom:44px; width:60px; height:38px; border:3px solid var(--red); border-radius:50%; opacity:.8; transform:rotate(-6deg);"></div>
+      </div>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:14px; min-width:0;">
+      <div class="frag fb-card">
+        <div class="fb-en">Step 1: Feeding up</div>
+        <div class="fb-km">តើខ្ញុំកំពុងទៅណា?</div>
+        <div class="fb-text">គ្រូប្រាប់សិស្សជាក់ច្បាស់ថា គោលដៅរបស់លំហាត់នេះគឺ បូកលេខដែលមានការទុកត្រា (carry) ឱ្យបានត្រឹមត្រូវ។</div>
+      </div>
+      <div class="frag fb-card">
+        <div class="fb-en">Step 2: Feeding back</div>
+        <div class="fb-km">តើដំណើររបស់ខ្ញុំពេលនេះយ៉ាងណា?</div>
+        <div class="fb-text">« កូនយក ៥ បូក ៨ បាន ១៣ ត្រឹមត្រូវ ហើយកូនសរសេរលេខ ៣ នៅខ្ទង់រាយបានត្រឹមត្រូវ តែកូនភ្លេចត្រាទុក ១ នៅខ្ទង់ដប់ ទើបលទ្ធផលកូនឃើញតែ ៣៣។ ចម្លើយត្រឹមត្រូវគឺ ៤៣។ »</div>
+      </div>
+      <div class="frag fb-card">
+        <div class="fb-en">Step 3: Feeding forward</div>
+        <div class="fb-km">តើជំហានបន្ទាប់ខ្ញុំត្រូវធ្វើអ្វី?</div>
+        <div class="fb-text">« អ្វីដែលកូនត្រូវធ្វើ គឺសរសេរលេខ ១ តូចមួយ នៅខាងលើខ្ទង់ដប់ ហើយបូកលេខនេះជាមួយលេខផ្សេងទៀតក្នុងខ្ទង់ដប់ដែរ… »</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 6: Vague vs Specific -->
+<section class="scene" data-notes="មតិត្រឡប់ដូចជា 'ល្អណាស់!' ឬ 'មិនត្រឹមត្រូវទេ' មិនឆ្លើយសំណួរណាមួយក្នុងចំណោមសំណួរបីទេ — សិស្សមិនដឹងថាចំណុចណាល្អ ចំណុចណាខ្វះ ត្រូវកែអ្វី។
+
+មតិត្រឡប់ដែលជួយសិស្សឈានទៅមុខ ត្រូវប្រើពាក្យសាមញ្ញ និងជាក់លាក់ — បញ្ជាក់ច្បាស់ពីអ្វីដែលធ្វើបានល្អ និងអ្វីនៅត្រូវព្យាយាមបន្ថែម ដូចឧទាហរណ៍លំហាត់បូកកន្លងមក។">
+  <div class="scene-eyebrow"><div class="screen-num">៦</div><div class="eyebrow-label">អ្វីដែលមតិត្រឡប់មិនគួរជា</div></div>
+  <div class="scene-title" style="font-size:32px;">មិនច្បាស់លាស់ ធៀបនឹង ជាក់លាក់</div>
+  <div class="scene-body">
+    <div class="vs-wrap">
+      <div class="vs-col frag" style="border:2px solid rgba(235,87,87,.35);">
+        <span class="badge-tag" style="background:var(--red);">មិនជួយអី</span>
+        <div class="vs-bad-phrase">« ល្អណាស់! »</div>
+        <div class="vs-bad-phrase">« មិនត្រឹមត្រូវទេ »</div>
+        <p style="margin-top:10px;">មិនឆ្លើយសំណួរណាមួយក្នុងចំណោមសំណួរបី សិស្សមិនដឹងថាចំណុចណាល្អ ចំណុចណាខ្វះ ត្រូវកែអ្វី។</p>
+      </div>
+      <div class="vs-divider">VS</div>
+      <div class="vs-col frag" style="border:2px solid var(--gold, var(--orange));">
+        <span class="badge-tag" style="background:var(--green-dark);">ជួយសិស្សឈានទៅមុខ</span>
+        <div class="vs-good-phrase">ពាក្យសាមញ្ញ + ជាក់លាក់</div>
+        <p style="margin-top:10px;">បញ្ជាក់ច្បាស់ពី៖ អ្វីដែលធ្វើបានល្អ, អ្វីដែលនៅត្រូវព្យាយាមបន្ថែម ដូចឧទាហរណ៍លំហាត់បូកកន្លងមក។</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 7: Closing -->
+<section class="scene" data-notes="សង្ខេប៖ AI ជួយសន្សំពេលវេលា ក្នុងការវាយតម្លៃ។ ឧបករណ៍ AI អាចជួយបង្កើត កម្រងសំណួរ សំណុំបញ្ហា/លំហាត់ និងធនាគារមតិត្រឡប់តាមតម្រូវការសិស្សម្នាក់ៗ។
+
+ក្នុងម៉ូឌុលបន្ទាប់ លោកគ្រូអ្នកគ្រូនឹងអនុវត្តការប្រើ AI ដើម្បីបង្កើតឧបករណ៍វាយតម្លៃតាមតម្រូវការជាក់ស្តែង។">
+  <div class="scene-eyebrow"><div class="screen-num">៧</div><div class="eyebrow-label">សង្ខេប</div></div>
+  <div class="scene-title center" style="text-align:center;">AI ជួយសន្សំពេលវេលា ក្នុងការវាយតម្លៃ</div>
+  <div class="scene-body col" style="gap:22px;">
+    <div class="frag" style="text-align:center; font-size:18px; font-weight:600; color:var(--navy-soft);">ឧបករណ៍ AI អាចជួយបង្កើត៖</div>
+    <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center;">
+      <div class="frag pill">📋 កម្រងសំណួរ</div>
+      <div class="frag pill">📝 សំណុំបញ្ហា / លំហាត់</div>
+      <div class="frag pill">💬 ធនាគារមតិត្រឡប់ តាមតម្រូវការសិស្សម្នាក់ៗ</div>
+    </div>
+    <div class="frag cta-banner" style="max-width:680px;">
+      <div class="tag">មេរៀនបន្ទាប់</div>
+      <div class="main" style="font-size:16px; font-weight:600; line-height:1.7;">ក្នុងម៉ូឌុលបន្ទាប់ លោកគ្រូអ្នកគ្រូនឹងអនុវត្តការប្រើ AI ដើម្បីបង្កើតឧបករណ៍វាយតម្លៃតាមតម្រូវការជាក់ស្តែង។</div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /deck -->
+
+<div class="notes-drawer" id="notesDrawer">
+  <div class="notes-inner">
+    <h4>ស្គ្រីប / ការនិទានសម្រាប់អេក្រង់នេះ</h4>
+    <p id="notesText"></p>
+  </div>
+</div>
+
+<div class="chrome">
+  <button class="navbtn" id="prevBtn">‹</button>
+  <div class="dots" id="dots"></div>
+  <button class="navbtn" id="nextBtn">›</button>
+</div>
+
+<script>
+const scenes = Array.from(document.querySelectorAll('.scene'));
+const dotsWrap = document.getElementById('dots');
+const counter = document.getElementById('counter');
+const progress = document.getElementById('progress');
+const notesText = document.getElementById('notesText');
+const notesDrawer = document.getElementById('notesDrawer');
+let current = 0;
+
+scenes.forEach((s,i)=>{
+  const d = document.createElement('button');
+  d.className = 'dot' + (i===0?' on':'');
+  d.addEventListener('click', ()=> goTo(i, true));
+  dotsWrap.appendChild(d);
+});
+const dots = Array.from(dotsWrap.children);
+
+function fragsIn(scene){ return Array.from(scene.querySelectorAll('.frag')); }
+function resetFrags(scene){ fragsIn(scene).forEach(f=>f.classList.remove('shown')); }
+function showAllFrags(scene){ fragsIn(scene).forEach(f=>f.classList.add('shown')); }
+function revealNextFrag(scene){
+  const frags = fragsIn(scene);
+  const next = frags.find(f=>!f.classList.contains('shown'));
+  if(next){ next.classList.add('shown'); return true; }
+  return false;
+}
+
+function render(){
+  scenes.forEach((s,i)=> s.classList.toggle('active', i===current));
+  dots.forEach((d,i)=> d.classList.toggle('on', i===current));
+  counter.textContent = String(current+1).padStart(2,'0') + ' / ' + scenes.length;
+  progress.style.width = ((current+1)/scenes.length*100) + '%';
+  notesText.textContent = scenes[current].dataset.notes || '';
+}
+
+function goTo(i, showAll){
+  i = Math.max(0, Math.min(scenes.length-1, i));
+  current = i;
+  const scene = scenes[current];
+  if(showAll){ showAllFrags(scene); } else { resetFrags(scene); }
+  render();
+}
+
+function next(){
+  const scene = scenes[current];
+  if(revealNextFrag(scene)) return;
+  if(current < scenes.length-1){ goTo(current+1, false); }
+}
+function prev(){
+  if(current > 0){ goTo(current-1, true); }
+}
+
+document.getElementById('nextBtn').addEventListener('click', next);
+document.getElementById('prevBtn').addEventListener('click', prev);
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight' || e.key === ' '){ e.preventDefault(); next(); }
+  else if(e.key === 'ArrowLeft'){ e.preventDefault(); prev(); }
+  else if(e.key.toLowerCase() === 'n'){ notesDrawer.classList.toggle('open'); }
+  else if(e.key.toLowerCase() === 'f'){ toggleFullscreen(); }
+});
+document.getElementById('notesBtn').addEventListener('click', ()=> notesDrawer.classList.toggle('open'));
+
+function toggleFullscreen(){
+  if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); }
+  else { document.exitFullscreen(); }
+}
+document.getElementById('fsBtn').addEventListener('click', toggleFullscreen);
+
+resetFrags(scenes[0]);
+render();
+</script>
+</body>
+</html>
